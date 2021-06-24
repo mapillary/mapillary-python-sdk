@@ -2,7 +2,7 @@ from setuptools import setup, find_packages, Command
 import io, os, sys
 from shutil import rmtree
 
-name = "mapillary-python-sdk"
+name = "mapillary"
 version = "0.0.1"
 author = "Christopher Beddow, Omar Ali, Saif Ul Islam"
 author_email = "cbed@fb.com, omarmuhammed1998.om@gmail.com, saifulislam84210@gmail.com"
