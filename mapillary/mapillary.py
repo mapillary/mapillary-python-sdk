@@ -1,6 +1,7 @@
 def greetings(name):
     """
-    Print a line about converting a notebook.
+    A Python 3 library built on the Mapillary API v4 to facilitate retrieving and working with Mapillary data.
+
     Args:
         my_name (str): person's name
     Returns:
