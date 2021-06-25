@@ -10,7 +10,7 @@ DESCRIPTION = "A Python 3 library built on the Mapillary API v4 to facilitate re
 LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://github.com/facebookexternal/mapillary-python-sdk"
 REQUIRES_PYTHON = '>3.5'
-HERE = os.path.abspath(os.path.dirname(__file__))
+HERE = os.path.abspath(os.path.dirNAME(__file__))
 REQUIREMENTS = ["mercantile", "Fiona", "mapbox-vector-tile"]
 CLASSIFIERS = [
         'Programming Language :: Python',
