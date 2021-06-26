@@ -8,4 +8,6 @@ def greetings(name):
         None
     """
 
-    print(f"Hello, there, {name}! Nice to meet you. As you can see, work is currently under progress")
+    print(
+        f"Hello, there, {name}! Nice to meet you. As you can see, work is currently under progress"
+    )
