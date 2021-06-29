@@ -1,5 +1,5 @@
 """
-mapillary.config.api.vector_tiles
+mapillary.config.api.general
 
 This module contains the class implementation of the
 general metadata functionalities for the APIv4 of Mapillary.
