@@ -10,6 +10,9 @@ REFERENCE,
 1. https://www.mapillary.com/developer/api-documentation/
 """
 
+# Local imports
+from models.exceptions import InvalidFieldError
+
 
 class Entities:
     """Each API call requires specifying the fields of the Entity you're
@@ -101,7 +104,9 @@ class Entities:
                 "sfm_cluster",
                 "width",
             ]:
-                print(option)
+                raise InvalidFieldError(option, 
+                'https://graph.mapillary.com/:image_id?fields=options...')
+
 
         return f"https://graph.mapillary.com/{image_id}/?fields={','.join(options)}"
 
@@ -134,7 +139,8 @@ class Entities:
                 "geometry",
                 "images",
             ]:
-                print(option)
+                raise InvalidFieldError(option, 
+                'https://graph.mapillary.com/:map_feature_id?fields=')
 
         return (
             f"https://graph.mapillary.com/{map_feature_id}/?"
@@ -163,8 +169,16 @@ class Entities:
         """
 
         for option in options:
-            if option not in ["created_at", "geometry", "image", "value"]:
-                print(option)
+            if option not in [
+                "created_at",
+                "geometry",
+                "image",
+                "value"
+            ]:
+                raise InvalidFieldError(option, 
+                'https://graph.mapillary.com/:image_id/detections/?fields='
+                'options...')
+
 
         return (
             f"https://graph.mapillary.com/{image_id}/detections/?"
@@ -193,8 +207,16 @@ class Entities:
         """
 
         for option in options:
-            if option not in ["created_at", "geometry", "image", "value"]:
-                print(option)
+            if option not in [
+                "created_at",
+                "geometry",
+                "image",
+                "value"
+            ]:
+                raise InvalidFieldError(option, 
+                'https://graph.mapillary.com/:map_feature_id/detections/?'
+                'fields=')
+
 
         return (
             f"https://graph.mapillary.com/{map_feature_id}/detections/"
@@ -219,8 +241,14 @@ class Entities:
         """
 
         for option in options:
-            if option not in ["slug", "name", "description"]:
-                print(option)
+            if option not in [
+                "slug",
+                "name",
+                "description"
+            ]:
+                raise InvalidFieldError(option, 
+                'https://graph.mapillary.com/:organization_id?fields=')
+
 
         return (
             f"https://graph.mapillary.com/{organization_id}/"

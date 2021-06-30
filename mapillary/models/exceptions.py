@@ -28,7 +28,7 @@ class InvalidTokenError(MapillaryException):
     """
 
     def __init__(self, message, type, code, fbtrace_id):
-        """ """
+        """Initializing InvalidTokenError constructor"""
         self.message = message
         self.type = type
         self.code = code
@@ -62,7 +62,7 @@ class AuthError(MapillaryException):
     """
 
     def __init__(self, message):
-        """ """
+        """Initializing AuthError constructor"""
         self.message = message
 
     def __str__(self):
@@ -70,6 +70,39 @@ class AuthError(MapillaryException):
 
     def __repr__(self):
         return (
-            "InvalidTokenError: An exception occured."
+            "AuthError: An exception occured."
             + f'Message: "{self.message}"'
+        )        
+
+class InvalidFieldError(MapillaryException):
+    """Raised when a function is called without
+    having the access token set in
+    set_access_token to access Mapillary's API,
+    primarily used in mapillary.set_access_token
+
+    :var message: The error message returned
+    :var type: The type of error that occurred
+    :var code: The error code returned,
+    most like 190, "Access token has expired",
+    see
+    https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/
+    for more information
+    :fbtrace_id: A unique ID to track the issue/exception
+    """
+
+    def __init__(self, endpoint, field):
+        """Initializing InvalidFieldError constructor"""
+        self.endpoint = endpoint
+        self.field = field
+
+    def __str__(self):
+        return (
+            f'InvalidFieldError: The invalid field, "{self.field}" was '
+            f'passed to the endpoint, "{self.endpoint}"'
+        )
+
+    def __repr__(self):
+        return (
+            f'InvalidFieldError: The invalid field, "{self.field}" was '
+            f'passed to the endpoint, "{self.endpoint}"'
         )        
