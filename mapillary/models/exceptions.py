@@ -44,3 +44,32 @@ class InvalidTokenError(MapillaryException):
             + f'Code: "{self.code}",'
             + f'fbtrace_id: "{self.fbtrace_id}"'
         )
+
+class AuthError(MapillaryException):
+    """Raised when a function is called without
+    having the access token set in
+    set_access_token to access Mapillary's API,
+    primarily used in mapillary.set_access_token
+
+    :var message: The error message returned
+    :var type: The type of error that occurred
+    :var code: The error code returned,
+    most like 190, "Access token has expired",
+    see
+    https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/
+    for more information
+    :fbtrace_id: A unique ID to track the issue/exception
+    """
+
+    def __init__(self, message):
+        """ """
+        self.message = message
+
+    def __str__(self):
+        return f'AuthError: An exception occured, "{self.message}"'
+
+    def __repr__(self):
+        return (
+            "InvalidTokenError: An exception occured."
+            + f'Message: "{self.message}"'
+        )        
