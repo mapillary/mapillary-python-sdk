@@ -24,33 +24,28 @@ How does this function work? Check out the documentation.
 
 ### Basic Start
 
-Making a virtual env,
+For installing `pipenv`, please see [here](https://pypi.org/project/pipenv/).
+
+To install packages from `Pipfile.lock`,
 
 ```bash
-python -m venv venv
-source venv/bin/activate
+pipenv install
 ```
 
-To install the basic dependencies,
+To install a package under `packages`,
 
 ```bash
-pip install -r requirements.txt
+pipenv install [package_name]
 ```
 
-If you are going to work on the developer side,
+To install a package under `dev-packages`,
 
 ```bash
-pip install -r requirements_dev.txt
+pipenv install --dev [package_name]
 ```
 
-To deactivate the `virtualenv`,
+To run `python` with `pipenv`,
 
 ```bash
-deactivate
-```
-
-To run the formatter `black`, and the linter `flake8`, run,
-
-```bash
-flake8 mapillary & black mapillary
+pipenv run python
 ```
