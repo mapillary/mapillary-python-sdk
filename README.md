@@ -49,3 +49,11 @@ To run `python` with `pipenv`,
 ```bash
 pipenv run python
 ```
+
+### Formatting/Linting
+
+To run the formatter `black`, and the linter `flake8`, run,
+
+```bash
+flake8 mapillary & black mapillary
+```

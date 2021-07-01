@@ -13,6 +13,7 @@ REFERENCE,
 # Local imports
 from models.exceptions import InvalidFieldError
 
+
 class VectorTiles:
     """Vector tiles provide an easy way to visualize vast amounts of
     data. Mapillary APIs are heavily based on vector tiles to provide
@@ -47,15 +48,12 @@ class VectorTiles:
         """
 
         for option in options:
-            if option not in [
-                "captured_at",
-                "id",
-                "sequence_id",
-                "is_pano"
-            ]:
-                raise InvalidFieldError(option, 
-                'https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/'
-                '{y}/?fields=options...')
+            if option not in ["captured_at", "id", "sequence_id", "is_pano"]:
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/"
+                    "{y}/?fields=options...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly1_public/2/"
@@ -97,9 +95,11 @@ class VectorTiles:
                 "image_id",
                 "organization_id" "is_pano",
             ]:
-                raise InvalidFieldError(option, 
-                'https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/'
-                '{y}/?fields=options...')
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/"
+                    "{y}/?fields=options...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly1_public/2/"
@@ -139,11 +139,14 @@ class VectorTiles:
                 "compass_angle",
                 "id",
                 "sequence_id",
-                "organization_id" "is_pano",
+                "organization_id",
+                "is_pano",
             ]:
-                raise InvalidFieldError(option,
-                'https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/'
-                '{y}/?fields=options...')
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/"
+                    "{y}/?fields=options...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly1_public/2/"
@@ -176,9 +179,11 @@ class VectorTiles:
 
         for option in options:
             if option not in ["captured_at", "id", "sequence_id", "is_pano"]:
-                raise InvalidFieldError(option,
-                'https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/'
-                '{z}/{x}/{y}/?fields=options...')
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
+                    "{z}/{x}/{y}/?fields=options...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
@@ -220,9 +225,11 @@ class VectorTiles:
                 "image_id",
                 "organization_id" "is_pano",
             ]:
-                raise InvalidFieldError(option,
-                'https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/'
-                '{z}/{x}/{y}/?fields=options...')
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
+                    "{z}/{x}/{y}/?fields=options...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
@@ -264,9 +271,11 @@ class VectorTiles:
                 "sequence_id",
                 "organization_id" "is_pano",
             ]:
-                raise InvalidFieldError(option,
-                'https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/'
-                '{z}/{x}/{y}/?fields=options...')
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
+                    "{z}/{x}/{y}/?fields=options...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
@@ -302,9 +311,11 @@ class VectorTiles:
 
         for option in options:
             if option not in ["id", "value", "first_seen_at", "last_seen_at"]:
-                raise InvalidFieldError(option, 
-                'https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/'
-                '{z}/{x}/{y}/?fields=options...')
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/"
+                    "{z}/{x}/{y}/?fields=options...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/"
@@ -342,16 +353,13 @@ class VectorTiles:
         """
 
         for option in options:
-            if option not in [
-                "id",
-                "value",
-                "first_seen_at",
-                "last_seen_at"
-            ]:
-                raise InvalidFieldError(option, 
-                'https://tiles.mapillary.com/maps/vtp/'
-                'mly_map_feature_traffic_sign/2/{z}/{x}/{y}/?fields=options'
-                '...')
+            if option not in ["id", "value", "first_seen_at", "last_seen_at"]:
+                raise InvalidFieldError(
+                    option,
+                    "https://tiles.mapillary.com/maps/vtp/"
+                    "mly_map_feature_traffic_sign/2/{z}/{x}/{y}/?fields=options"
+                    "...",
+                )
 
         return (
             "https://tiles.mapillary.com/maps/vtp/"

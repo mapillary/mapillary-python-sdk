@@ -14,12 +14,15 @@ from models.exceptions import AuthError
 
 from functools import wraps
 
+
 def auth():
     def auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            if Credentials.token == '':
-                raise AuthError('Function called without setting the access token')
+            if Credentials.token == "":
+                raise AuthError("Function called without setting the access token")
             return f(*args, **kwargs)
+
         return wrapper
+
     return auth_decorator

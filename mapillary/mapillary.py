@@ -19,6 +19,13 @@ from datetime import datetime
 from models.credentials import Credentials
 from models.auth import auth
 
+# Local
+import controller.detection as detection
+import controller.feature as feature
+import controller.image as image
+import controller.save as save
+
+
 @auth()
 def greetings(name):
     """A greetings function temporarily here to test
@@ -71,19 +78,11 @@ def set_access_token(token: str):
 
     Credentials.set_token(token)
 
-    return None
+    return {"Status": "Success"}
 
 
 @auth()
-def get_image_close_to(
-    latitude,
-    longitude,
-    fields=["all"],
-    radius=200,
-    coverage="pano",
-    date=datetime.today().strftime("%Y-%m-%d"),
-    org_id=-1,
-):
+def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     """Function that takes a longitude, latitude as
     argument and outputs the near images. This makes
     an API call with the token set in set_access_token
@@ -95,33 +94,42 @@ def get_image_close_to(
     :param latitude: The latitude
     :type latitude: float or double
 
-    :param fields: A list of options, either as 'all',
+    :param kwargs.fields: A list of options, either as 'all',
     or individually accounted lists of fields. For more
     details about the fields themselves, please take a
     look at https://www.mapillary.com/developer/api-documentation/,
     under 'Fields'.
     Geometry must always be included in the fields, even in indvidual
-    :type fields: list
+    :type kwargs.fields: list
 
-    :param radius: The radius of the images obtained
+    :param kwargs.radius: The radius of the images obtained
     from a center center
-    :type radius: float or int or double
+    :type kwargs.radius: float or int or double
 
-    :param coverge: The tile coverage to be obtained,
+    :param kwargs.coverge: The tile coverage to be obtained,
     either as 'flat', 'pano' (panoramic), or 'both'.
     For more information, please take a look at
     https://www.mapillary.com/developer/api-documentation/
     under 'Coverage Tiles'
-    :type coverage: str
+    :type kwargs.coverage: str
 
-    :param date: The date to filter to, if needed.
-    The date format currently is 'YYYY-MM-DD', or '%Y-%m-%d'
-    :type date: datetime
+    :param kwargs.min_date: The min date starting from, with
+    'YYYY-MM-DD', 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.min_date: datetime
 
-    :param org_id: The organization id, ID of the
+    :param kwargs.max_date: The max date to filter upto, with
+    'YYYY-MM-DD', 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.max_date: datetime
+
+    :param kwargs.daterange: Date list. daterange[0] is min_date,
+    daterange[1] is max_date. The format is 'YYYY-MM-DD',
+    'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.daterange: list
+
+    :param kwargs.org_id: The organization id, ID of the
     organization this image (or sets of images) belong
     to. It can be absent. Thus, default is -1 (None)
-    :type org_id: int
+    :type kwargs.org_id: int
 
     :return: None
     :rtype: None
@@ -130,12 +138,13 @@ def get_image_close_to(
         # TODO: Write code here to display how the function works
     """
 
-    # ? It may make sense to set an option for
-    # ? the response format to be GeoJSON which
-    # ? slightly reshuffles the data format. See issue #13 for more
-    # ? context
+    output, data = image.get_image_close_to_controller(
+        latitude=latitude,
+        longitude=longitude,
+        kwargs=kwargs,
+    )
 
-    return None
+    return output, data
 
 
 @auth()
