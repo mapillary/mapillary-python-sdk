@@ -84,7 +84,7 @@ class Client:
         # User Access token will be set once and used throughout all requests within the same session
         self.access_token = access_token
 
-    def __initiate_request(self, url, method, params=None):
+    def __initiate_request(self, url, method, params={}):
         """
         Private method - For internal use only.
         This method is responsible for making tailored API requests to the mapillary API v4.
@@ -114,7 +114,7 @@ class Client:
             try:
                 logger.debug(f"Response: {res.json()}")
             except ValueError:
-                return res.text
+                return res
 
         elif res.status_code >= 400:
             logger.error(f"Srever responded with a {str(res.status_code)} error!")
@@ -125,7 +125,9 @@ class Client:
                 ...
             res.raise_for_status()
 
-    def get(self, graph=True, endpoint=None, params=None):
+        return res
+
+    def get(self, graph=True, endpoint=None, params={}):
         """
         Make GET requests to both mapillary main endpoints
         :param graph: A boolean to dinamically switch between the entities and tiles endpoints
@@ -140,8 +142,8 @@ class Client:
         # Dynamically set authorization mechanism based on the target endpoint
         if not graph:
             self.url = TILES_URL
-        else:
             params["access_token"] = params.get("access_token", self.access_token)
+        else:
             self.session.headers.update({"Authorization": f"OAuth {self.access_token}"})
 
         url = self.url + endpoint
