@@ -92,6 +92,9 @@ class Client(object):
         # create a prepared request with the request and the session info merged
         prepped_req = self.session.prepare_request(request)
 
+        # Log the prepped request before sending it.
+        self.__pprint_request(prepped_req)
+
         # Sending the request
         res = self.session.send(prepped_req)
 
@@ -131,3 +134,27 @@ class Client(object):
 
         url = self.url + endpoint
         return self.__initiate_request(url=url, method="GET", params=params)
+
+    def __pprint_request(self, prepped_req):
+        """
+        method endpoint HTTP/version
+        Host: host
+        header_key: header_value
+        body
+        :param prepped_req: The prepped request object
+        ref: https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e24730c4631ffc30068272386669/exampleClient.py#L202
+        """
+        method = prepped_req.method
+        url = prepped_req.path_url
+
+        headers = "\n".join(f"{k}: {v}" for k, v in prepped_req.headers.items())
+        # Print body if present or empty string if not
+        body = prepped_req.body or ""
+
+        logger.info(f"Requesting {method} to {url}")
+
+        logger.debug(
+            "{}\n{} {} HTTP/1.1\n{}\n\n{}".format(
+                "-----------REQUEST-----------", method, url, headers, body
+            )
+        )
