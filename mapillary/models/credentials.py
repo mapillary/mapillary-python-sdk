@@ -12,7 +12,7 @@ import requests
 import json
 
 # Exception Imports
-from models.exceptions import InvalidTokenError
+from .exceptions import InvalidTokenError
 
 
 class Credentials:
