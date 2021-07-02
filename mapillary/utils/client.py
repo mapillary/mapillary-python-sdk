@@ -76,32 +76,24 @@ class Client(object):
         # User Access token will be set once and used throughout all requests within the same session
         self.access_token = access_token
 
-    def __initiate_request(
-        self, endpoint=None, method="GET", graph=True, params=None, body=None
-    ):
-        # TODO: document the method
-        if endpoint is None:  # Check if an enpoint is specified.
-            logger.error("You need to specify an endpoint!")
-            return
+    def __initiate_request(self, url, method, params=None):
+        """
+        Private method - For internal use only.
+        This method is responsible for making tailored API requests to the mapillary API v4.
+        It generalizes the requests and ties them to the same session.
 
-        # Dynamically set authorization mechanism based on the target endpoint
-        if not graph:
-            params["access_token"] = params.get("access_token", self.access_token)
-        else:
-            self.session.headers.update({"Authorization": f"OAuth {self.access_token}"})
+        :param url: the request endpoint - required
+        :param method: HTTP method to be used - required
+        :param params: query parameters to be attached to the requeset - optional
+        """
 
-        url = self.url + endpoint
         request = requests.Request(method, url, params=params)
-        prepped_req = self.session.prepare_request(
-            request
-        )  # create a prepared request with the request and the session info merged
 
-        # TODO: Log the request
+        # create a prepared request with the request and the session info merged
+        prepped_req = self.session.prepare_request(request)
 
         # Sending the request
         res = self.session.send(prepped_req)
-
-        # TODO: Log the response
 
         # Handling the response status codes
         if res.status_code == requests.codes.ok:
@@ -119,5 +111,23 @@ class Client(object):
                 ...
             res.raise_for_status()
 
-    def get(self, endpoint=None):
-        return self.__initiate_request(endpoint=endpoint)
+    def get(self, graph=True, endpoint=None, params=None):
+        """
+        Make GET requests to both mapillary main endpoints
+        :param graph: A boolean to dinamically switch between the entities and tiles endpoints
+        :param enpoint: The specific path of the request enpoint
+        :param params: Query paramaters to be attached to the URL
+        """
+        if endpoint is None:  # Check if an enpoint is specified.
+            logger.error("You need to specify an endpoint!")
+            return
+
+        # Dynamically set authorization mechanism based on the target endpoint
+        if not graph:
+            self.url = TILES_URL
+        else:
+            params["access_token"] = params.get("access_token", self.access_token)
+            self.session.headers.update({"Authorization": f"OAuth {self.access_token}"})
+
+        url = self.url + endpoint
+        return self.__initiate_request(url=url, method="GET", params=params)
