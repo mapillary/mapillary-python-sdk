@@ -60,7 +60,7 @@ except ValueError:
     logger.warn("LOG_LEVEL: unvalid variable - Defaulting to: INFO")
 
 
-class Client(object):
+class Client:
     """
     Client setup for API communication. All requests for the Mapillary API v4 should go through this class
 
