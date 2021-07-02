@@ -16,7 +16,7 @@ https://www.mapillary.com/developer/api-documentation/
 from datetime import datetime
 
 # Local
-from .models.credentials import Credentials
+from models.credentials import Credentials
 
 
 def greetings(name):
