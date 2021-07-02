@@ -98,6 +98,9 @@ class Client(object):
         # Sending the request
         res = self.session.send(prepped_req)
 
+        # Log the responses
+        self.__pprint_response(res)
+
         # Handling the response status codes
         if res.status_code == requests.codes.ok:
             try:
@@ -156,5 +159,40 @@ class Client(object):
         logger.debug(
             "{}\n{} {} HTTP/1.1\n{}\n\n{}".format(
                 "-----------REQUEST-----------", method, url, headers, body
+            )
+        )
+
+    def __pprint_response(self, res):
+        """
+        HTTP/version status_code status_text
+        header_key: header_value
+        body
+        :param res: Response object returned from the API request
+        ref: https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e24730c4631ffc30068272386669/exampleClient.py#L230
+        """
+        # Not using requests_toolbelt.dump because I want to be able to
+        # print the request before submitting and response after
+        # ref: https://stackoverflow.com/a/35392830/8418673
+
+        httpv0, httpv1 = list(str(res.raw.version))
+        httpv = f"HTTP/{httpv0}.{httpv1}"
+        status_code = res.status_code
+        status_text = res.reason
+        headers = "\n".join(f"{k}: {v}" for k, v in res.headers.items())
+        body = res.text or ""
+
+        # Convert timedelta to milliseconds
+        elapsed = floor(res.elapsed.total_seconds() * 1000)
+
+        logger.info(f"Response {status_code} {status_text} received in {elapsed}ms")
+
+        logger.debug(
+            "{}\n{} {} {}\n{}\n\n{}".format(
+                "-----------RESPONSE-----------",
+                httpv,
+                status_code,
+                status_text,
+                headers,
+                body,
             )
         )
