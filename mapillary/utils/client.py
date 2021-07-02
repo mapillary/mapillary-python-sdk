@@ -31,7 +31,6 @@ import requests
 import logging
 import sys
 import os
-import pprint
 from math import floor
 
 
@@ -63,7 +62,16 @@ except ValueError:
 
 class Client(object):
     """
-    Client setup for API communication
+    Client setup for API communication. All requests for the Mapillary API v4 should go through this class
+
+    Usage::
+        >>> client = Client(access_token=MLY||XXX)
+        >>> # for entities endpoints
+        >>> client.get(endpoint='endpoint specific path', graph=True, params={
+            'fields': ['id', 'value']
+        })
+        >>> # for tiles endpoint
+        >>> client.get(endpoint='endpoint specific path', graph=False)
     """
 
     def __init__(self, access_token=None) -> None:
@@ -122,7 +130,7 @@ class Client(object):
         Make GET requests to both mapillary main endpoints
         :param graph: A boolean to dinamically switch between the entities and tiles endpoints
         :param enpoint: The specific path of the request enpoint
-        :param params: Query paramaters to be attached to the URL
+        :param params: Query paramaters to be attached to the URL (Dict)
         """
         if endpoint is None:  # Check if an enpoint is specified.
             logger.error("You need to specify an endpoint!")
