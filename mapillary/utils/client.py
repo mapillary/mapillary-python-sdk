@@ -2,7 +2,29 @@
 mapillary.utils.client
 
 This module contains aims to serve as a generalization for all API
-requests within the mapillary python SDK
+requests within the mapillary python SDK.
+
+# Notes:
+- To enter DEBUG mode, set a DEBUG environment variable = 1
+
+## Over Authentication
+
+1. All requests against https://graph.mapillary.com
+must be authorized. They require a client or user
+access tokens. Tokens can be sent in two ways
+    1. Using ?access_token=XXX query parameters. This
+    is a preferred method for interacting with vector
+    tiles. Using this method is STRONGLY discouraged
+    for sending user access tokens
+    2. using a header such as Authorization: OAuth XXX,
+    where XXX is the token obtained either through the
+    OAuth flow that your application implements or a
+    client token from https://mapillary.com/dashboard/developers
+    This method works for the Entity API
+
+# References:
+- https://www.mapillary.com/developer/api-documentation/
+- https://github.com/michaeldbianchi/Python-API-Client-Boilerplate
 """
 
 import requests
@@ -27,7 +49,16 @@ hdlr = logging.StreamHandler(sys.stdout)
 logger.addHandler(hdlr)
 
 # Setting log_level to INFO
-logger.setLevel(logging.INFO)
+log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
+
+# Check if in DEBUG mode to show debugging output
+if os.environ.get("DEBUG") == "1":
+    log_level = "DEBUG"
+try:
+    logger.setLevel(log_level)
+except ValueError:
+    logger.setLevel(logging.INFO)
+    logger.warn("LOG_LEVEL: unvalid variable - Defaulting to: INFO")
 
 
 class Client(object):
@@ -71,7 +102,6 @@ class Client(object):
         res = self.session.send(prepped_req)
 
         # TODO: Log the response
-        pprint.pprint(res.content)
 
         # Handling the response status codes
         if res.status_code == requests.codes.ok:
@@ -91,6 +121,3 @@ class Client(object):
 
     def get(self, endpoint=None):
         return self.__initiate_request(endpoint=endpoint)
-
-
-
