@@ -132,7 +132,8 @@ class Client(object):
         :param enpoint: The specific path of the request enpoint
         :param params: Query paramaters to be attached to the URL (Dict)
         """
-        if endpoint is None:  # Check if an enpoint is specified.
+        # Check if an enpoint is specified.
+        if endpoint is None:
             logger.error("You need to specify an endpoint!")
             return
 
@@ -178,10 +179,6 @@ class Client(object):
         :param res: Response object returned from the API request
         ref: https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e24730c4631ffc30068272386669/exampleClient.py#L230
         """
-        # Not using requests_toolbelt.dump because I want to be able to
-        # print the request before submitting and response after
-        # ref: https://stackoverflow.com/a/35392830/8418673
-
         httpv0, httpv1 = list(str(res.raw.version))
         httpv = f"HTTP/{httpv0}.{httpv1}"
         status_code = res.status_code
