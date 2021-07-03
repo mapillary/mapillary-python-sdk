@@ -117,7 +117,7 @@ class Client:
                 return res
 
         elif res.status_code >= 400:
-            logger.error(f"Srever responded with a {str(res.status_code)} error!")
+            logger.error(f"Server responded with a {str(res.status_code)} error!")
             try:
                 logger.debug(f"Error details: {str(res.json())}")
 
