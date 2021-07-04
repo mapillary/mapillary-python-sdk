@@ -20,10 +20,7 @@ from models.credentials import Credentials
 from models.auth import auth
 
 # Local
-import controller.detection as detection
-import controller.feature as feature
 import controller.image as image
-import controller.save as save
 
 
 @auth()
@@ -138,13 +135,13 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
         # TODO: Write code here to display how the function works
     """
 
-    output, data = image.get_image_close_to_controller(
+    output = image.get_image_close_to_controller(
         latitude=latitude,
         longitude=longitude,
         kwargs=kwargs,
     )
 
-    return output, data
+    return output
 
 
 @auth()
