@@ -31,7 +31,11 @@ import requests
 import logging
 import sys
 import os
+import json
 from math import floor
+
+# Exception imports
+from exceptions import InvalidTokenError
 
 # Basic logger setup
 logger = logging.getLogger("mapillary.utils.client")
@@ -81,7 +85,22 @@ class Client:
         self.session = requests.Session()
 
         # User Access token will be set once and used throughout all requests within the same session
+        self._check_token_validity(access_token)
         self.access_token = access_token
+
+    def _check_token_validity(self, token):
+        res = requests.get(
+            "https://graph.mapillary.com/1933525276802129?fields=id",
+            headers={"Authorization": f"OAuth {token}"},
+        )
+
+        if "error" in json.loads(res.content):
+            raise InvalidTokenError(
+                res["error"]["message"],
+                res["error"]["type"],
+                res["error"]["code"],
+                res["error"]["fbtrace_id"],
+            )
 
     def _initiate_request(self, url, method, params={}):
         """
@@ -202,3 +221,4 @@ class Client:
                 body,
             )
         )
+        
