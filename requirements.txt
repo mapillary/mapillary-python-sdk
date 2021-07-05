@@ -6,7 +6,6 @@ click==8.0.1
 click-plugins==1.1.1
 cligj==0.7.2
 docutils==0.17.1
-Fiona==1.8.20
 future==0.18.2
 idna==2.10
 mapbox-vector-tile==1.2.1
