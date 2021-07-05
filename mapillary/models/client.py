@@ -86,7 +86,7 @@ class Client:
 
         # User Access token will be set once and used throughout all requests within the same session
         self._check_token_validity(access_token)
-        self.access_token = access_token
+        self._access_token = access_token
 
     def _check_token_validity(self, token):
         res = requests.get(
@@ -101,6 +101,10 @@ class Client:
                 res["error"]["code"],
                 res["error"]["fbtrace_id"],
             )
+
+    @property
+    def token(self):
+        return self._access_token
 
     def _initiate_request(self, url, method, params={}):
         """
@@ -160,9 +164,9 @@ class Client:
         # Dynamically set authorization mechanism based on the target endpoint
         if not entity:
             self.url = self._TILES_URL
-            params["access_token"] = params.get("access_token", self.access_token)
+            params["access_token"] = params.get("access_token", self._access_token)
         else:
-            self.session.headers.update({"Authorization": f"OAuth {self.access_token}"})
+            self.session.headers.update({"Authorization": f"OAuth {self._access_token}"})
 
         url = self.url + endpoint
         return self._initiate_request(url=url, method="GET", params=params)
@@ -221,4 +225,3 @@ class Client:
                 body,
             )
         )
-        
