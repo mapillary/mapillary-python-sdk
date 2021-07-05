@@ -94,7 +94,7 @@ def get_image_close_to_controller(longitude, latitude, kwargs):
 
     # * REFACTOR: The below logic should be adapted with
     # * Omar's Client implementation in the future
-
+    
     # For the endpoint 'https://graph.mapillary.com/:image_id'
     # for fields, such as geometry and 'all' as mentioned in the requirement
     for image_id in extract_properties(data, ["id"])["id"]:
@@ -168,15 +168,13 @@ def get_image_close_to_controller(longitude, latitude, kwargs):
     #         ],
     #     )
 
-    data = merge_geojson(
+    return merge_geojson(
         geojson_one=data,
         geojson_one_key="id",
         geojson_two=new_data,
         geojson_two_key="image_id",
         debug=False,
     )
-
-    return data
 
 
 def get_image_looking_at_controller(

@@ -43,7 +43,7 @@ class VectorTiles:
         4. is_pano, bool, if it is a panoramic image
         """
 
-        return "https://tiles.mapillary.com/maps/vtp/mly1_public/2/" f"{z}/{x}/{y}/"
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_sequence_layer(
@@ -72,7 +72,7 @@ class VectorTiles:
         5. is_pano, bool, if it is a panoramic sequence
         """
 
-        return "https://tiles.mapillary.com/maps/vtp/mly1_public/2/" f"{z}/{x}/{y}/"
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_image_layer(
@@ -100,7 +100,7 @@ class VectorTiles:
         5. is_pano, bool, if it is a panoramic image
         """
 
-        return "https://tiles.mapillary.com/maps/vtp/mly1_public/2/" f"{z}/{x}/{y}/"
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_computed_overview_layer(
@@ -125,10 +125,7 @@ class VectorTiles:
         4. is_pano, bool, if it is a panoramic image
         """
 
-        return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
-            f"{z}/{x}/{y}/"
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_computed_sequence_layer(
@@ -157,17 +154,13 @@ class VectorTiles:
         5. is_pano, bool, if it is a panoramic sequence
         """
 
-        return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
-            f"{z}/{x}/{y}/"
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_computed_image_layer(
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """Contain positions of images and sequences with original geometries
         (computed) for the layer 'image'
@@ -189,10 +182,7 @@ class VectorTiles:
         5. is_pano, bool, if it is a panoramic image
         """
 
-        return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
-            f"{z}/{x}/{y}/"
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_map_feature_point(
@@ -220,10 +210,7 @@ class VectorTiles:
         the latest image on which the detection contribute to this map feature
         """
 
-        return (
-            "https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/"
-            f"{z}/{x}/{y}/"
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_map_feature_tiles(
@@ -254,7 +241,4 @@ class VectorTiles:
         the latest image on which the detection contribute to this map feature
         """
 
-        return (
-            "https://tiles.mapillary.com/maps/vtp/"
-            f"mly_map_feature_traffic_sign/2/{z}/{x}/{y}/"
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_traffic_sign/2/{z}/{x}/{y}/"
