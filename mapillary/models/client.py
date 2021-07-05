@@ -93,13 +93,14 @@ class Client:
             "https://graph.mapillary.com/1933525276802129?fields=id",
             headers={"Authorization": f"OAuth {token}"},
         )
-
-        if "error" in json.loads(res.content):
+        
+        if res.status_code == 401:
+            res_content = json.loads(res.content)
             raise InvalidTokenError(
-                res["error"]["message"],
-                res["error"]["type"],
-                res["error"]["code"],
-                res["error"]["fbtrace_id"],
+                res_content["error"]["message"],
+                res_content["error"]["type"],
+                res_content["error"]["code"],
+                res_content["error"]["fbtrace_id"],
             )
 
     @property
