@@ -67,11 +67,11 @@ class Client:
     Usage::
         >>> client = Client(access_token=MLY||XXX)
         >>> # for entities endpoints
-        >>> client.get(endpoint='endpoint specific path', graph=True, params={
+        >>> client.get(endpoint='endpoint specific path', entity=True, params={
             'fields': ['id', 'value']
         })
         >>> # for tiles endpoint
-        >>> client.get(endpoint='endpoint specific path', graph=False)
+        >>> client.get(endpoint='endpoint specific path', entity=False)
     """
 
     def __init__(self, access_token=None) -> None:
@@ -117,7 +117,7 @@ class Client:
                 return res
 
         elif res.status_code >= 400:
-            logger.error(f"Srever responded with a {str(res.status_code)} error!")
+            logger.error(f"Server responded with a {str(res.status_code)} error!")
             try:
                 logger.debug(f"Error details: {str(res.json())}")
 
@@ -127,20 +127,20 @@ class Client:
 
         return res
 
-    def get(self, graph=True, endpoint=None, params={}):
+    def get(self, entity=True, endpoint=None, params={}):
         """
         Make GET requests to both mapillary main endpoints
-        :param graph: A boolean to dinamically switch between the entities and tiles endpoints
-        :param enpoint: The specific path of the request enpoint
+        :param entity: A boolean to dinamically switch between the entities and tiles endpoints
+        :param endpoint: The specific path of the request endpoint
         :param params: Query paramaters to be attached to the URL (Dict)
         """
-        # Check if an enpoint is specified.
+        # Check if an endpoint is specified.
         if endpoint is None:
             logger.error("You need to specify an endpoint!")
             return
 
         # Dynamically set authorization mechanism based on the target endpoint
-        if not graph:
+        if not entity:
             self.url = TILES_URL
             params["access_token"] = params.get("access_token", self.access_token)
         else:
