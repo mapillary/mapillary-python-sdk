@@ -33,13 +33,6 @@ import sys
 import os
 from math import floor
 
-
-# Root endpoint for vector tiles
-TILES_URL = "https://tiles.mapillary.com"
-
-# Root endpoint for metadata
-GRAPH_URL = "https://graph.mapillary.com"
-
 # Basic logger setup
 logger = logging.getLogger("mapillary.utils.client")
 
@@ -74,9 +67,15 @@ class Client:
         >>> client.get(endpoint='endpoint specific path', entity=False)
     """
 
+    # Root endpoint for vector tiles
+    _TILES_URL = "https://tiles.mapillary.com"
+
+    # Root endpoint for metadata
+    _GRAPH_URL = "https://graph.mapillary.com"
+
     def __init__(self, access_token=None) -> None:
 
-        self.url = GRAPH_URL  # Default to metadata endpoint
+        self.url = self._GRAPH_URL  # Default to metadata endpoint
 
         # Session object setup to be referenced across future API calls.
         self.session = requests.Session()
@@ -84,7 +83,7 @@ class Client:
         # User Access token will be set once and used throughout all requests within the same session
         self.access_token = access_token
 
-    def __initiate_request(self, url, method, params={}):
+    def _initiate_request(self, url, method, params={}):
         """
         Private method - For internal use only.
         This method is responsible for making tailored API requests to the mapillary API v4.
@@ -101,13 +100,13 @@ class Client:
         prepped_req = self.session.prepare_request(request)
 
         # Log the prepped request before sending it.
-        self.__pprint_request(prepped_req)
+        self._pprint_request(prepped_req)
 
         # Sending the request
         res = self.session.send(prepped_req)
 
         # Log the responses
-        self.__pprint_response(res)
+        self._pprint_response(res)
 
         # Handling the response status codes
         if res.status_code == requests.codes.ok:
@@ -141,15 +140,15 @@ class Client:
 
         # Dynamically set authorization mechanism based on the target endpoint
         if not entity:
-            self.url = TILES_URL
+            self.url = self._TILES_URL
             params["access_token"] = params.get("access_token", self.access_token)
         else:
             self.session.headers.update({"Authorization": f"OAuth {self.access_token}"})
 
         url = self.url + endpoint
-        return self.__initiate_request(url=url, method="GET", params=params)
+        return self._initiate_request(url=url, method="GET", params=params)
 
-    def __pprint_request(self, prepped_req):
+    def _pprint_request(self, prepped_req):
         """
         method endpoint HTTP/version
         Host: host
@@ -159,7 +158,7 @@ class Client:
         ref: https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e24730c4631ffc30068272386669/exampleClient.py#L202
         """
         method = prepped_req.method
-        url = prepped_req.path_url
+        url = self.url + prepped_req.path_url
 
         headers = "\n".join(f"{k}: {v}" for k, v in prepped_req.headers.items())
         # Print body if present or empty string if not
@@ -173,7 +172,7 @@ class Client:
             )
         )
 
-    def __pprint_response(self, res):
+    def _pprint_response(self, res):
         """
         HTTP/version status_code status_text
         header_key: header_value
