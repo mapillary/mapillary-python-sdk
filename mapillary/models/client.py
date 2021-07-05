@@ -86,8 +86,6 @@ class Client:
 
         # User Access token will be set once and used throughout all requests within the same session
         self._check_token_validity(access_token)
-<<<<<<< HEAD
-<<<<<<< HEAD
         self._access_token = access_token
 
     def _check_token_validity(self, token):
@@ -107,12 +105,20 @@ class Client:
     @property
     def token(self):
         return self._access_token
-=======
-        self.access_token = access_token
->>>>>>> f0c1564... validate token from Client
-=======
-        self._access_token = access_token
->>>>>>> 90855be... make access_token private and enable getting it through the token property
+
+    def _check_token_validity(self, token):
+        res = requests.get(
+            "https://graph.mapillary.com/1933525276802129?fields=id",
+            headers={"Authorization": f"OAuth {token}"},
+        )
+
+        if "error" in json.loads(res.content):
+            raise InvalidTokenError(
+                res["error"]["message"],
+                res["error"]["type"],
+                res["error"]["code"],
+                res["error"]["fbtrace_id"],
+            )
 
     def _check_token_validity(self, token):
         res = requests.get(
