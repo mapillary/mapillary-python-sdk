@@ -102,39 +102,7 @@ class Client:
                 res_content["error"]["code"],
                 res_content["error"]["fbtrace_id"],
             )
-
-    @property
-    def token(self):
-        return self._access_token
-
-    def _check_token_validity(self, token):
-        res = requests.get(
-            "https://graph.mapillary.com/1933525276802129?fields=id",
-            headers={"Authorization": f"OAuth {token}"},
-        )
-
-        if "error" in json.loads(res.content):
-            raise InvalidTokenError(
-                res["error"]["message"],
-                res["error"]["type"],
-                res["error"]["code"],
-                res["error"]["fbtrace_id"],
-            )
-
-    def _check_token_validity(self, token):
-        res = requests.get(
-            "https://graph.mapillary.com/1933525276802129?fields=id",
-            headers={"Authorization": f"OAuth {token}"},
-        )
-
-        if "error" in json.loads(res.content):
-            raise InvalidTokenError(
-                res["error"]["message"],
-                res["error"]["type"],
-                res["error"]["code"],
-                res["error"]["fbtrace_id"],
-            )
-
+            
     @property
     def token(self):
         return self._access_token
