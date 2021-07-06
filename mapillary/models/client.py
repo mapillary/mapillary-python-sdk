@@ -59,8 +59,8 @@ except ValueError:
 
 class Client:
     """
-    Client setup for API communication. All requests for the Mapillary API v4 should go through this class
-
+    Client setup for API communication.
+    All requests for the Mapillary API v4 should go through this class
     Usage::
         >>> client = Client(access_token=MLY||XXX)
         >>> # for entities endpoints
@@ -77,7 +77,7 @@ class Client:
     # Root endpoint for metadata
     _GRAPH_URL = "https://graph.mapillary.com"
 
-    def __init__(self, access_token=None) -> None:
+    def __init__(self, access_token="") -> None:
 
         self.url = self._GRAPH_URL  # Default to metadata endpoint
 
@@ -93,7 +93,7 @@ class Client:
             "https://graph.mapillary.com/1933525276802129?fields=id",
             headers={"Authorization": f"OAuth {token}"},
         )
-        
+
         if res.status_code == 401:
             res_content = json.loads(res.content)
             raise InvalidTokenError(
@@ -102,7 +102,7 @@ class Client:
                 res_content["error"]["code"],
                 res_content["error"]["fbtrace_id"],
             )
-            
+
     @property
     def token(self):
         return self._access_token
@@ -167,7 +167,9 @@ class Client:
             self.url = self._TILES_URL
             params["access_token"] = params.get("access_token", self._access_token)
         else:
-            self.session.headers.update({"Authorization": f"OAuth {self._access_token}"})
+            self.session.headers.update(
+                {"Authorization": f"OAuth {self._access_token}"}
+            )
 
         url = self.url + endpoint
         return self._initiate_request(url=url, method="GET", params=params)
