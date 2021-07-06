@@ -42,7 +42,7 @@ class InvalidTokenError(MapillaryException):
         self.fbtrace_id = fbtrace_id
 
     def __str__(self):
-        return f'InvalidTokenError: An exception occured, "{self.message}"'
+        return f"{self.message}"
 
     def __repr__(self):
         return (
