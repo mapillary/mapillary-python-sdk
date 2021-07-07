@@ -12,43 +12,12 @@ https://www.mapillary.com/developer/api-documentation/
 :license: See LICENSE for more details
 """
 
-# Datetime
-from datetime import datetime
-
 # Local
-from models.credentials import Credentials
+from models.client import Client
 from models.auth import auth
 
 # Local
 import controller.image as image
-
-
-@auth()
-def greetings(name):
-    """A greetings function temporarily here to test
-    if the package installation is working as expected
-
-    :param name: a name given to the function to print
-    out a basic statement. Temporary solution made to
-    testing if the function is working as expected
-    :type name: str
-
-    :return: None
-    :rtype: None
-
-    Usage::
-        >>> import mapillary as mly
-        >>> mly.greetings('New User')
-        "Hello, there, New User! Nice to meet you.
-        As you can see, work is currently under progress"
-    """
-
-    print(
-        f"Hello, there, {name}! Nice to meet you. "
-        "As you can see, work is currently under progress."
-    )
-
-    return None
 
 
 def set_access_token(token: str):
@@ -73,7 +42,7 @@ def set_access_token(token: str):
         >>> mly.set_access_token('CLIENT_TOKEN_HERE')
     """
 
-    Credentials.set_token(token)
+    Client.set_token(token)
 
     return {"Status": "Success"}
 
@@ -128,31 +97,32 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     to. It can be absent. Thus, default is -1 (None)
     :type kwargs.org_id: int
 
-    :return: None
-    :rtype: None
+    :return: GeoJSON
+    :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> mly.get_image_close_to(longitude=31, latitude=30)
+        {'type': 'FeatureCollection', 'features': [{'type': 'Feature',
+        'geometry': {'type': 'Point', 'coordinates': [30.9912246465683,
+        29.99794091267283]}, 'properties': {'captured_at': 1621008070596,
+        'compass_angle': 322.56726074219, 'id': 499412381300321, 'is_pano':
+        False, 'sequence_id': '94afmyyhq85xd9bi8p44ve'}} ...
     """
 
-    output = image.get_image_close_to_controller(
+    return image.get_image_close_to_controller(
         latitude=latitude,
         longitude=longitude,
         kwargs=kwargs,
     )
-
-    return output
 
 
 @auth()
 def get_image_looking_at(
     coordinates_looker,
     coordinates_at,
-    fields=["all"],
-    radius=200,
-    coverage="pano",
-    date=datetime.today().strftime("%Y-%m-%d"),
-    org_id=-1,
+    **kwargs,
 ):
     """Function that takes two sets of latitude and
     longitude, where the 2nd set is the "looking at"
@@ -204,22 +174,18 @@ def get_image_looking_at(
     :rtype: None
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> mly.get_image_looking_at(coordinates_looker=(31, 30), coordinates_at=(41, 40))
     """
-
-    # * `coordinates_looker` and `coordinates_at`
-    # * can be the same or different
-
-    # ? It may be useful to have the function
-    # ? exclude images that are too close to the
-    # ? looking at longitude, latitude, as if
-    # ? within 3 meters, as the returned photo may
-    # ? be too close to be useful. 10+ meters may be
-    # ? best
 
     # TODO: This functions needs implementation
 
-    return None
+    return image.get_image_looking_at_controller(
+        coordinates_looker=coordinates_looker,
+        coordinates_at=coordinates_at,
+        kwargs=kwargs,
+    )
 
 
 @auth()

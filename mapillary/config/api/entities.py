@@ -139,14 +139,7 @@ class Entities:
         """
 
         for field in fields:
-            if field not in [
-                "first_seen_at",
-                "last_seen_at",
-                "object_value",
-                "object_type",
-                "geometry",
-                "images",
-            ]:
+            if field not in Entities.get_map_feature_fields():
                 raise InvalidFieldError(
                     field, "https://graph.mapillary.com/:map_feature_id?fields="
                 )
@@ -155,6 +148,17 @@ class Entities:
             f"https://graph.mapillary.com/{map_feature_id}/?"
             f'fields={",".join(fields)}'
         )
+
+    @staticmethod
+    def get_map_feature_fields():
+        return [
+            "first_seen_at",
+            "last_seen_at",
+            "object_value",
+            "object_type",
+            "geometry",
+            "images",
+        ]
 
     @staticmethod
     def get_detection_with_image_id(
@@ -178,7 +182,7 @@ class Entities:
         """
 
         for field in fields:
-            if field not in ["created_at", "geometry", "image", "value"]:
+            if field not in Entities.get_detection_with_image_id_fields():
                 raise InvalidFieldError(
                     field,
                     "https://graph.mapillary.com/:image_id/detections/?fields="
@@ -189,6 +193,10 @@ class Entities:
             f"https://graph.mapillary.com/{image_id}/detections/?"
             f'fields={",".join(fields)}'
         )
+
+    @staticmethod
+    def get_detection_with_image_id_fields():
+        return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
     def get_detection_with_map_feature_id(
@@ -212,7 +220,7 @@ class Entities:
         """
 
         for field in fields:
-            if field not in ["created_at", "geometry", "image", "value"]:
+            if field not in Entities.get_detection_with_map_feature_id_fields():
                 raise InvalidFieldError(
                     field,
                     "https://graph.mapillary.com/:map_feature_id/detections/?"
@@ -223,6 +231,10 @@ class Entities:
             f"https://graph.mapillary.com/{map_feature_id}/detections/"
             f'?fields={",".join(fields)}'
         )
+
+    @staticmethod
+    def get_detection_with_map_feature_id_fields():
+        return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
     def get_organization_id(
@@ -242,7 +254,7 @@ class Entities:
         """
 
         for field in fields:
-            if field not in ["slug", "name", "description"]:
+            if field not in Entities.get_organization_id_fields():
                 raise InvalidFieldError(
                     field, "https://graph.mapillary.com/:organization_id?fields="
                 )
@@ -251,6 +263,10 @@ class Entities:
             f"https://graph.mapillary.com/{organization_id}/"
             f'?fields={",".join(fields)}'
         )
+
+    @staticmethod
+    def get_organization_id_fields():
+        return ["slug", "name", "description"]
 
     @staticmethod
     def get_sequence(

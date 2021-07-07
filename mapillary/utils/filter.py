@@ -84,9 +84,28 @@ def pipeline(data, components: list):
                     f"[pipeline - haversine_dist, TypeError] Filter not applied, exception thrown,"
                     f" {exception}"
                 )
-            except KeyError as exception:
+
+        if component["filter"] == "coverage":
+            try:
+                temp_data = coverage(
+                    data=temp_data,
+                    tile=component["tile"],
+                )
+            except TypeError as exception:
                 logger.warning(
-                    f"[pipeline - haversine_dist, KeyError] Filter not applied, exception thrown,"
+                    f"[pipeline - coverage, TypeError] Filter not applied, exception thrown,"
+                    f" {exception}"
+                )
+
+        if component["filter"] == "organization_id":
+            try:
+                temp_data = organization_id(
+                    data=temp_data,
+                    organization_ids=component["organization_ids"],
+                )
+            except TypeError as exception:
+                logger.warning(
+                    f"[pipeline - haversine_dist, TypeError] Filter not applied, exception thrown,"
                     f" {exception}"
                 )
 
@@ -127,22 +146,35 @@ def haversine_dist(data, radius, coords, unit="m"):
     # Define an empty geojson
     output = {"type": "FeatureCollection", "features": []}
 
-    for feature in data:
+    for feature in data["features"]:
         distance = haversine(coords, feature["geometry"]["coordinates"], unit=unit)
 
-    if distance < radius:
-        output["features"].append(feature)
+        print(distance)
+        if distance < radius:
+            output["features"].append(feature)
 
     return output
 
 
-# 'properties': {'captured_at': 1621249950355, 'id':
-# 'e8fwyuudq3cafy7bv0qbs7', 'image_id': 278022600675270, 'is_pano': False}
+def coverage(data, tile):
+    """The parameter might be 'all' (both is_pano == true and false), 'pano'
+    (is_pano == true only), or 'flat' (is_pano == false only)"""
+
+    bool_for_pano_filtering = (
+        True if tile == "pano" else False if tile == "flat" else None
+    )
+
+    if bool_for_pano_filtering is not None:
+        return [
+            feature
+            for feature in data["features"]
+            if feature["properties"]["is_pano"] is bool_for_pano_filtering
+        ]
 
 
-def coverage():
-    pass
-
-
-def org_id():
-    pass
+def organization_id(data, organization_ids: list):
+    return [
+        feature
+        for feature in data["features"]
+        if feature["properties"]["organization_id"] in organization_ids
+    ]
