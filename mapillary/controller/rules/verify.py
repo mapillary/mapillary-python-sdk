@@ -14,7 +14,7 @@ https://www.mapillary.com/developer/api-documentation/
 from models.exceptions import ContradictingError, InvalidKwargError, OutOfBoundZoomError
 
 
-def kwarg_check_for_image_close_to(kwargs):
+def kwarg_check_for_images(kwargs):
     if kwargs is not None:
         for key in kwargs.keys():
             if key not in [
