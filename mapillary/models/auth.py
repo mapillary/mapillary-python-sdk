@@ -4,12 +4,12 @@
 mapillary.models.auth
 
 This module contains the authorization logic for
-the credentials class of Mapillary, responsible
+the client class of Mapillary, responsible
 for keeping track of the session token set
 """
 
 # Local imports
-from models.credentials import Credentials
+from models.client import Client
 from models.exceptions import AuthError
 
 from functools import wraps
@@ -19,7 +19,7 @@ def auth():
     def auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            if Credentials.token == "":
+            if Client.get_token() == "":
                 raise AuthError("Function called without setting the access token")
             return f(*args, **kwargs)
 

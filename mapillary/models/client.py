@@ -35,7 +35,7 @@ import json
 from math import floor
 
 # Exception imports
-from exceptions import InvalidTokenError
+from models.exceptions import InvalidTokenError
 
 # Basic logger setup
 logger = logging.getLogger("mapillary.utils.client")
@@ -77,18 +77,19 @@ class Client:
     # Root endpoint for metadata
     _GRAPH_URL = "https://graph.mapillary.com"
 
-    def __init__(self, access_token="") -> None:
+    # User Access token will be set once and used throughout all requests within the same session
+    __access_token = ""
+
+    def __init__(self) -> None:
 
         self.url = self._GRAPH_URL  # Default to metadata endpoint
 
         # Session object setup to be referenced across future API calls.
         self.session = requests.Session()
 
-        # User Access token will be set once and used throughout all requests within the same session
-        self._check_token_validity(access_token)
-        self._access_token = access_token
+    @staticmethod
+    def __check_token_validity(token):
 
-    def _check_token_validity(self, token):
         res = requests.get(
             "https://graph.mapillary.com/1933525276802129?fields=id",
             headers={"Authorization": f"OAuth {token}"},
@@ -103,9 +104,14 @@ class Client:
                 res_content["error"]["fbtrace_id"],
             )
 
-    @property
-    def token(self):
-        return self._access_token
+    @staticmethod
+    def get_token():
+        return Client.__access_token
+
+    @staticmethod
+    def set_token(access_token):
+        Client.__check_token_validity(access_token)
+        Client.__access_token = access_token
 
     def _initiate_request(self, url, method, params={}):
         """
@@ -118,16 +124,20 @@ class Client:
         :param params: query parameters to be attached to the requeset - optional
         """
 
-        request = requests.Request(method, url, params=params)
+        # request = requests.Request(method, url, params=params)
 
-        # create a prepared request with the request and the session info merged
-        prepped_req = self.session.prepare_request(request)
+        # # create a prepared request with the request and the session info merged
+        # prepped_req = self.session.prepare_request(request)
 
-        # Log the prepped request before sending it.
-        self._pprint_request(prepped_req)
+        # # Log the prepped request before sending it.
+        # self._pprint_request(prepped_req)
 
-        # Sending the request
-        res = self.session.send(prepped_req)
+        # # Sending the request
+        # res = self.session.send(prepped_req)
+
+        res = requests.get(
+            url, headers={"Authorization": f"OAuth {Client.get_token()}"}
+        )
 
         # Log the responses
         self._pprint_response(res)
@@ -135,43 +145,32 @@ class Client:
         # Handling the response status codes
         if res.status_code == requests.codes.ok:
             try:
-                logger.debug(f"Response: {res.json()}")
+                logger.debug(f"Response: {res.content}")
             except ValueError:
                 return res
 
         elif res.status_code >= 400:
             logger.error(f"Server responded with a {str(res.status_code)} error!")
             try:
-                logger.debug(f"Error details: {str(res.json())}")
+                logger.debug(f"Error details: {str(res.content)}")
 
             except ValueError:
                 ...
             res.raise_for_status()
 
-        return res
+        return res.content
 
-    def get(self, entity=True, endpoint=None, params={}):
+    def get(self, url="", params={}):
         """
         Make GET requests to both mapillary main endpoints
-        :param entity: A boolean to dinamically switch between the entities and tiles endpoints
-        :param endpoint: The specific path of the request endpoint
+        :param url: The specific path of the request endpoint
         :param params: Query paramaters to be attached to the URL (Dict)
         """
         # Check if an endpoint is specified.
-        if endpoint is None:
-            logger.error("You need to specify an endpoint!")
+        if url == "":
+            logger.error("You need to specify a URL!")
             return
 
-        # Dynamically set authorization mechanism based on the target endpoint
-        if not entity:
-            self.url = self._TILES_URL
-            params["access_token"] = params.get("access_token", self._access_token)
-        else:
-            self.session.headers.update(
-                {"Authorization": f"OAuth {self._access_token}"}
-            )
-
-        url = self.url + endpoint
         return self._initiate_request(url=url, method="GET", params=params)
 
     def _pprint_request(self, prepped_req):
@@ -181,7 +180,8 @@ class Client:
         header_key: header_value
         body
         :param prepped_req: The prepped request object
-        ref: https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e24730c4631ffc30068272386669/exampleClient.py#L202
+        ref: 'https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be' + \
+        '9e98e24730c4631ffc30068272386669/exampleClient.py#L202'
         """
         method = prepped_req.method
         url = self.url + prepped_req.path_url
@@ -204,7 +204,8 @@ class Client:
         header_key: header_value
         body
         :param res: Response object returned from the API request
-        ref: https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e24730c4631ffc30068272386669/exampleClient.py#L230
+        ref: 'https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be' + \
+            '9e98e24730c4631ffc30068272386669/exampleClient.py#L230'
         """
         httpv0, httpv1 = list(str(res.raw.version))
         httpv = f"HTTP/{httpv0}.{httpv1}"
