@@ -89,6 +89,6 @@ def get_images_in_bbox_controller(bbox, **filters):
     return {"Message": "Hello, World!"}
 
 
-def get_all_images_in_a_shape_controller(geoJSON, **filters):
+def get_images_in_shape_controller(geoJSON, **filters):
 
     return None

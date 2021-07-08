@@ -72,7 +72,7 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     from a center center
     :type kwargs.radius: float or int or double
 
-    :param kwargs.coverge: The tile coverage to be obtained,
+    :param kwargs.coverage: The tile coverage to be obtained,
     either as 'flat', 'pano' (panoramic), or 'both'.
     For more information, please take a look at
     https://www.mapillary.com/developer/api-documentation/
@@ -281,7 +281,7 @@ def get_images_in_bbox(bbox, **filters):
 
 
 @auth()
-def get_all_map_features_in_bbox(bbox, layer, **filters):
+def get_map_features_in_bbox(bbox, layer, **filters):
     """Extracts all map features within a bounding box (bbox)
 
     :param bbox: Bbox coordinates as the argument
@@ -311,7 +311,7 @@ def get_all_map_features_in_bbox(bbox, layer, **filters):
 
 
 @auth()
-def get_all_images_in_a_shape(geoJSON, **filters):
+def get_images_in_shape(geoJSON, **filters):
     """Extracts all images within a shape
 
     :param geoJSON: Bbox coordinates as the argument
@@ -335,7 +335,7 @@ def get_all_images_in_a_shape(geoJSON, **filters):
 
 
 @auth()
-def get_all_map_features_in_shape(geoJSON, **filters):
+def get_map_features_in_shape(geoJSON, **filters):
     """Extracts all images within a shape
 
     :param geoJSON: Bbox coordinates as the argument

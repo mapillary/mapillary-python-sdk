@@ -28,7 +28,7 @@ class VectorTilesAdapter(object):
         self.__min_zoom = 0
         self.__max_zoom = 14
 
-    def fetch_layer(self, layer: str, zoom: int, longitude: float, latitude: float):
+    def fetch_layer(self, layer: str, longitude: float, latitude: float, zoom: int = 14):
 
         self.__zoom_range_check(layer=layer, zoom=zoom)
 
