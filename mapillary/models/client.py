@@ -182,7 +182,7 @@ class Client:
         '24730c4631ffc30068272386669/exampleClient.py#L202'
         """
         method = prepped_req.method
-        url = prepped_req.path_url
+        url = prepped_req.url
 
         headers = "\n".join(f"{k}: {v}" for k, v in prepped_req.headers.items())
         # Print body if present or empty string if not
