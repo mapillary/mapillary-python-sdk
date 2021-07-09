@@ -16,9 +16,10 @@ https://www.mapillary.com/developer/api-documentation/
 from datetime import datetime
 
 # Local
-from models.credentials import Credentials
+from models.client import Client
+from models.auth import auth
 
-
+@auth()
 def greetings(name):
     """A greetings function temporarily here to test
     if the package installation is working as expected
@@ -68,11 +69,11 @@ def set_access_token(token: str):
         >>> mly.set_access_token('CLIENT_TOKEN_HERE')
     """
 
-    Credentials.set_token(token)
+    Client.set_token(token)
 
-    return None
+    return {"Success": "Token set"}
 
-
+@auth()
 def get_image_close_to(
     latitude,
     longitude,
@@ -135,7 +136,7 @@ def get_image_close_to(
 
     return None
 
-
+@auth()
 def get_image_looking_at(
     coordinates_looker,
     coordinates_at,
@@ -212,7 +213,7 @@ def get_image_looking_at(
 
     return None
 
-
+@auth()
 def get_detections_from_key(key):
     """Extracting all the detections within an image using an image key
 
@@ -230,7 +231,7 @@ def get_detections_from_key(key):
 
     return None
 
-
+@auth()
 def get_detections_for_feature_from_key(feature_key):
     """Extracting all detections made for a map feature key
 
@@ -248,7 +249,7 @@ def get_detections_for_feature_from_key(feature_key):
 
     return None
 
-
+@auth()
 def get_image_thumbnail_from_key(map_key, size=1024):
     """Gets the thumbnails of images from the API
 
@@ -273,7 +274,7 @@ def get_image_thumbnail_from_key(map_key, size=1024):
 
     return "https://www.mapillary.com/"
 
-
+@auth()
 def get_images_in_bbox(bbox, **filters):
     """Gets a complete list of all images within a BBox
 
@@ -300,7 +301,7 @@ def get_images_in_bbox(bbox, **filters):
 
     return {"Message": "Hello, World!"}
 
-
+@auth()
 def get_all_map_features_in_bbox(bbox, layer, **filters):
     """Extracts all map features within a bounding box (bbox)
 
@@ -329,7 +330,7 @@ def get_all_map_features_in_bbox(bbox, layer, **filters):
 
     return {"Message": "Hello, World!"}
 
-
+@auth()
 def get_all_images_in_a_shape(geoJSON, **filters):
     """Extracts all images within a shape
 
@@ -352,7 +353,7 @@ def get_all_images_in_a_shape(geoJSON, **filters):
 
     return None
 
-
+@auth()
 def get_all_map_features_in_shape(geoJSON, **filters):
     """Extracts all images within a shape
 
@@ -376,7 +377,7 @@ def get_all_map_features_in_shape(geoJSON, **filters):
 
     return None
 
-
+@auth()
 def get_feature_from_map_feature_key(map_feature_key, fields):
     """Gets features for the given map_key argument
 
@@ -400,7 +401,7 @@ def get_feature_from_map_feature_key(map_feature_key, fields):
 
     return None
 
-
+@auth()
 def get_feature_from_image_feature_key(image_feature_key):
     """Gets features for the given map_key argument
 
@@ -424,7 +425,7 @@ def get_feature_from_image_feature_key(image_feature_key):
 
     return None
 
-
+@auth()
 def save_to_csv(
     csv_data,
     file_path,
@@ -449,7 +450,7 @@ def save_to_csv(
 
     return None
 
-
+@auth()
 def save_as_geojson(
     geojson_data,
     file_path,
