@@ -79,10 +79,16 @@ class Entities:
             22. width - int, width of the original image uploaded
         """
 
+        fields = [field.lower() for field in fields]
+
         for field in fields:
+            if field == 'all':
+                fields = Entities.get_image_fields()
+                break
             if field not in Entities.get_image_fields():
                 raise InvalidFieldError(
-                    field, "https://graph.mapillary.com/:image_id?fields=fields..."
+                    endpoint="https://graph.mapillary.com/:image_id?fields=fields...",
+                    field=field
                 )
 
         return f"https://graph.mapillary.com/{image_id}/?fields={','.join(fields)}"
@@ -134,10 +140,16 @@ class Entities:
             from
         """
 
+        fields = [field.lower() for field in fields]
+
         for field in fields:
+            if field == 'all':
+                fields = Entities.get_map_feature_fields()
+                break
             if field not in Entities.get_map_feature_fields():
                 raise InvalidFieldError(
-                    field, "https://graph.mapillary.com/:map_feature_id?fields="
+                    endpoint="https://graph.mapillary.com/:map_feature_id?fields=",
+                    field=field
                 )
 
         return (
@@ -176,12 +188,16 @@ class Entities:
             4. value - string, what kind of object the detection represents
         """
 
+        fields = [field.lower() for field in fields]
+
         for field in fields:
+            if field == 'all':
+                fields = Entities.get_detection_with_image_id_fields()
+                break
             if field not in Entities.get_detection_with_image_id_fields():
                 raise InvalidFieldError(
-                    field,
-                    "https://graph.mapillary.com/:image_id/detections/?fields="
-                    "fields...",
+                    endpoint="https://graph.mapillary.com/:image_id/detections/?fields=fields...",
+                    field=field
                 )
 
         return (
@@ -213,12 +229,16 @@ class Entities:
             4. value - string, what kind of object the detection represents
         """
 
+        fields = [field.lower() for field in fields]
+
         for field in fields:
+            if field == 'all':
+                fields = Entities.get_detection_with_map_feature_id_fields()
+                break
             if field not in Entities.get_detection_with_map_feature_id_fields():
                 raise InvalidFieldError(
-                    field,
-                    "https://graph.mapillary.com/:map_feature_id/detections/?"
-                    "fields=",
+                    endpoint="https://graph.mapillary.com/:map_feature_id/detections/?fields=",
+                    field=field
                 )
 
         return (
@@ -246,10 +266,16 @@ class Entities:
             3. description - public description of the organization
         """
 
+        fields = [field.lower() for field in fields]
+
         for field in fields:
+            if field == 'all':
+                fields = Entities.get_organization_id_fields()
+                break
             if field not in Entities.get_organization_id_fields():
                 raise InvalidFieldError(
-                    field, "https://graph.mapillary.com/:organization_id?fields="
+                    endpoint="https://graph.mapillary.com/:organization_id?fields=",
+                    field=field
                 )
 
         return (
