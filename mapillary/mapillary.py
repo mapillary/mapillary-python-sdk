@@ -18,6 +18,7 @@ from datetime import datetime
 # Local
 from models.client import Client
 from models.auth import auth
+from controller.image import get_imgae_thumbnail
 
 @auth()
 def greetings(name):
@@ -250,13 +251,14 @@ def get_detections_for_feature_from_key(feature_key):
     return None
 
 @auth()
-def get_image_thumbnail_from_key(map_key, size=1024):
+def get_image_thumbnail_from_key(image_id, resolution=1024):
     """Gets the thumbnails of images from the API
 
     :param map_key: Image key as the argument
     :type map_key: str # ? To check if valid
 
-    :param size: Option for the thumbnail size, ranging from 320 to 2048 width
+    :param size: Option for the thumbnail size, with available resolutions:
+    256, 1024, and 2048
     :type size: int
 
     :return: A URL for the thumbnail
@@ -268,11 +270,11 @@ def get_image_thumbnail_from_key(map_key, size=1024):
 
     # TODO: Write logic below that implements
     # TODO: an exception handling mechanism for
-    # TODO: checking if the size is the range 320 to 2048, inclusive
+    # TODO: checking if the size is 256, 1024, or 2048
 
     # TODO: This functions needs implementation
 
-    return "https://www.mapillary.com/"
+    return get_imgae_thumbnail(image_id, resolution=f'thumb_{resolution}_url')
 
 @auth()
 def get_images_in_bbox(bbox, **filters):
