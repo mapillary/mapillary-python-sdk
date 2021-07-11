@@ -45,6 +45,7 @@ class InvalidTokenError(MapillaryException):
             + f'fbtrace_id: "{self.fbtrace_id}"'
         )
 
+
 class AuthError(MapillaryException):
     """Raised when a function is called without
     having the access token set in
@@ -72,3 +73,42 @@ class AuthError(MapillaryException):
 
     def __repr__(self):
         return "AuthError: An exception occured." + f'Message: "{self.message}"'
+
+
+class InvalidImageResolution(MapillaryException):
+    """Raised when trying to retrieve an image thumbnail with an invalid resolution/size.
+    Primarly used with mapillary.image_thumbnail
+
+    :var resolution: Image size entered by the user
+    """
+
+    def __init__(self, resolution) -> None:
+        self._resolution = resolution
+
+    def __str__(self) -> str:
+        return f"""An exception occured, "{self._resolution}" is not a supported image size
+
+Hint: Supported image sizes are: 256, 1024, and 2048
+        """
+
+    def __repr__(self) -> str:
+        return (
+            f'An exception occured, "{self._resolution}" is not a supported image size'
+        )
+
+
+class InvalidImageKey(MapillaryException):
+    """Raised when trying to retrieve an image thumbnail with an invalid image ID/key.
+    Primarly used with mapillary.image_thumbnail
+
+    :var image_id: Image ID/key entered by the user
+    """
+
+    def __init__(self, image_id) -> None:
+        self._image_id = image_id
+
+    def __str__(self) -> str:
+        return f'An exception occured, "{self._image_id}" is not a valid image ID/key'
+
+    def __repr__(self) -> str:
+        return f'An exception occured, "{self._image_id}" is not a valid image ID/key'
