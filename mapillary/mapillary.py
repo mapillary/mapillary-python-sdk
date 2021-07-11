@@ -20,6 +20,7 @@ from models.client import Client
 from models.auth import auth
 from controller.image import get_imgae_thumbnail
 
+
 @auth()
 def greetings(name):
     """A greetings function temporarily here to test
@@ -73,6 +74,7 @@ def set_access_token(token: str):
     Client.set_token(token)
 
     return {"Success": "Token set"}
+
 
 @auth()
 def get_image_close_to(
@@ -136,6 +138,7 @@ def get_image_close_to(
     # ? context
 
     return None
+
 
 @auth()
 def get_image_looking_at(
@@ -214,6 +217,7 @@ def get_image_looking_at(
 
     return None
 
+
 @auth()
 def get_detections_from_key(key):
     """Extracting all the detections within an image using an image key
@@ -231,6 +235,7 @@ def get_detections_from_key(key):
     # TODO: This functions needs implementation
 
     return None
+
 
 @auth()
 def get_detections_for_feature_from_key(feature_key):
@@ -250,31 +255,28 @@ def get_detections_for_feature_from_key(feature_key):
 
     return None
 
+
 @auth()
-def get_image_thumbnail_from_key(image_id, resolution=1024):
+def image_thumbnail(image_id, resolution=1024):
     """Gets the thumbnails of images from the API
 
-    :param map_key: Image key as the argument
-    :type map_key: str # ? To check if valid
+    :param image_id: Image key as the argument
 
-    :param size: Option for the thumbnail size, with available resolutions:
+    :param resolution: Option for the thumbnail size, with available resolutions:
     256, 1024, and 2048
-    :type size: int
 
     :return: A URL for the thumbnail
     :rtype: str
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.image_thumbnail(
+        ...     image_id='IMAGE_ID_HERE', resolution='DESIRED_RESOLUTION'
+        ... )
     """
+    return get_imgae_thumbnail(image_id, resolution=resolution)
 
-    # TODO: Write logic below that implements
-    # TODO: an exception handling mechanism for
-    # TODO: checking if the size is 256, 1024, or 2048
-
-    # TODO: This functions needs implementation
-
-    return get_imgae_thumbnail(image_id, resolution=f'thumb_{resolution}_url')
 
 @auth()
 def get_images_in_bbox(bbox, **filters):
@@ -302,6 +304,7 @@ def get_images_in_bbox(bbox, **filters):
     # TODO: This functions needs implementation
 
     return {"Message": "Hello, World!"}
+
 
 @auth()
 def get_all_map_features_in_bbox(bbox, layer, **filters):
@@ -332,6 +335,7 @@ def get_all_map_features_in_bbox(bbox, layer, **filters):
 
     return {"Message": "Hello, World!"}
 
+
 @auth()
 def get_all_images_in_a_shape(geoJSON, **filters):
     """Extracts all images within a shape
@@ -354,6 +358,7 @@ def get_all_images_in_a_shape(geoJSON, **filters):
     # TODO: This functions needs implementation
 
     return None
+
 
 @auth()
 def get_all_map_features_in_shape(geoJSON, **filters):
@@ -379,6 +384,7 @@ def get_all_map_features_in_shape(geoJSON, **filters):
 
     return None
 
+
 @auth()
 def get_feature_from_map_feature_key(map_feature_key, fields):
     """Gets features for the given map_key argument
@@ -402,6 +408,7 @@ def get_feature_from_map_feature_key(map_feature_key, fields):
     # TODO: This functions needs implementation
 
     return None
+
 
 @auth()
 def get_feature_from_image_feature_key(image_feature_key):
@@ -427,6 +434,7 @@ def get_feature_from_image_feature_key(image_feature_key):
 
     return None
 
+
 @auth()
 def save_to_csv(
     csv_data,
@@ -451,6 +459,7 @@ def save_to_csv(
     # TODO: This functions needs implementation
 
     return None
+
 
 @auth()
 def save_as_geojson(

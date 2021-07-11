@@ -15,11 +15,13 @@ from config.api.entities import Entities
 # Client
 from models.client import Client
 
+# Library imports
 import json
 
-def get_imgae_thumbnail(image_id, resolution):
-    url = Entities.get_image(image_id, [resolution])
-    res = json.loads(Client().get(url).content.decode('utf-8'))
-    # print(res)
-    return res[resolution]
 
+def get_imgae_thumbnail(image_id, resolution):
+
+    res = json.loads(
+        Client().get(Entities.get_image(image_id, [f'thumb_{resolution}_url'])).content.decode("utf-8")
+    )
+    return res[f'thumb_{resolution}_url']
