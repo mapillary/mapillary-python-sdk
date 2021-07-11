@@ -24,18 +24,18 @@ class General:
         return "https://tiles.mapillary.com/"
 
     @staticmethod
-    def get_coverage_tiles(x: float, y: float, z: float) -> str:
-        """Coverage tiles"""
+    def get_image_type_tiles(x: float, y: float, z: float) -> str:
+        """image_type tiles"""
 
         return f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}/"
 
     @staticmethod
-    def get_computed_coverage_tiles(
+    def get_computed_image_type_tiles(
         x: float,
         y: float,
         z: float,
     ) -> str:
-        """Computed coverage tiles"""
+        """Computed image_type tiles"""
 
         return (
             "https://tiles.mapillary.com/maps/vtp/mly1_computed_publc/2"

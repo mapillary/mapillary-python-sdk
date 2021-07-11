@@ -78,7 +78,7 @@ def get_image_close_to(
     longitude,
     fields=["all"],
     radius=200,
-    coverage="pano",
+    image_type="pano",
     date=datetime.today().strftime("%Y-%m-%d"),
     org_id=-1,
 ):
@@ -105,12 +105,12 @@ def get_image_close_to(
     from a center center
     :type radius: float or int or double
 
-    :param coverge: The tile coverage to be obtained,
+    :param coverge: The tile image_type to be obtained,
     either as 'flat', 'pano' (panoramic), or 'both'.
     For more information, please take a look at
     https://www.mapillary.com/developer/api-documentation/
-    under 'Coverage Tiles'
-    :type coverage: str
+    under 'image_type Tiles'
+    :type image_type: str
 
     :param date: The date to filter to, if needed.
     The date format currently is 'YYYY-MM-DD', or '%Y-%m-%d'
@@ -141,7 +141,7 @@ def get_image_looking_at(
     coordinates_at,
     fields=["all"],
     radius=200,
-    coverage="pano",
+    image_type="pano",
     date=datetime.today().strftime("%Y-%m-%d"),
     org_id=-1,
 ):
@@ -175,12 +175,12 @@ def get_image_looking_at(
     from a center center
     :type radius: float or int or double
 
-    :param coverge: The tile coverage to be obtained,
+    :param coverge: The tile image_type to be obtained,
     either as 'flat', 'pano' (panoramic), or 'both'.
     For more information, please take a look at
     https://www.mapillary.com/developer/api-documentation/
-    under 'Coverage Tiles'
-    :type coverage: str
+    under 'image_type Tiles'
+    :type image_type: str
 
     :param date: The date to filter to, if needed.
     The date format currently is 'YYYY-MM-DD', or '%Y-%m-%d'
