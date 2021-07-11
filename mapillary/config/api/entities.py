@@ -81,15 +81,11 @@ class Entities:
 
         fields = [field.lower() for field in fields]
 
-        for field in fields:
-            if field == 'all':
-                fields = Entities.get_image_fields()
-                break
-            if field not in Entities.get_image_fields():
-                raise InvalidFieldError(
-                    endpoint="https://graph.mapillary.com/:image_id?fields=fields...",
-                    field=field
-                )
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_image_fields(),
+            endpoint="https://graph.mapillary.com/:image_id?fields=",
+            )                
 
         return f"https://graph.mapillary.com/{image_id}/?fields={','.join(fields)}"
 
@@ -142,15 +138,11 @@ class Entities:
 
         fields = [field.lower() for field in fields]
 
-        for field in fields:
-            if field == 'all':
-                fields = Entities.get_map_feature_fields()
-                break
-            if field not in Entities.get_map_feature_fields():
-                raise InvalidFieldError(
-                    endpoint="https://graph.mapillary.com/:map_feature_id?fields=",
-                    field=field
-                )
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_map_feature_fields(),
+            endpoint="https://graph.mapillary.com/:map_feature_id?fields=",
+            )
 
         return (
             f"https://graph.mapillary.com/{map_feature_id}/?fields={','.join(fields)}"
@@ -190,15 +182,11 @@ class Entities:
 
         fields = [field.lower() for field in fields]
 
-        for field in fields:
-            if field == 'all':
-                fields = Entities.get_detection_with_image_id_fields()
-                break
-            if field not in Entities.get_detection_with_image_id_fields():
-                raise InvalidFieldError(
-                    endpoint="https://graph.mapillary.com/:image_id/detections/?fields=fields...",
-                    field=field
-                )
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_detection_with_image_id_fields(),
+            endpoint="https://graph.mapillary.com/:image_id/detections/?fields=",
+            )        
 
         return (
             f"https://graph.mapillary.com/{image_id}/detections/?fields={','.join(fields)}"
@@ -231,15 +219,11 @@ class Entities:
 
         fields = [field.lower() for field in fields]
 
-        for field in fields:
-            if field == 'all':
-                fields = Entities.get_detection_with_map_feature_id_fields()
-                break
-            if field not in Entities.get_detection_with_map_feature_id_fields():
-                raise InvalidFieldError(
-                    endpoint="https://graph.mapillary.com/:map_feature_id/detections/?fields=",
-                    field=field
-                )
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_detection_with_map_feature_id_fields(),
+            endpoint="https://graph.mapillary.com/:map_feature_id/detections/?fields=",
+            )
 
         return (
             f"https://graph.mapillary.com/{map_feature_id}/detections/?fields={','.join(fields)}"
@@ -268,15 +252,11 @@ class Entities:
 
         fields = [field.lower() for field in fields]
 
-        for field in fields:
-            if field == 'all':
-                fields = Entities.get_organization_id_fields()
-                break
-            if field not in Entities.get_organization_id_fields():
-                raise InvalidFieldError(
-                    endpoint="https://graph.mapillary.com/:organization_id?fields=",
-                    field=field
-                )
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_organization_id_fields(),
+            endpoint="https://graph.mapillary.com/:organization_id?fields="
+            )
 
         return (
             f"https://graph.mapillary.com/{organization_id}/?fields={','.join(fields)}"
@@ -301,3 +281,15 @@ class Entities:
         """
 
         return f"https://graph.mapillary.com/image_ids?sequence_id={sequence_id}"
+
+    @staticmethod
+    def __field_validity(given_fields: list, actual_fields: list, endpoint: str) -> list:
+        for field in given_fields:
+            if field == 'all':
+               return actual_fields
+            if field not in actual_fields:
+                raise InvalidFieldError(
+                    endpoint=endpoint,
+                    field=field
+                )
+        return given_fields
