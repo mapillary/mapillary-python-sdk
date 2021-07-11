@@ -8,6 +8,17 @@ data to and from different file formats
 
 
 def feature_list_to_geojson(json_data):
+    """Converts from only a given feature list into a fully featured
+    GeoJSON
+
+    From,
+    {'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
+    
+    To,
+    {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}    
+    """
 
     output = {"type": "FeatureCollection", "features": []}
 
@@ -23,7 +34,7 @@ def image_entities_to_geojson(json_data_list: list) -> list:
     'id': '506566177256016'}, ..., ... ]
     To get,
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}}
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
 
     new_json_data_list = []
@@ -59,64 +70,60 @@ def image_entity_to_geojson(json_data: dict) -> dict:
     return init_format
 
 
-def merge_geojson(
-    geojson_one: dict,
-    geojson_one_key: str,
-    geojson_two: dict,
-    geojson_two_key: str,
-    debug=True,
+def join_geojson_with_keys(
+    geojson_src: dict,
+    geojson_src_key: str,
+    geojson_dest: dict,
+    geojson_dest_key: str,
 ) -> dict:
 
-    geojson_from = geojson_one.copy()
-    geojson_into = geojson_two.copy()
+    """Combines features from two geojsons on the basis of same given key ids, similar to
+    an SQL join functionality
 
-    list_one = []
-    list_two = []
+    Usage::
+        >>> join_geojson_with_keys(
+            geojson_src=geojson_src,
+            geojson_src_key='id',
+            geojson_dest=geojson_dest,
+            geojson_dest_key='id')
+    """
 
-    for from_features in geojson_from["features"]:
+    # Go through the feature set in the src geojson
+    for from_features in geojson_src["features"]:
 
-        for into_features in geojson_into["features"]:
+        # Go through the feature set in the dest geojson
+        for into_features in geojson_dest["features"]:
 
+            # If either of the geojson features do not contain
+            # their respective assumed keys, continue
             if (
-                geojson_two_key not in into_features["properties"]
-                or geojson_one_key not in from_features["properties"]
+                geojson_dest_key not in into_features["properties"]
+                or geojson_src_key not in from_features["properties"]
             ):
-                # * REFACTOR: This is better if it can be logged
-                # * in the future
                 continue
 
-            list_one.append(int(from_features["properties"][geojson_one_key]))
-            list_two.append(int(into_features["properties"][geojson_two_key]))
-
-            if debug:
-                print(
-                    int(from_features["properties"][geojson_one_key])
-                    == int(into_features["properties"][geojson_two_key]),
-                    int(into_features["properties"][geojson_two_key]),
-                    int(from_features["properties"][geojson_one_key]),
-                )
-
-            if int(from_features["properties"][geojson_one_key]) == int(
-                into_features["properties"][geojson_two_key]
+            # Checking if two IDs match up
+            if int(from_features["properties"][geojson_src_key]) == int(
+                into_features["properties"][geojson_dest_key]
             ):
 
+                # Firstly, extract the properties that exist in the
+                # src_geojson for that feature
                 old_properties = [key for key in from_features["properties"].keys()]
 
+                # Secondly, extract the properties that exist in the
+                # dest_json for that feature
                 new_properties = [key for key in into_features["properties"].keys()]
 
-                if debug:
-                    print(old_properties)
-                    print(new_properties)
+                # Going through the old properties in the features of src_geojson
+                for new_property in new_properties:
 
-                for feature in new_properties:
+                    # Going through the new propeties in the features of dest_geojson
+                    if new_property not in old_properties:
 
-                    if feature not in old_properties:
-
-                        from_features["properties"][feature] = old_properties[
+                        # Put the new_featu
+                        from_features["properties"][new_property] = old_properties[
                             "properties"
-                        ][feature]
+                        ][new_property]
 
-    if debug:
-        print(list(set(list_one) & set(list_two)))
-
-    return geojson_from
+    return geojson_src
