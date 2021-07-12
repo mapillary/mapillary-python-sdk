@@ -18,7 +18,7 @@ from datetime import datetime
 # Local
 from models.client import Client
 from models.auth import auth
-from controller.image import get_image_thumbnail
+from controller.image import get_image_thumbnail_controller
 
 
 @auth()
@@ -275,7 +275,7 @@ def image_thumbnail(image_id, resolution=1024) -> str:
         ...     image_id='IMAGE_ID_HERE', resolution='DESIRED_RESOLUTION'
         ... )
     """
-    return get_image_thumbnail(image_id, resolution=resolution)
+    return get_image_thumbnail_controller(image_id, resolution=resolution)
 
 
 @auth()
