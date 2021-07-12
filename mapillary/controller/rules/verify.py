@@ -60,7 +60,7 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
 def image_check(kwargs) -> bool:
 
-    kwarg_check(kwargs=kwargs, options=[
+    return kwarg_check(kwargs=kwargs, options=[
                 "min_date",
                 "max_date",
                 "daterange",
@@ -70,7 +70,6 @@ def image_check(kwargs) -> bool:
                 "fields",
             ], callback='image_check')
 
-    return True
 
 def thumbnail_size_check(thumbnail_size: int) -> bool:
     if thumbnail_size in [256, 1024, 2048]:
@@ -85,10 +84,8 @@ def thumbnail_size_check(thumbnail_size: int) -> bool:
 
 def shape_bbox_check(kwargs: dict) -> bool:
 
-    kwarg_check(kwargs=kwargs, options=[
+    return kwarg_check(kwargs=kwargs, options=[
                 "max_date",
                 "min_date",
                 "is_pano",
             ], callback='shape_bbox_check')    
-
-    return True
