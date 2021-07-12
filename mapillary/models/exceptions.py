@@ -77,7 +77,7 @@ class AuthError(MapillaryException):
 
 class InvalidImageResolution(MapillaryException):
     """Raised when trying to retrieve an image thumbnail with an invalid resolution/size.
-    Primarly used with mapillary.image_thumbnail
+    Primarily used with mapillary.image_thumbnail
 
     :var resolution: Image size entered by the user
     """
@@ -99,7 +99,7 @@ Hint: Supported image sizes are: 256, 1024, and 2048
 
 class InvalidImageKey(MapillaryException):
     """Raised when trying to retrieve an image thumbnail with an invalid image ID/key.
-    Primarly used with mapillary.image_thumbnail
+    Primarily used with mapillary.image_thumbnail
 
     :var image_id: Image ID/key entered by the user
     """

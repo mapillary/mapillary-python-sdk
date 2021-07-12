@@ -23,7 +23,19 @@ import json
 from requests import HTTPError
 
 
-def get_imgae_thumbnail(image_id, resolution):
+def get_image_thumbnail(image_id, resolution: int) -> str:
+    """This controller holds the business logic for retrieving
+    an image thumbnail with a specific resolution (256, 1024, or 2048)
+    using an image ID/key
+
+    :param image_id: Image key as the argument
+
+    :param resolution: Option for the thumbnail size, with available resolutions:
+    256, 1024, and 2048
+
+    :return: A URL for the thumbnail
+    :rtype: str
+    """
 
     # check if the entered resolution is one of the supported image sizes
     if resolution not in [256, 1024, 2048]:

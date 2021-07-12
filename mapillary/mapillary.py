@@ -18,7 +18,7 @@ from datetime import datetime
 # Local
 from models.client import Client
 from models.auth import auth
-from controller.image import get_imgae_thumbnail
+from controller.image import get_image_thumbnail
 
 
 @auth()
@@ -257,7 +257,7 @@ def get_detections_for_feature_from_key(feature_key):
 
 
 @auth()
-def image_thumbnail(image_id, resolution=1024):
+def image_thumbnail(image_id, resolution=1024) -> str:
     """Gets the thumbnails of images from the API
 
     :param image_id: Image key as the argument
@@ -275,7 +275,7 @@ def image_thumbnail(image_id, resolution=1024):
         ...     image_id='IMAGE_ID_HERE', resolution='DESIRED_RESOLUTION'
         ... )
     """
-    return get_imgae_thumbnail(image_id, resolution=resolution)
+    return get_image_thumbnail(image_id, resolution=resolution)
 
 
 @auth()
