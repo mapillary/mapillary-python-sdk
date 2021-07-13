@@ -16,9 +16,12 @@ https://www.mapillary.com/developer/api-documentation/
 from datetime import datetime
 
 # Local
-from models.credentials import Credentials
+from models.client import Client
+from models.auth import auth
+from controller.image import get_image_thumbnail_controller
 
 
+@auth()
 def greetings(name):
     """A greetings function temporarily here to test
     if the package installation is working as expected
@@ -68,17 +71,18 @@ def set_access_token(token: str):
         >>> mly.set_access_token('CLIENT_TOKEN_HERE')
     """
 
-    Credentials.set_token(token)
+    Client.set_token(token)
 
-    return None
+    return {"Success": "Token set"}
 
 
+@auth()
 def get_image_close_to(
     latitude,
     longitude,
     fields=["all"],
     radius=200,
-    coverage="pano",
+    image_type="pano",
     date=datetime.today().strftime("%Y-%m-%d"),
     org_id=-1,
 ):
@@ -105,12 +109,12 @@ def get_image_close_to(
     from a center center
     :type radius: float or int or double
 
-    :param coverge: The tile coverage to be obtained,
+    :param coverge: The tile image_type to be obtained,
     either as 'flat', 'pano' (panoramic), or 'both'.
     For more information, please take a look at
     https://www.mapillary.com/developer/api-documentation/
-    under 'Coverage Tiles'
-    :type coverage: str
+    under 'image_type Tiles'
+    :type image_type: str
 
     :param date: The date to filter to, if needed.
     The date format currently is 'YYYY-MM-DD', or '%Y-%m-%d'
@@ -136,12 +140,13 @@ def get_image_close_to(
     return None
 
 
+@auth()
 def get_image_looking_at(
     coordinates_looker,
     coordinates_at,
     fields=["all"],
     radius=200,
-    coverage="pano",
+    image_type="pano",
     date=datetime.today().strftime("%Y-%m-%d"),
     org_id=-1,
 ):
@@ -175,12 +180,12 @@ def get_image_looking_at(
     from a center center
     :type radius: float or int or double
 
-    :param coverge: The tile coverage to be obtained,
+    :param coverge: The tile image_type to be obtained,
     either as 'flat', 'pano' (panoramic), or 'both'.
     For more information, please take a look at
     https://www.mapillary.com/developer/api-documentation/
-    under 'Coverage Tiles'
-    :type coverage: str
+    under 'image_type Tiles'
+    :type image_type: str
 
     :param date: The date to filter to, if needed.
     The date format currently is 'YYYY-MM-DD', or '%Y-%m-%d'
@@ -213,6 +218,7 @@ def get_image_looking_at(
     return None
 
 
+@auth()
 def get_detections_from_key(key):
     """Extracting all the detections within an image using an image key
 
@@ -231,6 +237,7 @@ def get_detections_from_key(key):
     return None
 
 
+@auth()
 def get_detections_for_feature_from_key(feature_key):
     """Extracting all detections made for a map feature key
 
@@ -249,31 +256,29 @@ def get_detections_for_feature_from_key(feature_key):
     return None
 
 
-def get_image_thumbnail_from_key(map_key, size=1024):
+@auth()
+def image_thumbnail(image_id, resolution=1024) -> str:
     """Gets the thumbnails of images from the API
 
-    :param map_key: Image key as the argument
-    :type map_key: str # ? To check if valid
+    :param image_id: Image key as the argument
 
-    :param size: Option for the thumbnail size, ranging from 320 to 2048 width
-    :type size: int
+    :param resolution: Option for the thumbnail size, with available resolutions:
+    256, 1024, and 2048
 
     :return: A URL for the thumbnail
     :rtype: str
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.image_thumbnail(
+        ...     image_id='IMAGE_ID_HERE', resolution='DESIRED_RESOLUTION'
+        ... )
     """
-
-    # TODO: Write logic below that implements
-    # TODO: an exception handling mechanism for
-    # TODO: checking if the size is the range 320 to 2048, inclusive
-
-    # TODO: This functions needs implementation
-
-    return "https://www.mapillary.com/"
+    return get_image_thumbnail_controller(image_id, resolution=resolution)
 
 
+@auth()
 def get_images_in_bbox(bbox, **filters):
     """Gets a complete list of all images within a BBox
 
@@ -301,6 +306,7 @@ def get_images_in_bbox(bbox, **filters):
     return {"Message": "Hello, World!"}
 
 
+@auth()
 def get_all_map_features_in_bbox(bbox, layer, **filters):
     """Extracts all map features within a bounding box (bbox)
 
@@ -330,6 +336,7 @@ def get_all_map_features_in_bbox(bbox, layer, **filters):
     return {"Message": "Hello, World!"}
 
 
+@auth()
 def get_all_images_in_a_shape(geoJSON, **filters):
     """Extracts all images within a shape
 
@@ -353,6 +360,7 @@ def get_all_images_in_a_shape(geoJSON, **filters):
     return None
 
 
+@auth()
 def get_all_map_features_in_shape(geoJSON, **filters):
     """Extracts all images within a shape
 
@@ -377,6 +385,7 @@ def get_all_map_features_in_shape(geoJSON, **filters):
     return None
 
 
+@auth()
 def get_feature_from_map_feature_key(map_feature_key, fields):
     """Gets features for the given map_key argument
 
@@ -401,6 +410,7 @@ def get_feature_from_map_feature_key(map_feature_key, fields):
     return None
 
 
+@auth()
 def get_feature_from_image_feature_key(image_feature_key):
     """Gets features for the given map_key argument
 
@@ -425,6 +435,7 @@ def get_feature_from_image_feature_key(image_feature_key):
     return None
 
 
+@auth()
 def save_to_csv(
     csv_data,
     file_path,
@@ -450,6 +461,7 @@ def save_to_csv(
     return None
 
 
+@auth()
 def save_as_geojson(
     geojson_data,
     file_path,
