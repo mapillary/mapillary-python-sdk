@@ -1,16 +1,21 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.config.api.entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the class implementation of the
-Entities functionalities for the entity API endpoint aspect
-of the APIv4 of Mapillary.
+This module contains the class implementation of the Entities API endpoints
+as string, for the entity API endpoint aspect of the APIv4 of Mapillary.
 
-REFERENCE,
+For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-1. https://www.mapillary.com/developer/api-documentation/
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 # Local imports
+
+# # Exception Handling
 from models.exceptions import InvalidFieldError
 
 
@@ -79,8 +84,6 @@ class Entities:
             22. width - int, width of the original image uploaded
         """
 
-        fields = [field.lower() for field in fields]
-
         fields = Entities.__field_validity(
             given_fields=fields,
             actual_fields=Entities.get_image_fields(),
@@ -90,7 +93,7 @@ class Entities:
         return f"https://graph.mapillary.com/{image_id}/?fields={','.join(fields)}"
 
     @staticmethod
-    def get_image_fields():
+    def get_image_fields() -> list:
         return [
             "altitude",
             "atomic_scale",
@@ -136,8 +139,6 @@ class Entities:
             from
         """
 
-        fields = [field.lower() for field in fields]
-
         fields = Entities.__field_validity(
             given_fields=fields,
             actual_fields=Entities.get_map_feature_fields(),
@@ -149,7 +150,7 @@ class Entities:
         )
 
     @staticmethod
-    def get_map_feature_fields():
+    def get_map_feature_fields() -> list:
         return [
             "first_seen_at",
             "last_seen_at",
@@ -163,7 +164,7 @@ class Entities:
     def get_detection_with_image_id(
         image_id: str,
         fields: list,
-    ) -> list:
+    ) -> str:
         """Represent an object detected in a single image. For convenience
         this version of the API serves detections as collections. They can be
         requested as a collection on the resource (e.g. image) they contribute
@@ -180,8 +181,6 @@ class Entities:
             4. value - string, what kind of object the detection represents
         """
 
-        fields = [field.lower() for field in fields]
-
         fields = Entities.__field_validity(
             given_fields=fields,
             actual_fields=Entities.get_detection_with_image_id_fields(),
@@ -193,14 +192,14 @@ class Entities:
         )
 
     @staticmethod
-    def get_detection_with_image_id_fields():
+    def get_detection_with_image_id_fields() -> list:
         return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
     def get_detection_with_map_feature_id(
         map_feature_id: str,
         fields: list,
-    ) -> list:
+    ) -> str:
         """Represent an object detected in a single image. For convenience
         this version of the API serves detections as collections. They can be
         requested as a collection on the resource (e.g. map feature) they
@@ -217,8 +216,6 @@ class Entities:
             4. value - string, what kind of object the detection represents
         """
 
-        fields = [field.lower() for field in fields]
-
         fields = Entities.__field_validity(
             given_fields=fields,
             actual_fields=Entities.get_detection_with_map_feature_id_fields(),
@@ -230,7 +227,7 @@ class Entities:
         )
 
     @staticmethod
-    def get_detection_with_map_feature_id_fields():
+    def get_detection_with_map_feature_id_fields() -> list:
         return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
@@ -250,8 +247,6 @@ class Entities:
             3. description - public description of the organization
         """
 
-        fields = [field.lower() for field in fields]
-
         fields = Entities.__field_validity(
             given_fields=fields,
             actual_fields=Entities.get_organization_id_fields(),
@@ -263,7 +258,7 @@ class Entities:
         )
 
     @staticmethod
-    def get_organization_id_fields():
+    def get_organization_id_fields() -> list:
         return ["slug", "name", "description"]
 
     @staticmethod
@@ -284,12 +279,50 @@ class Entities:
 
     @staticmethod
     def __field_validity(given_fields: list, actual_fields: list, endpoint: str) -> list:
+        """Checks if the given_fields are the actual correct fields for the given endpoint
+        Compares against the list provided in `actual_fields`
+        
+        :param given_fields: The fields given as argument to check in
+        :type given_fields: list
+        
+        :param actual_fields: The fields to check against
+        :type actual_fields: list
+        
+        :param endpoint: The endpoint that is being targeted
+        :type endpoint: str
+        
+        ...
+        :raises InvalidFieldError: Raised when an API endpoint is passed invalid field elements
+        ...
+        
+        :return: The given_fields if everything is correct
+        :rtype: list
+        """
+        
+        # Converting the given_fields into lowercase
+        given_fields = [field.lower() for field in given_fields]
+        
+        # Going through all the given fields
         for field in given_fields:
+            
+            # If 'all' is encountered ...
             if field == 'all':
+    
+                # ... simply return the actual_fields list
                return actual_fields
+
+            # If a field does not exist in the actual_fields ...
             if field not in actual_fields:
+    
+                # Raise an InvalidFieldError error 
                 raise InvalidFieldError(
+
+                    # Specifying what endpoint was specified
                     endpoint=endpoint,
+                    
+                    # Specify what field triggered the exception
                     field=field
                 )
+
+        # If no error occured, and all the fields are correct, return the given_fields
         return given_fields
