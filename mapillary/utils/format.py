@@ -37,12 +37,7 @@ def image_entities_to_geojson(json_data_list: list) -> list:
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
 
-    new_json_data_list = []
-
-    for json_data in json_data_list:
-        new_json_data_list.append(image_entity_to_geojson(json_data))
-
-    return new_json_data_list
+    return new_json_data_list = [image_entitiy_to_gejson(json_data) for json_data in json_data_list]
 
 
 def image_entity_to_geojson(json_data: dict) -> dict:
