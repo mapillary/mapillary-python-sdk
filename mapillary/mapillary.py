@@ -20,7 +20,7 @@ from models.client import Client
 from models.auth import auth
 
 # Controllers
-from controller.image import *
+import controller.image as image
 
 
 def set_access_token(token: str):
@@ -249,7 +249,7 @@ def image_thumbnail(image_id, resolution=1024) -> str:
         ...     image_id='IMAGE_ID_HERE', resolution='DESIRED_RESOLUTION'
         ... )
     """
-    return get_image_thumbnail_controller(image_id, resolution=resolution)
+    return image.get_image_thumbnail_controller(image_id, resolution=resolution)
 
 
 @auth()
@@ -266,7 +266,7 @@ def images_in_bbox(bbox, layer="image", zoom=14, **filters):
     :type bbox: dict
 
     :param **filters: Different filters that may be applied to the output.
-    example filter:
+    example filters:
     - max_date
     - min_date
     - image_type: pano, flat, or all
@@ -286,7 +286,7 @@ def images_in_bbox(bbox, layer="image", zoom=14, **filters):
         # TODO: Write code here to display how the function works
     """
 
-    return get_images_in_bbox_controller(
+    return image.get_images_in_bbox_controller(
         bbox=bbox, layer=layer, zoom=zoom, kwargs=filters
     )
 

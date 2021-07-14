@@ -10,6 +10,7 @@ REFERENCE,
 1. https://www.mapillary.com/developer/api-documentation/
 """
 
+# ! TODO: Remove options from VectorTiles
 
 class VectorTiles:
     """Vector tiles provide an easy way to visualize vast amounts of
@@ -100,7 +101,7 @@ class VectorTiles:
         x: float,
         y: float,
         z: float,
-        options: list,
+        options: list=[],
     ) -> str:
         """Contain positions of images and sequences with original
         geometries (not computed) for the layer 'image'
@@ -133,8 +134,7 @@ class VectorTiles:
                 print(option)
 
         return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_public/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
+            f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}"
         )
 
     @staticmethod
