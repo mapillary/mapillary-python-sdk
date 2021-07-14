@@ -46,13 +46,13 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
             options=[14, 15, 16, 17]
             )
 
-    # if 'is_pano' is in kwargs
-    if ('is_pano' in kwargs) and (kwargs['is_pano'] not in ['pano', 'flat', 'all']):
+    # if 'image_type' is in kwargs
+    if ('image_type' in kwargs) and (kwargs['image_type'] not in ['pano', 'flat', 'all']):
 
-        # Raising exception for invalid is_pano value
+        # Raising exception for invalid image_type value
         raise InvalidOptionError(
-            param='is_pano',
-            value=kwargs["is_pano"],
+            param='image_type',
+            value=kwargs["image_type"],
             options=['pano', 'flat', 'all']
             )
 
@@ -87,5 +87,9 @@ def shape_bbox_check(kwargs: dict) -> bool:
     return kwarg_check(kwargs=kwargs, options=[
                 "max_date",
                 "min_date",
-                "is_pano",
+                "image_type",
+                "compass_angle",
+                "org_id",
+                "sequence_id",
+                "zoom",
             ], callback='shape_bbox_check')    
