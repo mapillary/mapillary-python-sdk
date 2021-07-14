@@ -18,35 +18,9 @@ from datetime import datetime
 # Local
 from models.client import Client
 from models.auth import auth
-from controller.image import get_image_thumbnail_controller
 
-
-@auth()
-def greetings(name):
-    """A greetings function temporarily here to test
-    if the package installation is working as expected
-
-    :param name: a name given to the function to print
-    out a basic statement. Temporary solution made to
-    testing if the function is working as expected
-    :type name: str
-
-    :return: None
-    :rtype: None
-
-    Usage::
-        >>> import mapillary as mly
-        >>> mly.greetings('New User')
-        "Hello, there, New User! Nice to meet you.
-        As you can see, work is currently under progress"
-    """
-
-    print(
-        f"Hello, there, {name}! Nice to meet you."
-        "As you can see, work is currently under progress"
-    )
-
-    return None
+# Controllers
+from controller.image import *
 
 
 def set_access_token(token: str):
@@ -279,15 +253,26 @@ def image_thumbnail(image_id, resolution=1024) -> str:
 
 
 @auth()
-def get_images_in_bbox(bbox, **filters):
+def images_in_bbox(bbox, layer="image", zoom=14, **filters):
     """Gets a complete list of all images within a BBox
 
-    :param bbox: Bounding box coordinates, length 4
-    :type bbox: list
+    :param bbox: Bounding box coordinates
+    example: {
+        'east': 'BOUNDARY_FROM_EAST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'west': 'BOUNDARY_FROM_WEST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: dict
 
-    :param **filters: Contains filter arguments for
-    date, pano/flat. Such is 'date', 'is_pano',
-    'is_flat', 'is_both'
+    :param **filters: Different filters that may be applied to the output.
+    example filter:
+    - max_date
+    - min_date
+    - image_type: pano, flat, or all
+    - compass_angle
+    - sequence_id
+    - org_id
     :type **filters: dict
 
     :return: Output is a GeoJSON object. Could do the
@@ -301,9 +286,9 @@ def get_images_in_bbox(bbox, **filters):
         # TODO: Write code here to display how the function works
     """
 
-    # TODO: This functions needs implementation
-
-    return {"Message": "Hello, World!"}
+    return get_images_in_bbox_controller(
+        bbox=bbox, layer=layer, zoom=zoom, kwargs=filters
+    )
 
 
 @auth()

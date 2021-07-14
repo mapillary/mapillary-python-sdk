@@ -11,21 +11,22 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-# Local imports
-
-# # Entities
+# Configs
 from config.api.entities import Entities
+from config.api.vector_tiles import VectorTiles
 
-# # Exception Handling
+# Exception Handling
 from models.exceptions import InvalidImageResolution, InvalidImageKey
 from controller.rules.verify import image_check, thumbnail_size_check, shape_bbox_check
 
-# # Client
+# Client
 from models.client import Client
 
 # Library imports
 import json
+import mercantile
 from requests import HTTPError
+
 
 def get_image_close_to_controller(
     longitude: float,
@@ -74,6 +75,7 @@ def get_image_close_to_controller(
 
     return {"Message": "Hello, World!"}
 
+
 def get_image_looking_at_controller(
     coordinates_looker: tuple,
     coordinates_at: tuple,
@@ -120,8 +122,9 @@ def get_image_looking_at_controller(
     # has been passed to  the function
     # If that is the case, throw an exception
     image_check(kwargs=kwargs)
-    
+
     return {"Message": "Hello, World!"}
+
 
 def get_image_thumbnail_controller(image_id, resolution: int) -> str:
     """This controller holds the business logic for retrieving
@@ -151,11 +154,19 @@ def get_image_thumbnail_controller(image_id, resolution: int) -> str:
 
     return thumbnail
 
-def get_images_in_bbox_controller(bbox: list, kwargs: dict) -> dict:
-    """For getting a complete list of images that lie within a bounding box, that can be filered via the kwargs argument
 
-    :param bbox: A bounding box representation ([east, south, west, north] as coordinates)
-    :type bbox: list
+def get_images_in_bbox_controller(bbox: dict, layer: str, zoom: int, kwargs: dict) -> dict:
+    """For getting a complete list of images that lie within a bounding box,
+     that can be filered via the kwargs argument
+
+    :param bbox: A bounding box representation
+    example: {
+        'east': 'BOUNDARY_FROM_EAST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'west': 'BOUNDARY_FROM_WEST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: dict
 
     :param kwargs.max_date: The max date that can be filtered upto
     :type kwargs.max_date: str
@@ -163,8 +174,17 @@ def get_images_in_bbox_controller(bbox: list, kwargs: dict) -> dict:
     :param kwargs.min_date: The min date that can be filtered from
     :type kwargs.min_date: str
 
-    :param kwargs.is_pano: Either 'pano', 'flat' or 'all'
-    :type kwargs.is_pano: str
+    :param kwargs.image_type: Either 'pano', 'flat' or 'all'
+    :type kwargs.image_type: str
+
+    :param kwargs.compass_angle:
+    :type kwargs.compass_angle: float
+
+    :param kwargs.org_id:
+    :type kwargs.org_id: int
+
+    :param kwargs.sequence_id:
+    :type kwargs.sequence_id: str
 
     '''
     :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
@@ -174,16 +194,28 @@ def get_images_in_bbox_controller(bbox: list, kwargs: dict) -> dict:
     :return: GeoJSON
     :rtype: dict
     """
-
-    # TODO: Requirement# 7
-
+    kwargs['zoom'] = kwargs.get('zoom', zoom)
+    
     shape_bbox_check(kwargs)
+
+    tiles = [
+        mercantile.tiles(
+            bbox.west,
+            bbox.south,
+            bbox.east,
+            bbox.north,
+            zoom
+        )
+    ]
+
+    
 
     return {"Message": "Hello, World!"}
 
 
-def get_images_in_shape_controller(data: dict, is_geojson: bool = True,
-    kwargs: dict = None) -> dict:
+def get_images_in_shape_controller(
+    data: dict, is_geojson: bool = True, kwargs: dict = None
+) -> dict:
     """For extracting images that lie within a shape, either GeoJSON or a Bounding Box, and merges
     the results of the found GeoJSON(s) into a single object - by merging all the features into
     one list in a feature collection.
@@ -214,7 +246,7 @@ def get_images_in_shape_controller(data: dict, is_geojson: bool = True,
     :rtype: dict
     """
 
-    # TODO: Requirement# 9    
+    # TODO: Requirement# 9
 
     shape_bbox_check(kwargs)
 
