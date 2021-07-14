@@ -26,6 +26,7 @@ from models.client import Client
 import json
 import mercantile
 from requests import HTTPError
+from vt2geojson.tools import vt_bytes_to_geojson
 
 
 def get_image_close_to_controller(
@@ -155,7 +156,9 @@ def get_image_thumbnail_controller(image_id, resolution: int) -> str:
     return thumbnail
 
 
-def get_images_in_bbox_controller(bbox: dict, layer: str, zoom: int, kwargs: dict) -> dict:
+def get_images_in_bbox_controller(
+    bbox: dict, layer: str, zoom: int, kwargs: dict
+) -> dict:
     """For getting a complete list of images that lie within a bounding box,
      that can be filered via the kwargs argument
 
@@ -194,23 +197,41 @@ def get_images_in_bbox_controller(bbox: dict, layer: str, zoom: int, kwargs: dic
     :return: GeoJSON
     :rtype: dict
     """
-    kwargs['zoom'] = kwargs.get('zoom', zoom)
-    
+    # TODO: Refactor with Saif's Adapter classes (PR #58)
+
+    # Check if the given filters are valid ones
+    kwargs["zoom"] = kwargs.get("zoom", zoom)
     shape_bbox_check(kwargs)
 
-    tiles = [
+    # Instantiate the Client
+    client = Client()
+
+    # filtered images or sequence data will be appended to the features of this geojson
+    geojson = { "type": "FeatureCollection", "features": [] }
+
+    # A list of tiles that are either confined within or intersect with the bbox
+    print(bbox)
+    tiles = list(
         mercantile.tiles(
-            bbox.west,
-            bbox.south,
-            bbox.east,
-            bbox.north,
-            zoom
+            east=bbox["east"],
+            south=bbox["south"],
+            west=bbox["west"],
+            north=bbox["north"],
+            zooms=14,
         )
-    ]
+    )
+
+    print(tiles)
+    for tile in tiles:
+        res = client.get(VectorTiles.get_image_layer(x=tile.x, y=tile.y, z=tile.z))
+        
+        data = vt_bytes_to_geojson(b_content=res.content, x=tile.x, y=tile.y, z=14, layer=layer)
+        print(data)
+
+    # Modified later  
+    return data
 
     
-
-    return {"Message": "Hello, World!"}
 
 
 def get_images_in_shape_controller(
