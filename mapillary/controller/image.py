@@ -23,6 +23,12 @@ from controller.rules.verify import image_check, thumbnail_size_check, shape_bbo
 # # Client
 from models.client import Client
 
+# # Adapters
+from models.api.vector_tiles import VectorTilesAdapter
+
+# # Utilities
+from utils.filter import pipeline
+
 # Library imports
 import json
 from requests import HTTPError
@@ -65,14 +71,37 @@ def get_image_close_to_controller(
     :rtype: dict
     """
 
-    # TODO: Requirement# 2
-
-    # Checking if a non valid key
-    # has been passed to the function
-    # If that is the case, throw an exception
+    # Checking if a non valid key has been passed to the function If that is the case, throw an
+    # exception
     image_check(kwargs=kwargs)
 
-    return {"Message": "Hello, World!"}
+    data = VectorTilesAdapter().fetch_layer(
+        layer="image",
+        zoom=kwargs["zoom"] if "zoom" in kwargs else 14,
+        longitude=longitude,
+        latitude=latitude,
+    )
+
+    # Filtering for the attributes obtained above
+    if data["features"][0]["properties"] != {}:
+        return pipeline(
+            data=data,
+            components=[
+                {"filter": "coverage", "tile": kwargs["image_type"]}
+                if "coverage" in kwargs
+                else {},
+
+                {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
+                if "org_id" in kwargs
+                else {},
+
+                {
+                    "filter": "haversine_dist",
+                    "radius": kwargs["radius"] if 'radius' in kwargs else 1000,
+                    "coords": [longitude, latitude],
+                }
+            ],
+        )
 
 def get_image_looking_at_controller(
     coordinates_looker: tuple,
