@@ -73,7 +73,7 @@ def pipeline(data: dict, components: list):
 
     # A mapping of different filters possible
     function_mappings = {
-        'params': params,
+        'filter_values': filter_values,
         'max_date': max_date,
         'min_date': min_date,
         'haversine_dist': haversine_dist,
@@ -157,7 +157,7 @@ def min_date(data, min_timestamp):
     }
 
 
-def params(data: dict, values: list, properties: str) -> dict:
+def filter_values(data: dict, values: list, properties: str) -> dict:
     """Filter the features based on the existence of a specified value
     in one of the properties.
 

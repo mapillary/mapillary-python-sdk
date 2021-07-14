@@ -17,8 +17,15 @@ from config.api.vector_tiles import VectorTiles
 # Client
 from models.client import Client
 
-# # Exception Handling
+# Exception Handling
 from controller.rules.verify import shape_bbox_check
+
+# Utils
+from utils.filter import pipeline
+
+# Package imports
+import mercantile
+from vt2geojson.tools import vt_bytes_to_geojson
 
 
 def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
@@ -107,5 +114,33 @@ def get_map_features_in_bbox_controller(
     :return: GeoJSON
     :rtype: dict
     """
+    # TODO: Refactor with the Adapter classes
+
+    # instatinatin Client for API requests
+    client = Client()
+
+    # Getting all tiles within or interseting the bbox
+    tiles = list(
+        mercantile.tiles(
+            east=bbox["east"],
+            south=bbox["south"],
+            west=bbox["west"],
+            north=bbox["north"],
+            zooms=14,
+        )
+    )
+
+
+    for tile in tiles:
+        # Decide which endpoint to send a request to based on the layer
+        url = (
+            VectorTiles.get_map_feature_point(x=tile.x, y=tile.y, z=tile.z)
+            if layer == "points"
+            else VectorTiles.get_map_feature_traffic_signs(x=tile.x, y=tile.y, z=tile.z)
+        )
+
+        res = client.get(url)
+        data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
+        print(data)
 
     return {"Message": "Hello, World!"}
