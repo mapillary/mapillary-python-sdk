@@ -22,7 +22,7 @@ def feature_list_to_geojson(json_data):
 
     output = {"type": "FeatureCollection", "features": []}
 
-    output["features"] = json_data
+    output["features"] = json_data['features']
 
     return output
 
