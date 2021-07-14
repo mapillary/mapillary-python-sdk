@@ -259,7 +259,6 @@ class VectorTiles:
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """These tiles represent positions of map features which are detected
         on the Mapillary platform and are not traffic signs.
@@ -281,21 +280,15 @@ class VectorTiles:
         the latest image on which the detection contribute to this map feature
         """
 
-        for option in options:
-            if option not in ["id", "value", "first_seen_at", "last_seen_at"]:
-                print(option)
-
         return (
-            "https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
+            f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/{z}/{x}/{y}"
         )
 
     @staticmethod
-    def get_map_feature_tiles(
+    def get_map_feature_traffic_signs(
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """These tiles represent positions of map features which are detected
         on the Mapillary platform and are traffic signs.
@@ -320,12 +313,6 @@ class VectorTiles:
         the latest image on which the detection contribute to this map feature
         """
 
-        for option in options:
-            if option not in ["id", "value", "first_seen_at", "last_seen_at"]:
-                print(option)
-
         return (
-            "https://tiles.mapillary.com/maps/vtp/"
-            f"mly_map_feature_traffic_sign/2/{z}/{x}/{y}/?"
-            f'fields={",".join(options)}'
+            f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_traffic_sign/2/{z}/{x}/{y}"
         )
