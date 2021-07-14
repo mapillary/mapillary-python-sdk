@@ -61,7 +61,8 @@ def get_image_close_to_controller(
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
 
-    :param kwargs.org_id: The organization to retrieve the data for
+    :param kwargs.org_id: The organization to retrieve the data for. Use 856718694933026 for
+    testing
     :type kwargs.org_id: str
 
     :param kwargs.fields: Fields to pass to the endpoint
@@ -83,12 +84,12 @@ def get_image_close_to_controller(
     )
 
     # Filtering for the attributes obtained above
-    if data["features"][0]["properties"] != {}:
+    if data['features'] != {} and data["features"][0]["properties"] != {}:
         return pipeline(
             data=data,
             components=[
-                {"filter": "coverage", "tile": kwargs["image_type"]}
-                if "coverage" in kwargs
+                {"filter": "image_type", "tile": kwargs["image_type"]}
+                if "image_type" in kwargs
                 else {},
 
                 {"filter": "organization_id", "organization_ids": kwargs["org_id"]}

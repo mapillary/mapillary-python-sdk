@@ -276,7 +276,7 @@ class VectorTilesAdapter(object):
                 )
 
         # If layer was specified to be 'image' or 'map'
-        elif layer == "image" or layer == "map":
+        elif layer == "image" or layer == "map_feature" or layer == "traffic_sign":
 
             # If zoom was not 14
             if zoom != 14:
@@ -396,7 +396,7 @@ class VectorTilesAdapter(object):
         latitude: float, zoom: int) -> dict:
         """Preprocess features
         
-        :param feature_type: Either 'point', 'tiles'
+        :param feature_type: Either 'point', 'traffic_signs'
         :type feature_type: str
 
         :param longitude: The longitude of the feature
@@ -424,8 +424,8 @@ class VectorTilesAdapter(object):
 
             url = VectorTiles.get_map_feature_point(x=tile[0], y=tile[1], z=zoom)
 
-        # For 'tiles'
-        elif feature_type == "tiles":
+        # For 'traffic_signs'
+        elif feature_type == "traffic_signs":
             url = VectorTiles.get_map_feature_tiles(x=tile[0], y=tile[1], z=zoom)
 
         # If both are not present
