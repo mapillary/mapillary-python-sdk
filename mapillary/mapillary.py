@@ -19,6 +19,7 @@ from datetime import datetime
 from models.client import Client
 from models.auth import auth
 import controller.image as image
+import controller.detection as detection
 
 
 @auth()
@@ -214,39 +215,48 @@ def get_image_looking_at(
 
 
 @auth()
-def get_detections_from_key(key):
+def get_detections_with_image_id(image_id: int, **kwargs):
     """Extracting all the detections within an image using an image key
 
-    :param key: The image key as the argument
-    :type key: int
+    :param image_id: The image key as the argument
+    :type image_id: int
 
     :return: JSON
     :rtype: <class 'dict'>
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> mly.get_detections_with_image_id(image_id=1933525276802129)
     """
 
-    # TODO: This functions needs implementation
-
-    return None
+    return detection.get_image_detections_controller(
+        image_id=image_id,
+        kwargs=kwargs,
+    )
 
 
 @auth()
-def get_detections_for_feature_from_key(feature_key):
+def get_detections_with_map_feature_id(map_feature_id: int, **kwargs):
     """Extracting all detections made for a map feature key
 
-    :param feature_key: A map feature key as the argument
-    :type feature_key: str # ? To check if valid
+    :param map_feature_id: A map feature key as the argument
+    :type map_feature_id: int
 
     :return: JSON
     :rtype: <class 'dict'>
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> mly.get_detections_with_map_feature_id(map_feature_id=1933525276802129)
     """
 
-    # TODO: This functions needs implementation
+    # TODO: To implement
+    # return detection.get_map_feature_detections_controller(
+    #     map_feature_key=map_feature_key,
+    #     kwargs=kwargs,
+    # )
 
     return None
 
