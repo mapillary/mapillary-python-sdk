@@ -36,8 +36,16 @@ def image_entities_to_geojson(json_data_list: list) -> list:
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
+    formatted = {
+        "type": "FeatureCollection",
+        "features": [],
+    }
 
-    return new_json_data_list = [image_entitiy_to_gejson(json_data) for json_data in json_data_list]
+    formatted["features"] = [
+        image_entity_to_geojson(json_data) for json_data in json_data_list
+    ]
+
+    return formatted
 
 
 def image_entity_to_geojson(json_data: dict) -> dict:
@@ -53,16 +61,13 @@ def image_entity_to_geojson(json_data: dict) -> dict:
     # The geometry property will always be present
     keys = [key for key in json_data.keys() if key != "geometry"]
 
-    init_format = {
-        "type": "FeatureCollection",
-        "features": [{"type": "Feature", "properties": {}}],
-    }
-    init_format["features"][0]["geometry"] = json_data["geometry"]
+    feature = {"type": "Feature", "geometry": {}, "properties": {}}
+    feature["geometry"] = json_data["geometry"]
 
     for key in keys:
-        init_format["features"][0]["properties"][key] = json_data[key]
+        feature["properties"][key] = json_data[key]
 
-    return init_format
+    return feature
 
 
 def join_geojson_with_keys(
