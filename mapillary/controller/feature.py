@@ -11,10 +11,15 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-# Local imports
+# Configs
+from config.api.vector_tiles import VectorTiles
+
+# Client
+from models.client import Client
 
 # # Exception Handling
 from controller.rules.verify import shape_bbox_check
+
 
 def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
     """For extracting all map features within a shape
@@ -51,7 +56,7 @@ def get_feature_map_key_controller(key: str, fields: list) -> dict:
 
     # TODO: Requirement# 11A
 
-    # ? The checking of the fields can be done within the /config/api/, right?    
+    # ? The checking of the fields can be done within the /config/api/, right?
 
     return {"Message": "Hello, World!"}
 
@@ -78,27 +83,29 @@ def get_feature_image_key_controller(key: str, fields: list) -> dict:
     return {"Message": "Hello, World!"}
 
 
-def get_map_features_in_bbox_controller(bbox: list, layer: str, kwargs: dict) -> dict:
-    """For extracing all map features within a bounding box
+def get_map_features_in_bbox_controller(
+    bbox: dict,
+    filters: dict,
+    filter_values: list,
+    layer: str = "points",
+) -> dict:
+    """For extracing either map feature points or traffic signs within a bounding box
 
     :param bbox: Bounding box coordinates as argument
-    :type bbox: list
+    :type bbox: dict
 
-    :param layer: 'Points' or 'Traffic' signs
+    :param layer: 'points' or 'traffic_signs'
     :type layer: str
 
-    :param kwargs.value: Value list as argument (only one value or multiple values or “all”)
-    :type kwargs.value: list or str
+    :param filter_values: a list of filter values supported by the API.
+    Default is ['all'] for all filter values
+    :type filter_values: list
 
-    :param kwargs.date: Date to filter by
-    :type kwargs.date: str
+    :param filters: Value list as argument (only one value or multiple values or “all”)
+    :type filters: dict
 
     :return: GeoJSON
     :rtype: dict
     """
-
-    # TODO: Requirement# 8
-    # ? Maybe split this into 2 functions, one for
-    # ? traffic signs and one for points
 
     return {"Message": "Hello, World!"}
