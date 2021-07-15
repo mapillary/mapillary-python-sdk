@@ -14,20 +14,20 @@ def feature_list_to_geojson(json_data):
     From,
     {'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
-    
+
     To,
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}    
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
 
     output = {"type": "FeatureCollection", "features": []}
 
-    output["features"] = json_data['features']
+    output["features"] = json_data["features"]
 
     return output
 
 
-def image_entities_to_geojson(json_data_list: list) -> list:
+def features_list_to_geojson(json_data_list: list) -> list:
 
     """From
     [{'geometry': {'type': 'Point', 'coordinates': [30.003755665554, 30.985948744314]},
@@ -36,32 +36,34 @@ def image_entities_to_geojson(json_data_list: list) -> list:
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
+
     formatted = {
         "type": "FeatureCollection",
         "features": [],
     }
 
     formatted["features"] = [
-        image_entity_to_geojson(json_data) for json_data in json_data_list
+        feature_to_geojson(json_data) for json_data in json_data_list
     ]
 
     return formatted
 
 
-def image_entity_to_geojson(json_data: dict) -> dict:
+def feature_to_geojson(json_data: dict) -> dict:
 
     """From
     {'geometry': {'type': 'Point', 'coordinates': [30.003755665554, 30.985948744314]}, 'id':
     '506566177256016'}
     To get,
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}}
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
 
     # The geometry property will always be present
     keys = [key for key in json_data.keys() if key != "geometry"]
 
     feature = {"type": "Feature", "geometry": {}, "properties": {}}
+    feature['type'] = feature.get('type', json_data['type'])
     feature["geometry"] = json_data["geometry"]
 
     for key in keys:
