@@ -147,6 +147,84 @@ def min_date(data, min_timestamp):
         ]
     }
 
+def features_in_bounding_box(data: dict, values: list, property: str, bbox: dict) -> dict:
+    """Filter for extracting features only in a bounding box
+    with certain features
+    
+    :param data: The GeoJSON data
+    :type data: <class 'dict'>
+
+    :param values: List of values to filter by
+    :type values: <class 'list'>
+
+    :param property: propery to filter by selected 'property', for example, 'value'
+    :type property: <class 'str'>
+
+    :param bbox: Bounding box coordinates
+    example: {
+        'east': 'BOUNDARY_FROM_EAST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'west': 'BOUNDARY_FROM_WEST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: <class 'dict'>
+
+    :return: Features that only exist within the bounding box selected for the given GeoJSON,
+    firstly filtered by the params() function, that geographyically mapped against the coordinates
+    provided in the BBox functon
+    :rtype: <class 'dict'> (GeoJSON)
+
+    Usage::
+        >>> import mapillary as mly, utils.filter as filter, mercantile, requests
+        >>> from vt2geojson.tools import vt_bytes_to_geojson
+        >>> access_token = 'MLY|XXX'
+        >>> mly.set_access_token(access_token)
+        >>> tile_points = 'mly_map_feature_point'
+        >>> bbox = { 'east': -80.13423442840576, 'south': 25.77376933762778,
+        >>> 'west': -80.1264238357544, 'north': 25.788608487732198 }
+        >>> filter_values = ['object--support--utility-pole','object--street-light']
+        >>> tiles = list(mercantile.tiles(bbox['east'], bbox['south'],
+        ...        bbox['west'], bbox['north'], 14)) # zoom must be 14
+        >>> for tile in tiles:
+        >>>    tile_url = 'https://tiles.mapillary.com/maps/vtp/{}/2/{}/{}/{}?access_token={}'
+        ...        .format(tile_points,tile.z,tile.x,tile.y,access_token)
+        >>>     response = requests.get(tile_url)
+        >>>     data = vt_bytes_to_geojson(response.content, tile.x, tile.y, tile.z)
+        >>>     output['features].append(utils.features_in_bounding_box(data=data,
+        ...         values=filter_values, property='value', bbox=bbox)['features'])
+    """
+
+    # define an empty geojson as output
+    output= { "type": "FeatureCollection", "features": [] }
+
+    # Filtered out the features according to the list of values for the given property
+    filtered_data = params(data=data, values=values, property=property)
+
+    # For each feature in the filtered_data
+    for feature in filtered_data:
+
+        # If feature exists in bounding box
+        if (feature['geometry']['coordinates'][0] > bbox['east']
+        and feature['geometry']['coordinates'][0] < bbox['west']) \
+        and (feature['geometry']['coordinates'][1] > bbox['south']
+        and feature['geometry']['coordinates'][1] < bbox['north']):
+
+            # Append feature to the output
+            output['features'].append(feature)
+
+    # Return output
+    # Format would be,
+    #   { 
+    #       'type': 'FeatureCollection',
+    #       'feature': [
+    #           { ... },
+    #           { ... },
+    #           { ... },
+    #           { ... }
+    #       ]
+    # }
+    return output
+
 def params(data: dict, values: list, property: str) -> dict:
     """Filter the features based on the existence of a specified value
     in one of the property.
