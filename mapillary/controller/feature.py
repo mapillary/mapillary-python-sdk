@@ -22,6 +22,7 @@ from controller.rules.verify import shape_bbox_check
 
 # Utils
 from utils.filter import pipeline
+from utils.format import features_list_to_geojson
 
 # Package imports
 import mercantile
@@ -130,6 +131,7 @@ def get_map_features_in_bbox_controller(
         )
     )
 
+    filtered_features = []
 
     for tile in tiles:
         # Decide which endpoint to send a request to based on the layer
@@ -140,7 +142,22 @@ def get_map_features_in_bbox_controller(
         )
 
         res = client.get(url)
-        data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
-        print(data)
 
-    return {"Message": "Hello, World!"}
+        # Decoding byte tiles
+        data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
+        
+        # ! Handle filter_values=['all'] case
+        # ! Handle checking if resulting features lie within bbox
+        # ! Handle date checking agains user input
+        filtered_features.extend(pipeline(
+            data=data,
+            components=[
+                {'filter': 'filter_values', 'values': filter_values, 'property': 'value'}
+                if filter_values != ['all']
+                else {}
+            ]
+        ))
+    
+    geojson = features_list_to_geojson(filtered_features)
+
+    return geojson
