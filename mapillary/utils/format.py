@@ -20,11 +20,7 @@ def feature_list_to_geojson(json_data):
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}    
     """
 
-    output = {"type": "FeatureCollection", "features": []}
-
-    output["features"] = json_data['features']
-
-    return output
+    return {"type": "FeatureCollection", "features": json_data['features']}
 
 
 def image_entities_to_geojson(json_data_list: list) -> list:
@@ -36,16 +32,13 @@ def image_entities_to_geojson(json_data_list: list) -> list:
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
-    formatted = {
+
+    return {
         "type": "FeatureCollection",
-        "features": [],
+        "features": [
+            image_entity_to_geojson(json_data) for json_data in json_data_list
+        ],
     }
-
-    formatted["features"] = [
-        image_entity_to_geojson(json_data) for json_data in json_data_list
-    ]
-
-    return formatted
 
 
 def image_entity_to_geojson(json_data: dict) -> dict:
