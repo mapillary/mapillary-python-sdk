@@ -78,6 +78,7 @@ def pipeline(data: dict, components: list):
         'haversine_dist': haversine_dist,
         'image_type': image_type,
         'organization_id': organization_id,
+        'features_in_bounding_box': features_in_bounding_box,
         # Simply add the mapping of a new function, 
         # nothing else will really need to changed
     }
