@@ -226,7 +226,7 @@ def features_in_bounding_box(data: dict, values: list, property: str, bbox: dict
     # }
     return output
 
-def params(data: dict, values: list, property: str) -> dict:
+def params(data: dict, values: list, property: str = 'value') -> dict:
     """Filter the features based on the existence of a specified value
     in one of the property.
 
