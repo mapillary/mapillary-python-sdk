@@ -82,6 +82,7 @@ def pipeline(data: list, components: list):
         "organization_id": organization_id,
         "features_in_bounding_box": features_in_bounding_box,
         "existed_at": existed_at,
+        "existed_before": existed_before,
         # Simply add the mapping of a new function,
         # nothing else will really need to changed
     }
@@ -221,6 +222,14 @@ def existed_at(data: list, existed_at: float) -> list:
         if feature["properties"]["first_seen_at"]
         <= existed_at
         <= feature["properties"]["last_seen_at"]
+    ]
+
+
+def existed_before(data: list, existed_before: float) -> list:
+    return [
+        feature
+        for feature in data
+        if feature["properties"]["last_seen_at"] >= existed_before
     ]
 
 

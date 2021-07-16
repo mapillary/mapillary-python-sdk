@@ -304,7 +304,7 @@ def map_feature_points_in_bbox(
     Chronological filters:
     - existed_at: checks if a feature existed a certain date depending on the times it 
     was first and last seen at.
-    - existed_after: filters out the features that existed before a given date
+    - existed_before: filters out the features that existed after a given date
     :type **filters: dict
 
     :return: GeoJSON Object
@@ -344,7 +344,7 @@ def traffic_signs_in_bbox(
     Chronological filters:
     - existed_at: checks if a feature existed a certain date depending on the times it 
     was first and last seen at.
-    - existed_after: filters out the features that existed before a given date
+    - existed_before: filters out the features that existed after a given date
     :type **filters: dict
 
     :return: GeoJSON Object

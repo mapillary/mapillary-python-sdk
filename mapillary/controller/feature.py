@@ -18,7 +18,7 @@ from config.api.vector_tiles import VectorTiles
 from models.client import Client
 
 # Exception Handling
-from controller.rules.verify import shape_bbox_check
+from controller.rules.verify import shape_bbox_check, points_traffic_signs_check
 
 # Utils
 from utils.filter import pipeline
@@ -93,8 +93,8 @@ def get_feature_image_key_controller(key: str, fields: list) -> dict:
 
 def get_map_features_in_bbox_controller(
     bbox: dict,
-    filters: dict,
     filter_values: list,
+    filters: dict,
     layer: str = "points",
 ) -> str:
     """For extracing either map feature points or traffic signs within a bounding box
@@ -106,15 +106,17 @@ def get_map_features_in_bbox_controller(
     :type layer: str
 
     :param filter_values: a list of filter values supported by the API.
-    Default is ['all'] for all filter values
     :type filter_values: list
 
-    :param filters: Value list as argument (only one value or multiple values or “all”)
+    :param filters: Chronological filters
     :type filters: dict
 
     :return: GeoJSON
     :rtype: dict
     """
+
+    # Verifying the existence of the filter kwargs
+    filters = points_traffic_signs_check(filters)
 
     # Instatinatin Client for API requests
     client = Client()
@@ -130,7 +132,7 @@ def get_map_features_in_bbox_controller(
         )
     )
 
-    # Filtered features lists from different tiles will be merged into 
+    # Filtered features lists from different tiles will be merged into
     # filtered_features
     filtered_features = []
 
@@ -150,27 +152,33 @@ def get_map_features_in_bbox_controller(
         # Separating feature objects from the decoded data
         unfiltered_features = geojson_to_feature_object(data)
 
-        print(f'$' * 200+'\n\n')
-        print(unfiltered_features)
-        print(f'$' * 200+'\n\n')
-
-        # ! Handle date checking agains user input
-        filtered_features.extend(pipeline(
-            data=unfiltered_features,
-            components=[
-                {'filter': 'filter_values', 'values': filter_values, 'property': 'value'}
-                # Skip filtering based on filter_values if they're not specified by the user
-                if filter_values is not None
-                else {},
-                # Check if the features actually lie within the bbox
-                {'filter': 'features_in_bounding_box', 'bbox': bbox},
-                # Check if a feature existed at a certain point of time
-                {'filter': 'existed_at', 'existed_at': filters['existed_at']}
-                if filters['existed_at'] is not None
-                else {}
-            ]
-        ))
-    print(f'{filtered_features}\n\n#################################################')
+        filtered_features.extend(
+            pipeline(
+                data=unfiltered_features,
+                components=[
+                    {
+                        "filter": "filter_values",
+                        "values": filter_values,
+                        "property": "value",
+                    }
+                    # Skip filtering based on filter_values if they're not specified by the user
+                    if filter_values is not None else {},
+                    # Check if the features actually lie within the bbox
+                    {"filter": "features_in_bounding_box", "bbox": bbox},
+                    # Check if a feature existed at a certain point of time
+                    {"filter": "existed_at", "existed_at": filters["existed_at"]}
+                    if filters["existed_at"] is not None
+                    else {},
+                    # Filter out all the features after a given timestamp
+                    {
+                        "filter": "existed_before",
+                        "existed_before": filters["existed_before"],
+                    }
+                    if filters["existed_before"] is not None
+                    else {},
+                ],
+            )
+        )
     geojson = merged_features_list_to_geojson(filtered_features)
 
     return geojson
