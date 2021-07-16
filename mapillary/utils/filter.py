@@ -6,12 +6,11 @@ This module contains the filter utilies for high level filtering logic
 """
 
 # Local imports
-# from utils.time import date_to_unix_timestamp # these need to be updated as per PR # 44
-# from utils.format import feature_list_to_geojson # these need to be updated as per PR # 44
+from utils.time import date_to_unix_timestamp
+from utils.format import feature_list_to_geojson
 
 # Package imports
 import haversine
-import datetime
 import logging
 
 logger = logging.getLogger("pipeline-logger")
@@ -79,6 +78,7 @@ def pipeline(data: dict, components: list):
         'haversine_dist': haversine_dist,
         'image_type': image_type,
         'organization_id': organization_id,
+        'features_in_bounding_box': features_in_bounding_box,
         # Simply add the mapping of a new function, 
         # nothing else will really need to changed
     }
@@ -108,8 +108,6 @@ def pipeline(data: dict, components: list):
             )
 
     # Return the data
-    # TODO: call feature_list_to_geojson when PR#44 is merged
-    # return feature_list_to_geojson(temp_data)
     return __data
 
 
@@ -123,14 +121,11 @@ def max_date(data, max_timestamp):
         { ... }, ...}]}, '2020-05-23')
     """
 
-    # ! TODO: Relies on the date_to_unix_timestamp, PR # 44
-    # Change below code from datetime... to date_to_unix_timestamp(max_timestamp) on merge    
-    max_timestamp = datetime.datetime.fromisoformat(max_timestamp).timestamp()
     return {
         'features' :[
             feature
             for feature in data["features"]
-            if feature["properties"]["captured_at"] <= max_timestamp
+            if feature["properties"]["captured_at"] <= date_to_unix_timestamp(max_timestamp)
         ]
     }
 
@@ -145,24 +140,57 @@ def min_date(data, min_timestamp):
         { ... }, ...}]}, '2020-05-23')
     """
 
-    # ! TODO: Relies on the date_to_unix_timestamp, PR # 44    
-    # Change below code from datetime... to date_to_unix_timestamp(min_timestamp) on merge
-    min_timestamp = datetime.datetime.fromisoformat(min_timestamp).timestamp()
     return {
         'features': [
             feature
             for feature in data["features"]
-            if feature["properties"]["captured_at"] >= min_timestamp
+            if feature["properties"]["captured_at"] >= date_to_unix_timestamp(min_timestamp)
         ]
     }
 
+def features_in_bounding_box(data: dict, bbox: dict) -> list:
+    """Filter for extracting features only in a bounding box
 
-def params(data: dict, values: list, properties: str) -> dict:
+    :param data: the features list to be checked
+    :type data: list
+
+    :param bbox: Bounding box coordinates
+    example: {
+        'east': 'BOUNDARY_FROM_EAST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'west': 'BOUNDARY_FROM_WEST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: <class 'dict'>
+
+    :return: Features that only exist within the bounding box selected for the given features list
+    provided in the BBox functon
+    :rtype: list
+    """
+
+   # define an empty geojson as output
+    output= []
+
+    # For each feature in the filtered_data
+    for feature in data:
+
+        # If feature exists in bounding box
+        if (feature['geometry']['coordinates'][0] < bbox['east']
+        and feature['geometry']['coordinates'][0] > bbox['west']) \
+        and (feature['geometry']['coordinates'][1] > bbox['south']
+        and feature['geometry']['coordinates'][1] < bbox['north']):
+
+            # Append feature to the output
+            output.append(feature)
+
+    return output
+
+def params(data: dict, values: list, property: str = 'value') -> dict:
     """Filter the features based on the existence of a specified value
-    in one of the properties.
+    in one of the property.
 
-    # TODO: Need documentation that lists the 'values', specifically, it refers to 'value'
-    # TODO: under 'Detection', and 'Map feature'
+    ### TODO: Need documentation that lists the 'values', specifically, it refers to 'value'
+    ### TODO: under 'Detection', and 'Map feature'
 
     :param data: The data to be filtered
     :type data: dict
@@ -170,8 +198,8 @@ def params(data: dict, values: list, properties: str) -> dict:
     :param values: A list of values to filter by
     :type values: list
 
-    :param properties: The specific parameter to look into
-    :type properties: str
+    :param property: The specific parameter to look into
+    :type property: str
 
     :return: A feature list
     :rtype: dict
@@ -181,7 +209,7 @@ def params(data: dict, values: list, properties: str) -> dict:
         'features': [
             feature
             for feature in data["features"]
-            if feature["properties"][properties] in values
+            if feature["properties"][property] in values
         ]
     }
 
