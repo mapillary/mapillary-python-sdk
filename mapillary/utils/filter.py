@@ -108,7 +108,7 @@ def pipeline(data: dict, components: list):
             )
 
     # Return the data
-    return feature_list_to_geojson(__data)
+    return __data
 
 
 def max_date(data, max_timestamp):
