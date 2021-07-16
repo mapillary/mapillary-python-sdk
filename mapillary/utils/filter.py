@@ -148,18 +148,11 @@ def min_date(data, min_timestamp):
         ]
     }
 
-def features_in_bounding_box(data: dict, values: list, property: str, bbox: dict) -> dict:
+def features_in_bounding_box(data: dict, bbox: dict) -> list:
     """Filter for extracting features only in a bounding box
-    with certain features
-    
-    :param data: The GeoJSON data
-    :type data: <class 'dict'>
 
-    :param values: List of values to filter by
-    :type values: <class 'list'>
-
-    :param property: propery to filter by selected 'property', for example, 'value'
-    :type property: <class 'str'>
+    :param data: the features list to be checked
+    :type data: list
 
     :param bbox: Bounding box coordinates
     example: {
@@ -170,10 +163,10 @@ def features_in_bounding_box(data: dict, values: list, property: str, bbox: dict
     }
     :type bbox: <class 'dict'>
 
-    :return: Features that only exist within the bounding box selected for the given GeoJSON,
-    firstly filtered by the params() function, that geographyically mapped against the coordinates
+    :return: Features that only exist within the bounding box selected for the given features list
     provided in the BBox functon
-    :rtype: <class 'dict'> (GeoJSON)
+    :rtype: list
+    """
 
     Usage::
         >>> import mapillary as mly, utils.filter as filter, mercantile, requests
