@@ -293,7 +293,7 @@ def image_type(data: dict, type: str) -> dict:
         if type == "pano"
         # Else false if type == 'falt'
         else False
-        if type == "flat"
+        if type == "float"
         # Else None if type is implicity 'all'
         else None
     )
