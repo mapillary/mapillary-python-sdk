@@ -177,7 +177,7 @@ def filter_values(data: dict, values: list, property: str = "value") -> dict:
     
     return [
         feature
-        for feature in data["features"]
+        for feature in data
         if feature["properties"][property] in values
     ]
 

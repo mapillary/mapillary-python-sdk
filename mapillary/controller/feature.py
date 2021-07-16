@@ -22,7 +22,7 @@ from controller.rules.verify import shape_bbox_check
 
 # Utils
 from utils.filter import pipeline
-from utils.format import features_list_to_geojson
+from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
 
 # Package imports
 import mercantile
@@ -96,7 +96,7 @@ def get_map_features_in_bbox_controller(
     filters: dict,
     filter_values: list,
     layer: str = "points",
-) -> dict:
+) -> str:
     """For extracing either map feature points or traffic signs within a bounding box
 
     :param bbox: Bounding box coordinates as argument
@@ -115,9 +115,8 @@ def get_map_features_in_bbox_controller(
     :return: GeoJSON
     :rtype: dict
     """
-    # TODO: Refactor with the Adapter classes
 
-    # instatinatin Client for API requests
+    # Instatinatin Client for API requests
     client = Client()
 
     # Getting all tiles within or interseting the bbox
@@ -131,6 +130,8 @@ def get_map_features_in_bbox_controller(
         )
     )
 
+    # Filtered features lists from different tiles will be merged into 
+    # filtered_features
     filtered_features = []
 
     for tile in tiles:
@@ -145,19 +146,27 @@ def get_map_features_in_bbox_controller(
 
         # Decoding byte tiles
         data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
-        
-        # ! Handle filter_values=['all'] case
+
+        # Separating feature objects from the decoded data
+        unfiltered_features = geojson_to_feature_object(data)
+
+        print(f'$' * 200+'\n\n')
+        print(unfiltered_features)
+        print(f'$' * 200+'\n\n')
+
         # ! Handle checking if resulting features lie within bbox
         # ! Handle date checking agains user input
         filtered_features.extend(pipeline(
-            data=data,
+            data=unfiltered_features,
             components=[
                 {'filter': 'filter_values', 'values': filter_values, 'property': 'value'}
-                if filter_values != ['all']
-                else {}
+                # Skip filtering based on filter_values if they're not specified by the user
+                if filter_values is not None
+                else {},
+                {'filter': 'features_in_bounding_box', 'bbox': bbox}
             ]
         ))
-    
-    geojson = features_list_to_geojson(filtered_features)
+    print(f'{filtered_features}\n\n#################################################')
+    geojson = merged_features_list_to_geojson(filtered_features)
 
     return geojson
