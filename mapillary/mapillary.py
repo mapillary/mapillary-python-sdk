@@ -283,8 +283,8 @@ def get_images_in_bbox(bbox, **filters):
 
 @auth()
 def map_feature_points_in_bbox(
-    bbox: dict, filter_values: list = ["all"], **filters: dict
-) -> dict:
+    bbox: dict, filter_values: list = None, **filters: dict
+) -> str:
     """Extracts map feature points within a bounding box (bbox)
 
     :param bbox: bbox coordinates as the argument
@@ -323,8 +323,8 @@ def map_feature_points_in_bbox(
 
 @auth()
 def traffic_signs_in_bbox(
-    bbox: dict, filter_values: list = ["all"], **filters: dict
-) -> dict:
+    bbox: dict, filter_values: list = None, **filters: dict
+) -> str:
     """Extracts traffic signs within a bounding box (bbox)
 
     :param bbox: bbox coordinates as the argument
