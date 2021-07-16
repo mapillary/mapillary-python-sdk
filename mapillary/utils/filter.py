@@ -30,7 +30,7 @@ def pipeline_component(func, data, exception_message, args):
         logger.warning(f"{exception_message}, {exception}")
 
 
-def pipeline(data: dict, components: list):
+def pipeline(data: list, components: list):
     """A pipeline component that helps with making filtering easier. It provides
     access to different filtering mechanism by simplying letting users
     pass in what filter they want to apply, and the arguments for that filter
@@ -81,6 +81,7 @@ def pipeline(data: dict, components: list):
         "image_type": image_type,
         "organization_id": organization_id,
         "features_in_bounding_box": features_in_bounding_box,
+        "existed_at": existed_at,
         # Simply add the mapping of a new function,
         # nothing else will really need to changed
     }
@@ -123,7 +124,8 @@ def max_date(data, max_timestamp):
         "features": [
             feature
             for feature in data["features"]
-            if feature["properties"]["captured_at"] <= date_to_unix_timestamp(max_timestamp)
+            if feature["properties"]["captured_at"]
+            <= date_to_unix_timestamp(max_timestamp)
         ]
     }
 
@@ -142,9 +144,11 @@ def min_date(data, min_timestamp):
         "features": [
             feature
             for feature in data["features"]
-            if feature["properties"]["captured_at"] >= date_to_unix_timestamp(min_timestamp)
+            if feature["properties"]["captured_at"]
+            >= date_to_unix_timestamp(min_timestamp)
         ]
     }
+
 
 def features_in_bounding_box(data: dict, bbox: dict) -> list:
     """Filter for extracting features only in a bounding box
@@ -166,24 +170,28 @@ def features_in_bounding_box(data: dict, bbox: dict) -> list:
     :rtype: list
     """
 
-   # define an empty geojson as output
-    output= []
+    # define an empty geojson as output
+    output = []
 
     # For each feature in the filtered_data
     for feature in data:
 
         # If feature exists in bounding box
-        if (feature['geometry']['coordinates'][0] < bbox['east']
-        and feature['geometry']['coordinates'][0] > bbox['west']) \
-        and (feature['geometry']['coordinates'][1] > bbox['south']
-        and feature['geometry']['coordinates'][1] < bbox['north']):
+        if (
+            feature["geometry"]["coordinates"][0] < bbox["east"]
+            and feature["geometry"]["coordinates"][0] > bbox["west"]
+        ) and (
+            feature["geometry"]["coordinates"][1] > bbox["south"]
+            and feature["geometry"]["coordinates"][1] < bbox["north"]
+        ):
 
             # Append feature to the output
             output.append(feature)
 
     return output
 
-def filter_values(data: dict, values: list, property: str = 'value') -> dict:
+
+def filter_values(data: list, values: list, property: str = "value") -> list:
     """Filter the features based on the existence of a specified value
     in one of the property.
 
@@ -203,10 +211,16 @@ def filter_values(data: dict, values: list, property: str = 'value') -> dict:
     :rtype: dict
     """
 
+    return [feature for feature in data if feature["properties"][property] in values]
+
+
+def existed_at(data: list, existed_at: float) -> list:
     return [
         feature
         for feature in data
-        if feature["properties"][property] in values
+        if feature["properties"]["first_seen_at"]
+        <= existed_at
+        <= feature["properties"]["last_seen_at"]
     ]
 
 

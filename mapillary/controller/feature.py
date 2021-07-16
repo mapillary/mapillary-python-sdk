@@ -154,7 +154,6 @@ def get_map_features_in_bbox_controller(
         print(unfiltered_features)
         print(f'$' * 200+'\n\n')
 
-        # ! Handle checking if resulting features lie within bbox
         # ! Handle date checking agains user input
         filtered_features.extend(pipeline(
             data=unfiltered_features,
@@ -163,7 +162,12 @@ def get_map_features_in_bbox_controller(
                 # Skip filtering based on filter_values if they're not specified by the user
                 if filter_values is not None
                 else {},
-                {'filter': 'features_in_bounding_box', 'bbox': bbox}
+                # Check if the features actually lie within the bbox
+                {'filter': 'features_in_bounding_box', 'bbox': bbox},
+                # Check if a feature existed at a certain point of time
+                {'filter': 'existed_at', 'existed_at': filters['existed_at']}
+                if filters['existed_at'] is not None
+                else {}
             ]
         ))
     print(f'{filtered_features}\n\n#################################################')

@@ -297,14 +297,14 @@ def map_feature_points_in_bbox(
     :type bbox: dict
 
     :param filter_values: a list of filter values supported by the API.
-    Default is ['all'] for all filter values
     example: ['object--support--utility-pole', 'object--street-light']
     :type filter_values: list
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
-    examples:
-    - max_date
-    - min_date
+    Chronological filters:
+    - existed_at: checks if a feature existed a certain date depending on the times it 
+    was first and last seen at.
+    - existed_after: filters out the features that existed before a given date
     :type **filters: dict
 
     :return: GeoJSON Object
@@ -338,13 +338,13 @@ def traffic_signs_in_bbox(
 
     :param filter_values: a list of filter values supported by the API,
     example: ['regulatory--advisory-maximum-speed-limit--g1', 'regulatory--atvs-permitted--g1']
-        2. Other - data_first_seen, last_seen, # ? More ... ?
     :type filter_values: list
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
-    examples:
-    - max_date
-    - min_date
+    Chronological filters:
+    - existed_at: checks if a feature existed a certain date depending on the times it 
+    was first and last seen at.
+    - existed_after: filters out the features that existed before a given date
     :type **filters: dict
 
     :return: GeoJSON Object
