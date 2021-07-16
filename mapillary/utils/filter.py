@@ -80,6 +80,7 @@ def pipeline(data: dict, components: list):
         "haversine_dist": haversine_dist,
         "image_type": image_type,
         "organization_id": organization_id,
+        "features_in_bounding_box": features_in_bounding_box,
         # Simply add the mapping of a new function,
         # nothing else will really need to changed
     }
@@ -202,13 +203,11 @@ def filter_values(data: dict, values: list, property: str = 'value') -> dict:
     :rtype: dict
     """
 
-    return {
-        'features': [
-            feature
-            for feature in data["features"]
-            if feature["properties"][property] in values
-        ]
-    }
+    return [
+        feature
+        for feature in data
+        if feature["properties"][property] in values
+    ]
 
 
 def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> dict:
