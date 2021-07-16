@@ -112,7 +112,7 @@ def get_map_features_in_bbox_controller(
     :type filters: dict
 
     :return: GeoJSON
-    :rtype: dict
+    :rtype: str
     """
 
     # Verifying the existence of the filter kwargs
