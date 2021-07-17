@@ -81,7 +81,7 @@ def pipeline(data: list, components: list):
         "image_type": image_type,
         "organization_id": organization_id,
         "features_in_bounding_box": features_in_bounding_box,
-        "existed_at": existed_at,
+        "existed_after": existed_after,
         "existed_before": existed_before,
         # Simply add the mapping of a new function,
         # nothing else will really need to changed
@@ -215,21 +215,20 @@ def filter_values(data: list, values: list, property: str = "value") -> list:
     return [feature for feature in data if feature["properties"][property] in values]
 
 
-def existed_at(data: list, existed_at: float) -> list:
+def existed_after(data: list, existed_after: str) -> list:
     return [
         feature
         for feature in data
-        if feature["properties"]["first_seen_at"]
-        <= existed_at
-        <= feature["properties"]["last_seen_at"]
+        if feature["properties"]["first_seen_at"] > date_to_unix_timestamp(existed_after)
     ]
 
 
-def existed_before(data: list, existed_before: float) -> list:
+def existed_before(data: list, existed_before: str) -> list:
+    print(date_to_unix_timestamp(existed_before))
     return [
         feature
         for feature in data
-        if feature["properties"]["last_seen_at"] >= existed_before
+        if feature["properties"]["first_seen_at"] <= date_to_unix_timestamp(existed_before)
     ]
 
 

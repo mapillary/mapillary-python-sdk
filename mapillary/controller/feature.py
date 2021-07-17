@@ -156,18 +156,18 @@ def get_map_features_in_bbox_controller(
             pipeline(
                 data=unfiltered_features,
                 components=[
+                    # Skip filtering based on filter_values if they're not specified by the user
                     {
                         "filter": "filter_values",
                         "values": filter_values,
                         "property": "value",
                     }
-                    # Skip filtering based on filter_values if they're not specified by the user
                     if filter_values is not None else {},
                     # Check if the features actually lie within the bbox
                     {"filter": "features_in_bounding_box", "bbox": bbox},
-                    # Check if a feature existed at a certain point of time
-                    {"filter": "existed_at", "existed_at": filters["existed_at"]}
-                    if filters["existed_at"] is not None
+                    # Checks if the feature existed after a given date
+                    {"filter": "existed_after", "existed_after": filters["existed_after"]}
+                    if filters["existed_after"] is not None
                     else {},
                     # Filter out all the features after a given timestamp
                     {
@@ -179,6 +179,5 @@ def get_map_features_in_bbox_controller(
                 ],
             )
         )
-    geojson = merged_features_list_to_geojson(filtered_features)
 
-    return geojson
+    return merged_features_list_to_geojson(filtered_features)

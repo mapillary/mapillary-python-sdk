@@ -289,9 +289,9 @@ def map_feature_points_in_bbox(
 
     :param bbox: bbox coordinates as the argument
     example: {
-        'east': 'BOUNDARY_FROM_EAST',
-        'south': 'BOUNDARY_FROM_SOUTH',
         'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
         'north': 'BOUNDARY_FROM_NORTH'
     }
     :type bbox: dict
@@ -302,8 +302,8 @@ def map_feature_points_in_bbox(
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
     Chronological filters:
-    - existed_at: checks if a feature existed a certain date depending on the times it 
-    was first and last seen at.
+    - existed_after: checks if a feature existed after a certain date depending on the time it 
+    was first seen at.
     - existed_before: filters out the features that existed after a given date
     :type **filters: dict
 
@@ -311,10 +311,20 @@ def map_feature_points_in_bbox(
     :rtype: <class 'dict'>
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.map_feature_points_in_bbox(
+        ...     bbox={
+        ...         'west': 'BOUNDARY_FROM_WEST',
+        ...         'south': 'BOUNDARY_FROM_SOUTH',
+        ...         'east': 'BOUNDARY_FROM_EAST',
+        ...         'north': 'BOUNDARY_FROM_NORTH'
+        ...     },
+        ...     filter_values=['object--support--utility-pole', 'object--street-light'],
+        ...     existed_after='2015-01-01',
+        ...     existed_before='2015-01-02'
+        ... )
     """
-
-    # TODO: This functions needs implementation
 
     return feature.get_map_features_in_bbox_controller(
         bbox=bbox, filters=filters, filter_values=filter_values, layer="points"
@@ -329,9 +339,9 @@ def traffic_signs_in_bbox(
 
     :param bbox: bbox coordinates as the argument
     example: {
-        'east': 'BOUNDARY_FROM_EAST',
-        'south': 'BOUNDARY_FROM_SOUTH',
         'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
         'north': 'BOUNDARY_FROM_NORTH'
     }
     :type bbox: dict
@@ -342,8 +352,8 @@ def traffic_signs_in_bbox(
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
     Chronological filters:
-    - existed_at: checks if a feature existed a certain date depending on the times it 
-    was first and last seen at.
+    - existed_after: checks if a feature existed after a certain date depending on the time it 
+    was first seen at.
     - existed_before: filters out the features that existed after a given date
     :type **filters: dict
 
@@ -351,10 +361,23 @@ def traffic_signs_in_bbox(
     :rtype: <class 'dict'>
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.traffic_signs_in_bbox(
+        ...    bbox={
+        ...         'west': 'BOUNDARY_FROM_WEST', 
+        ...         'south': 'BOUNDARY_FROM_SOUTH', 
+        ...         'east': 'BOUNDARY_FROM_EAST', 
+        ...         'north': 'BOUNDARY_FROM_NORTH'
+        ...    },
+        ...    filter_values=[
+        ...        'regulatory--advisory-maximum-speed-limit--g1',
+        ...        'regulatory--atvs-permitted--g1'
+        ...    ],
+        ...    existed_after='2016-01-01',
+        ...    existed_before='2016-01-02'
+        ... )
     """
-
-    # TODO: This functions needs implementation
 
     return feature.get_map_features_in_bbox_controller(
         bbox=bbox, filters=filters, filter_values=filter_values, layer="traffic_signs"
