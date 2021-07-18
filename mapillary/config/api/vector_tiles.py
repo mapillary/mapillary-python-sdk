@@ -25,7 +25,6 @@ class VectorTiles:
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """Contain positions of images and sequences with original
         geometries (not computed) for the layer 'overview'
@@ -36,7 +35,7 @@ class VectorTiles:
         2. geometry: Point
         3. data source: images
 
-        With the following adjustable properties and fields,
+        With the following properties,
 
         1. captured_at, int, timestamp in ms since epoch
         2. id, int, ID of the image
@@ -44,21 +43,13 @@ class VectorTiles:
         4. is_pano, bool, if it is a panoramic image
         """
 
-        for option in options:
-            if option not in ["captured_at", "id", "sequence_id", "is_pano"]:
-                print(option)
-
-        return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_public/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_sequence_layer(
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """Contain positions of images and sequences with original
         geometries (not computed) for the layer 'sequence'
@@ -70,37 +61,24 @@ class VectorTiles:
         3. data source: images captured in a single collection, sorted
         by captured_at
 
-        With the following adjustable properties and fields,
+        With the following properties,
 
         1. captured_at, int, timestamp in ms since epoch
         2. id, string, ID  of the sequence (the legacy sequence key)
-        3. image_id, int, ID of the "best" (first) image representing
+        3. image_id, int, ID of the 'best' (first) image representing
         the sequence
         4. organization_id, int, ID of the organization this image
         belongs to. It can be absent
         5. is_pano, bool, if it is a panoramic sequence
         """
 
-        for option in options:
-            if option not in [
-                "captured_at",
-                "id",
-                "image_id",
-                "organization_id" "is_pano",
-            ]:
-                print(option)
-
-        return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_public/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_image_layer(
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """Contain positions of images and sequences with original
         geometries (not computed) for the layer 'image'
@@ -111,7 +89,7 @@ class VectorTiles:
         2. geometry: Point
         3. data source: images
 
-        With the following adjustable properties and fields,
+        With the following properties,
 
         1. captured_at, int, timestamp in ms since epoch
         2. compass_angle, int, the compass angle of the image
@@ -122,27 +100,13 @@ class VectorTiles:
         5. is_pano, bool, if it is a panoramic image
         """
 
-        for option in options:
-            if option not in [
-                "captured_at",
-                "compass_angle",
-                "id",
-                "sequence_id",
-                "organization_id" "is_pano",
-            ]:
-                print(option)
-
-        return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_public/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}/"
 
     @staticmethod
     def get_computed_overview_layer(
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """Contain positions of images and sequences with original geometries
         (computed) for the layer 'overview'
@@ -153,7 +117,7 @@ class VectorTiles:
         2. geometry: Point
         3. data source: images
 
-        With the following adjustable properties and fields,
+        With the following properties,
 
         1. captured_at, int, timestamp in ms since epoch
         2. id, int, ID of the image
@@ -161,13 +125,8 @@ class VectorTiles:
         4. is_pano, bool, if it is a panoramic image
         """
 
-        for option in options:
-            if option not in ["captured_at", "id", "sequence_id", "is_pano"]:
-                print(option)
-
         return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
+            f"https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/{z}/{x}/{y}/"
         )
 
     @staticmethod
@@ -175,7 +134,6 @@ class VectorTiles:
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """Contain positions of images and sequences with original geometries
         (computed) for the layer 'sequence'
@@ -187,29 +145,19 @@ class VectorTiles:
         3. data source: images captured in a single collection, sorted by
         captured_at
 
-        With the following adjustable properties and fields,
+        With the following properties,
 
         1. captured_at, int, timestamp in ms since epoch
         2. id, string, ID  of the sequence (the legacy sequence key)
-        3. image_id, int, ID of the "best" (first) image representing the
+        3. image_id, int, ID of the 'best' (first) image representing the
         sequence
         4. organization_id, int, ID of the organization this image belongs to.
         It can be absent
         5. is_pano, bool, if it is a panoramic sequence
         """
 
-        for option in options:
-            if option not in [
-                "captured_at",
-                "id",
-                "image_id",
-                "organization_id" "is_pano",
-            ]:
-                print(option)
-
         return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
+            f"https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/{z}/{x}/{y}/"
         )
 
     @staticmethod
@@ -217,7 +165,6 @@ class VectorTiles:
         x: float,
         y: float,
         z: float,
-        options: list,
     ) -> str:
         """Contain positions of images and sequences with original geometries
         (computed) for the layer 'image'
@@ -228,7 +175,7 @@ class VectorTiles:
         2. geometry: Point
         3. data source: images
 
-        With the following adjustable properties and fields,
+        With the following properties,
 
         1. captured_at, int, timestamp in ms since epoch
         2. compass_angle, int, the compass angle of the image
@@ -239,19 +186,8 @@ class VectorTiles:
         5. is_pano, bool, if it is a panoramic image
         """
 
-        for option in options:
-            if option not in [
-                "captured_at",
-                "compass_angle",
-                "id",
-                "sequence_id",
-                "organization_id" "is_pano",
-            ]:
-                print(option)
-
         return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/"
-            f'{z}/{x}/{y}/?fields={",".join(options)}'
+            f"https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2/{z}/{x}/{y}/"
         )
 
     @staticmethod
@@ -269,7 +205,7 @@ class VectorTiles:
         2. geometry: Point
         3. data source: map features
 
-        With the following adjustable properties and fields,
+        With the following resultant properties,
 
         1. id, int, ID of the image
         2. value, string, name of the class which this object represent
@@ -281,7 +217,7 @@ class VectorTiles:
         """
 
         return (
-            f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/{z}/{x}/{y}"
+            f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_point/2/{z}/{x}/{y}/"
         )
 
     @staticmethod
@@ -302,7 +238,7 @@ class VectorTiles:
         2. geometry: Point
         3. data source: map features
 
-        With the following adjustable properties and fields,
+        With the following properties,
 
         1. id, int, ID of the image
         2. value, string, name of the class which this object represent
@@ -313,6 +249,4 @@ class VectorTiles:
         the latest image on which the detection contribute to this map feature
         """
 
-        return (
-            f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_traffic_sign/2/{z}/{x}/{y}"
-        )
+        return f"https://tiles.mapillary.com/maps/vtp/mly_map_feature_traffic_sign/2/{z}/{x}/{y}/"

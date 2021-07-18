@@ -1,14 +1,22 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.config.api.entities
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the class implementation of the
-Entities functionalities for the entity API endpoint aspect
-of the APIv4 of Mapillary.
+This module contains the class implementation of the Entities API endpoints
+as string, for the entity API endpoint aspect of the APIv4 of Mapillary.
 
-REFERENCE,
+For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-1. https://www.mapillary.com/developer/api-documentation/
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
+
+# Local imports
+
+# # Exception Handling
+from models.exceptions import InvalidFieldError
 
 
 class Entities:
@@ -35,7 +43,7 @@ class Entities:
     """
 
     @staticmethod
-    def get_image(image_id: str, options: list) -> str:
+    def get_image(image_id: str, fields: list) -> str:
         """Represents the metadata of the image on the Mapillary platform with
         the following properties.
 
@@ -76,37 +84,43 @@ class Entities:
             22. width - int, width of the original image uploaded
         """
 
-        for option in options:
-            if option not in [
-                "altitude",
-                "atomic_scale",
-                "camera_parameters",
-                "camera_type",
-                "captured_at",
-                "compass_angle",
-                "computed_altitude",
-                "computed_compass_angle",
-                "computed_geometry",
-                "computed_rotation",
-                "exif_orientation",
-                "geometry",
-                "height",
-                "thumb_256_url",
-                "thumb_1024_url",
-                "thumb_2048_url",
-                "merge_cc",
-                "mesh",
-                "quality_score",
-                "sequence",
-                "sfm_cluster",
-                "width",
-            ]:
-                print(option)
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_image_fields(),
+            endpoint="https://graph.mapillary.com/:image_id?fields=",
+            )                
 
-        return f"https://graph.mapillary.com/{image_id}/?fields={','.join(options)}"
+        return f"https://graph.mapillary.com/{image_id}/?fields={','.join(fields)}"
 
     @staticmethod
-    def get_map_feature(map_feature_id: str, options: list) -> str:
+    def get_image_fields() -> list:
+        return [
+            "altitude",
+            "atomic_scale",
+            "camera_parameters",
+            "camera_type",
+            "captured_at",
+            "compass_angle",
+            "computed_altitude",
+            "computed_compass_angle",
+            "computed_geometry",
+            "computed_rotation",
+            "exif_orientation",
+            "geometry",
+            "height",
+            "thumb_256_url",
+            "thumb_1024_url",
+            "thumb_2048_url",
+            "merge_cc",
+            "mesh",
+            "quality_score",
+            "sequence",
+            "sfm_cluster",
+            "width",
+        ]
+
+    @staticmethod
+    def get_map_feature(map_feature_id: str, fields: list) -> str:
         """These are objects with a location which have been derived from
         multiple detections in multiple images.
 
@@ -125,27 +139,32 @@ class Entities:
             from
         """
 
-        for option in options:
-            if option not in [
-                "first_seen_at",
-                "last_seen_at",
-                "object_value",
-                "object_type",
-                "geometry",
-                "images",
-            ]:
-                print(option)
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_map_feature_fields(),
+            endpoint="https://graph.mapillary.com/:map_feature_id?fields=",
+            )
 
         return (
-            f"https://graph.mapillary.com/{map_feature_id}/?"
-            f'fields={",".join(options)}'
+            f"https://graph.mapillary.com/{map_feature_id}/?fields={','.join(fields)}"
         )
+
+    @staticmethod
+    def get_map_feature_fields() -> list:
+        return [
+            "first_seen_at",
+            "last_seen_at",
+            "object_value",
+            "object_type",
+            "geometry",
+            "images",
+        ]
 
     @staticmethod
     def get_detection_with_image_id(
         image_id: str,
-        options: list,
-    ) -> list:
+        fields: list,
+    ) -> str:
         """Represent an object detected in a single image. For convenience
         this version of the API serves detections as collections. They can be
         requested as a collection on the resource (e.g. image) they contribute
@@ -162,20 +181,25 @@ class Entities:
             4. value - string, what kind of object the detection represents
         """
 
-        for option in options:
-            if option not in ["created_at", "geometry", "image", "value"]:
-                print(option)
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_detection_with_image_id_fields(),
+            endpoint="https://graph.mapillary.com/:image_id/detections/?fields=",
+            )        
 
         return (
-            f"https://graph.mapillary.com/{image_id}/detections/?"
-            f'fields={",".join(options)}'
+            f"https://graph.mapillary.com/{image_id}/detections/?fields={','.join(fields)}"
         )
+
+    @staticmethod
+    def get_detection_with_image_id_fields() -> list:
+        return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
     def get_detection_with_map_feature_id(
         map_feature_id: str,
-        options: list,
-    ) -> list:
+        fields: list,
+    ) -> str:
         """Represent an object detected in a single image. For convenience
         this version of the API serves detections as collections. They can be
         requested as a collection on the resource (e.g. map feature) they
@@ -192,19 +216,24 @@ class Entities:
             4. value - string, what kind of object the detection represents
         """
 
-        for option in options:
-            if option not in ["created_at", "geometry", "image", "value"]:
-                print(option)
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_detection_with_map_feature_id_fields(),
+            endpoint="https://graph.mapillary.com/:map_feature_id/detections/?fields=",
+            )
 
         return (
-            f"https://graph.mapillary.com/{map_feature_id}/detections/"
-            f'?fields={",".join(options)}'
+            f"https://graph.mapillary.com/{map_feature_id}/detections/?fields={','.join(fields)}"
         )
+
+    @staticmethod
+    def get_detection_with_map_feature_id_fields() -> list:
+        return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
     def get_organization_id(
         organization_id: str,
-        options: list,
+        fields: list,
     ) -> str:
         """Represents an organization which can own the imagery if users
         upload to it
@@ -218,14 +247,19 @@ class Entities:
             3. description - public description of the organization
         """
 
-        for option in options:
-            if option not in ["slug", "name", "description"]:
-                print(option)
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_organization_id_fields(),
+            endpoint="https://graph.mapillary.com/:organization_id?fields="
+            )
 
         return (
-            f"https://graph.mapillary.com/{organization_id}/"
-            f'?fields={",".join(options)}'
+            f"https://graph.mapillary.com/{organization_id}/?fields={','.join(fields)}"
         )
+
+    @staticmethod
+    def get_organization_id_fields() -> list:
+        return ["slug", "name", "description"]
 
     @staticmethod
     def get_sequence(
@@ -242,3 +276,53 @@ class Entities:
         """
 
         return f"https://graph.mapillary.com/image_ids?sequence_id={sequence_id}"
+
+    @staticmethod
+    def __field_validity(given_fields: list, actual_fields: list, endpoint: str) -> list:
+        """Checks if the given_fields are the actual correct fields for the given endpoint
+        Compares against the list provided in `actual_fields`
+        
+        :param given_fields: The fields given as argument to check in
+        :type given_fields: list
+        
+        :param actual_fields: The fields to check against
+        :type actual_fields: list
+        
+        :param endpoint: The endpoint that is being targeted
+        :type endpoint: str
+        
+        ...
+        :raises InvalidFieldError: Raised when an API endpoint is passed invalid field elements
+        ...
+        
+        :return: The given_fields if everything is correct
+        :rtype: list
+        """
+        
+        # Converting the given_fields into lowercase
+        given_fields = [field.lower() for field in given_fields]
+        
+        # Going through all the given fields
+        for field in given_fields:
+            
+            # If 'all' is encountered ...
+            if field == 'all':
+    
+                # ... simply return the actual_fields list
+               return actual_fields
+
+            # If a field does not exist in the actual_fields ...
+            if field not in actual_fields:
+    
+                # Raise an InvalidFieldError error 
+                raise InvalidFieldError(
+
+                    # Specifying what endpoint was specified
+                    endpoint=endpoint,
+                    
+                    # Specify what field triggered the exception
+                    field=field
+                )
+
+        # If no error occured, and all the fields are correct, return the given_fields
+        return given_fields
