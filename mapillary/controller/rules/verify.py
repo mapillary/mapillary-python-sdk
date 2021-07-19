@@ -102,7 +102,6 @@ def image_bbox_check(kwargs: dict) -> bool:
             "image_type": kwargs.get("image_type", None),
             "compass_angle": kwargs.get("compass_angle", None),
             "sequence_id": kwargs.get("sequence_id", None),
-            "zoom": kwargs.get("zoom", None),
             "organization_id": kwargs.get("organization_id", None),
         }
 

@@ -254,14 +254,14 @@ def image_thumbnail(image_id, resolution=1024) -> str:
 
 
 @auth()
-def images_in_bbox(bbox, **filters):
-    """Gets a complete list of all images within a BBox
+def images_in_bbox(bbox: dict, **filters) -> str:
+    """Gets a complete list of images with custom filter within a BBox
 
     :param bbox: Bounding box coordinates
     example: {
-        'east': 'BOUNDARY_FROM_EAST',
-        'south': 'BOUNDARY_FROM_SOUTH',
         'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
         'north': 'BOUNDARY_FROM_NORTH'
     }
     :type bbox: dict
@@ -273,18 +273,30 @@ def images_in_bbox(bbox, **filters):
     - image_type: pano, flat, or all
     - compass_angle
     - sequence_id
-    - org_id
+    - organization_id
     :type **filters: dict
 
-    :return: Output is a GeoJSON object. Could do the
-    same for sequences and leave as an option to return
-    either image (point) or sequences (line). Sequences
-    would NOT be cut at BBox boundary, would select all
-    sequences which are partially or entirely in BBox
-    :rtype: <class 'dict'>
+    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
+    filters.
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.images_in_bbox(
+        ...     bbox={
+        ...         'west': 'BOUNDARY_FROM_WEST',
+        ...         'south': 'BOUNDARY_FROM_SOUTH',
+        ...         'east': 'BOUNDARY_FROM_EAST',
+        ...         'north': 'BOUNDARY_FROM_NORTH'
+        ...     },
+        ...     max_date='YYYY-MM-DD HH:MM:SS',
+        ...     min_date='YYYY-MM-DD HH:MM:SS',
+        ...     image_type='pano',
+        ...     compass_angle=(0, 360),
+        ...     sequence_id='SEQUENCE_ID',
+        ...     organization_id='ORG_ID'
+        ... )
     """
 
     return image.get_images_in_bbox_controller(
@@ -292,14 +304,15 @@ def images_in_bbox(bbox, **filters):
     )
 
 @auth()
-def sequences_in_bbox(bbox, **filters):
-    """Gets a complete list of all images within a BBox
+def sequences_in_bbox(bbox: dict, **filters) -> str:
+    """Gets a complete list of all sequences of images that satisfy given filters
+    within a BBox.
 
     :param bbox: Bounding box coordinates
     example: {
-        'east': 'BOUNDARY_FROM_EAST',
-        'south': 'BOUNDARY_FROM_SOUTH',
         'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
         'north': 'BOUNDARY_FROM_NORTH'
     }
     :type bbox: dict
@@ -309,20 +322,29 @@ def sequences_in_bbox(bbox, **filters):
     - max_date
     - min_date
     - image_type: pano, flat, or all
-    - compass_angle
-    - sequence_id
     - org_id
     :type **filters: dict
 
-    :return: Output is a GeoJSON object. Could do the
-    same for sequences and leave as an option to return
-    either image (point) or sequences (line). Sequences
-    would NOT be cut at BBox boundary, would select all
-    sequences which are partially or entirely in BBox
-    :rtype: <class 'dict'>
+    :return: Output is a GeoJSON string that contains all the filtered sequences within a bbox. 
+    Sequences would NOT be cut at BBox boundary, would select all sequences which are partially
+    or entirely in BBox
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.sequences_in_bbox(
+        ...     bbox={
+        ...         'west': 'BOUNDARY_FROM_WEST',
+        ...         'south': 'BOUNDARY_FROM_SOUTH',
+        ...         'east': 'BOUNDARY_FROM_EAST',
+        ...         'north': 'BOUNDARY_FROM_NORTH'
+        ...     },
+        ...     max_date='YYYY-MM-DD HH:MM:SS',
+        ...     min_date='YYYY-MM-DD HH:MM:SS',
+        ...     image_type='pano',
+        ...     org_id='ORG_ID'
+        ... )
     """
 
     return image.get_images_in_bbox_controller(
@@ -369,8 +391,8 @@ def map_feature_points_in_bbox(
         ...         'north': 'BOUNDARY_FROM_NORTH'
         ...     },
         ...     filter_values=['object--support--utility-pole', 'object--street-light'],
-        ...     existed_after='2015-01-01',
-        ...     existed_before='2015-01-02'
+        ...     existed_after='YYYY-MM-DD HH:MM:SS',
+        ...     existed_before='YYYY-MM-DD HH:MM:SS'
         ... )
     """
 
@@ -422,8 +444,8 @@ def traffic_signs_in_bbox(
         ...        'regulatory--advisory-maximum-speed-limit--g1',
         ...        'regulatory--atvs-permitted--g1'
         ...    ],
-        ...    existed_after='2016-01-01',
-        ...    existed_before='2016-01-02'
+        ...    existed_after='YYYY-MM-DD HH:MM:SS',
+        ...    existed_before='YYYY-MM-DD HH:MM:SS'
         ... )
     """
 

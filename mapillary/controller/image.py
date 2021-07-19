@@ -200,6 +200,8 @@ def get_images_in_bbox_controller(
 
     :return: GeoJSON
     :rtype: str
+
+    Reference: https://www.mapillary.com/developer/api-documentation/#coverage-tiles
     """
 
     # Check if the given filters are valid ones
