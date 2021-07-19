@@ -7,7 +7,6 @@ This module contains the filter utilies for high level filtering logic
 
 # Local imports
 from utils.time import date_to_unix_timestamp
-from utils.format import feature_list_to_geojson
 
 # Package imports
 import haversine
@@ -83,6 +82,8 @@ def pipeline(data: list, components: list):
         "features_in_bounding_box": features_in_bounding_box,
         "existed_after": existed_after,
         "existed_before": existed_before,
+        "sequence_id": sequence_id,
+        "compass_angle": compass_angle,
         # Simply add the mapping of a new function,
         # nothing else will really need to changed
     }
@@ -111,47 +112,41 @@ def pipeline(data: list, components: list):
     return __data
 
 
-def max_date(data, max_timestamp):
+def max_date(data: list, max_timestamp: str) -> list:
     """Selects only the feature items that are less
     than the max_timestamp
 
     Usage::
-        >>> max_date({'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry':
+        >>> max_date([{'type': 'Feature', 'geometry':
         {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
-        { ... }, ...}]}, '2020-05-23')
+        { ... }, ...}], '2020-05-23')
     """
 
-    return {
-        "features": [
-            feature
-            for feature in data["features"]
-            if feature["properties"]["captured_at"]
-            <= date_to_unix_timestamp(max_timestamp)
-        ]
-    }
+    return [
+        feature
+        for feature in data
+        if feature["properties"]["captured_at"] <= date_to_unix_timestamp(max_timestamp)
+    ]
 
 
-def min_date(data, min_timestamp):
+def min_date(data: list, min_timestamp: str) -> list:
     """Selects only the feature items that are less
     than the min_timestamp
 
     Usage::
-        >>> max_date({'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry':
+        >>> max_date([{'type': 'Feature', 'geometry':
         {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
-        { ... }, ...}]}, '2020-05-23')
+        { ... }, ...}], '2020-05-23')
     """
 
-    return {
-        "features": [
-            feature
-            for feature in data["features"]
-            if feature["properties"]["captured_at"]
-            >= date_to_unix_timestamp(min_timestamp)
-        ]
-    }
+    return [
+        feature
+        for feature in data
+        if feature["properties"]["captured_at"] >= date_to_unix_timestamp(min_timestamp)
+    ]
 
 
-def features_in_bounding_box(data: dict, bbox: dict) -> list:
+def features_in_bounding_box(data: list, bbox: dict) -> list:
     """Filter for extracting features only in a bounding box
 
     :param data: the features list to be checked
@@ -219,7 +214,8 @@ def existed_after(data: list, existed_after: str) -> list:
     return [
         feature
         for feature in data
-        if feature["properties"]["first_seen_at"] > date_to_unix_timestamp(existed_after)
+        if feature["properties"]["first_seen_at"]
+        > date_to_unix_timestamp(existed_after)
     ]
 
 
@@ -228,7 +224,8 @@ def existed_before(data: list, existed_before: str) -> list:
     return [
         feature
         for feature in data
-        if feature["properties"]["first_seen_at"] <= date_to_unix_timestamp(existed_before)
+        if feature["properties"]["first_seen_at"]
+        <= date_to_unix_timestamp(existed_before)
     ]
 
 
@@ -271,18 +268,18 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
     return output
 
 
-def image_type(data: dict, type: str) -> dict:
+def image_type(data: list, type: str) -> list:
     """The parameter might be 'all' (both is_pano == true and false), 'pano'
     (is_pano == true only), or 'flat' (is_pano == false only)
 
     :param data: The data to be filtered
-    :type data: dict
+    :type data: list
 
     :param type: Either 'pano' (True), 'flat' (False), or 'all' (None)
     :type type: str
 
     :return: A feature list
-    :rtype: dict
+    :rtype: list
     """
 
     # Checking what kind of parameter is passed
@@ -292,29 +289,17 @@ def image_type(data: dict, type: str) -> dict:
         if type == "pano"
         # Else false if type == 'falt'
         else False
-        if type == "float"
-        # Else None if type is implicity 'all'
-        else None
     )
 
-    # Since 'all' doesn't change anything, we checking if
-    # variable is not None
-    if bool_for_pano_filtering:
-
-        # Return the select features
-        return {
-            "features": [
-                # Feature only if
-                feature
-                # through the feature in the data
-                for feature in data["features"]
-                # Select only properties that are appropriate (True/False)
-                if feature["properties"]["is_pano"] is bool_for_pano_filtering
-            ]
-        }
+    # Return the images based on image type
+    return [
+        feature
+        for feature in data
+        if feature["properties"]["is_pano"] == bool_for_pano_filtering
+    ]
 
 
-def organization_id(data: dict, organization_ids: list) -> dict:
+def organization_id(data: list, organization_ids: list) -> list:
     """Select only features that contain the specific organization_id
 
     :param data: The data to be filtered
@@ -327,13 +312,55 @@ def organization_id(data: dict, organization_ids: list) -> dict:
     :rtype: dict
     """
 
-    return {
-        "features": [
-            # Feature only if
-            feature
-            # through the feature in the data
-            for feature in data["features"]
-            # if the found org_id is in the list of organization_ids
-            if feature["properties"]["organization_id"] in organization_ids
-        ]
-    }
+    return [
+        # Feature only if
+        feature
+        # through the feature in the data
+        for feature in data
+        # if the found org_id is in the list of organization_ids
+        if "organization_id" in feature["properties"]
+        and feature["properties"]["organization_id"] in organization_ids
+    ]
+
+
+def sequence_id(data: list, ids: list) -> list:
+    """filter out images that do not have the sequence_id in the list of ids
+
+    :param data: The data to be filtered
+    :type data: list
+
+    :param ids: The sequence id(s) to filter through
+    :type ids: list
+
+    :return: A feature list
+    :rtype: list
+    """
+
+    return [feature for feature in data if feature["properties"]["sequence_id"] in ids]
+
+
+def compass_angle(data: list, angles: tuple = (0.0, 360.0)) -> list:
+    """Filter out images that do not lie within compass angle range
+
+    :param data: The data to be filtered
+    :type data: list
+
+    :param angles: The compass angle range to filter through
+    :type angle: tuple of floats
+
+    :return: A feature list
+    :rtype: list
+    """
+
+    if len(angles) != 2:
+        raise ValueError("Angles must be a tuple of length 2")
+    if angles[0] > angles[1]:
+        raise ValueError("First angle must be less than second angle")
+    if angles[0] < 0.0 or angles[1] > 360.0:
+        raise ValueError("Angles must be between 0 and 360")
+
+    return [
+        feature
+        for feature in data
+        if angles[0] <= feature["properties"]["compass_angle"] <= angles[1]
+    ]
