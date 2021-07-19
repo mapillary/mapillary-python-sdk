@@ -18,35 +18,10 @@ from datetime import datetime
 # Local
 from models.client import Client
 from models.auth import auth
-import controller.image as image
 
-
-@auth()
-def greetings(name):
-    """A greetings function temporarily here to test
-    if the package installation is working as expected
-
-    :param name: a name given to the function to print
-    out a basic statement. Temporary solution made to
-    testing if the function is working as expected
-    :type name: str
-
-    :return: None
-    :rtype: None
-
-    Usage::
-        >>> import mapillary as mly
-        >>> mly.greetings('New User')
-        "Hello, there, New User! Nice to meet you.
-        As you can see, work is currently under progress"
-    """
-
-    print(
-        f"Hello, there, {name}! Nice to meet you."
-        "As you can see, work is currently under progress"
-    )
-
-    return None
+# Controllers
+from controller.image import get_image_thumbnail_controller
+import controller.feature as feature
 
 
 def set_access_token(token: str):
@@ -302,33 +277,106 @@ def get_images_in_bbox(bbox, **filters):
 
 
 @auth()
-def get_all_map_features_in_bbox(bbox, layer, **filters):
-    """Extracts all map features within a bounding box (bbox)
+def map_feature_points_in_bbox(
+    bbox: dict, filter_values: list = None, **filters: dict
+) -> str:
+    """Extracts map feature points within a bounding box (bbox)
 
-    :param bbox: Bbox coordinates as the argument
-    :type bbox: list
+    :param bbox: bbox coordinates as the argument
+    example: {
+        'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: dict
 
-    :param layer: 'Points' or 'Traffic Signs'
-    :type layer: str
+    :param filter_values: a list of filter values supported by the API.
+    example: ['object--support--utility-pole', 'object--street-light']
+    :type filter_values: list
 
-    :param **filters: Contains two possible filter arguments,
-        1. Value list as arguments (only one value or multiple values or 'all')
-        2. Other - data_first_seen, last_seen, # ? More ... ?
+    :param **filters: kwarg filters to be applied on the resulted GeoJSON
+    Chronological filters:
+    - existed_after: checks if a feature existed after a certain date depending on the time it 
+    was first seen at.
+    - existed_before: filters out the features that existed after a given date
     :type **filters: dict
 
     :return: GeoJSON Object
-    :rtype: JSON
-    # ? Maybe we should implement a
-    # ? GeoJSON class to keep 'objects'
-    # ? consistent
+    :rtype: <class 'dict'>
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.map_feature_points_in_bbox(
+        ...     bbox={
+        ...         'west': 'BOUNDARY_FROM_WEST',
+        ...         'south': 'BOUNDARY_FROM_SOUTH',
+        ...         'east': 'BOUNDARY_FROM_EAST',
+        ...         'north': 'BOUNDARY_FROM_NORTH'
+        ...     },
+        ...     filter_values=['object--support--utility-pole', 'object--street-light'],
+        ...     existed_after='2015-01-01',
+        ...     existed_before='2015-01-02'
+        ... )
     """
 
-    # TODO: This functions needs implementation
+    return feature.get_map_features_in_bbox_controller(
+        bbox=bbox, filters=filters, filter_values=filter_values, layer="points"
+    )
 
-    return {"Message": "Hello, World!"}
+
+@auth()
+def traffic_signs_in_bbox(
+    bbox: dict, filter_values: list = None, **filters: dict
+) -> str:
+    """Extracts traffic signs within a bounding box (bbox)
+
+    :param bbox: bbox coordinates as the argument
+    example: {
+        'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: dict
+
+    :param filter_values: a list of filter values supported by the API,
+    example: ['regulatory--advisory-maximum-speed-limit--g1', 'regulatory--atvs-permitted--g1']
+    :type filter_values: list
+
+    :param **filters: kwarg filters to be applied on the resulted GeoJSON
+    Chronological filters:
+    - existed_after: checks if a feature existed after a certain date depending on the time it 
+    was first seen at.
+    - existed_before: filters out the features that existed after a given date
+    :type **filters: dict
+
+    :return: GeoJSON Object
+    :rtype: <class 'dict'>
+
+    Usage::
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.traffic_signs_in_bbox(
+        ...    bbox={
+        ...         'west': 'BOUNDARY_FROM_WEST', 
+        ...         'south': 'BOUNDARY_FROM_SOUTH', 
+        ...         'east': 'BOUNDARY_FROM_EAST', 
+        ...         'north': 'BOUNDARY_FROM_NORTH'
+        ...    },
+        ...    filter_values=[
+        ...        'regulatory--advisory-maximum-speed-limit--g1',
+        ...        'regulatory--atvs-permitted--g1'
+        ...    ],
+        ...    existed_after='2016-01-01',
+        ...    existed_before='2016-01-02'
+        ... )
+    """
+
+    return feature.get_map_features_in_bbox_controller(
+        bbox=bbox, filters=filters, filter_values=filter_values, layer="traffic_signs"
+    )
 
 
 @auth()
