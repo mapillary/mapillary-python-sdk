@@ -45,7 +45,6 @@ class InvalidTokenError(MapillaryException):
             + f'fbtrace_id: "{self.fbtrace_id}"'
         )
 
-
 class AuthError(MapillaryException):
     """Raised when a function is called without
     having the access token set in
@@ -212,4 +211,32 @@ class InvalidOptionError(MapillaryException):
         return (
             f'InvalidOptionError: Given {self.param} value, "{self.value}" '
             f'while possible {self.param} options, [{", ".join(self.options)}] '
+        )
+
+class InvalidFieldError(MapillaryException):
+    """Raised when an API endpoint is passed invalid
+    field elements
+    :var endpoint: The API endpoint that was targeted
+    :var field: The invalid field that was passed
+    """
+
+    def __init__(
+        self,
+        endpoint: str,
+        field: str,
+    ):
+        """Initializing InvalidFieldError constructor"""
+        self.endpoint = endpoint
+        self.field = field
+
+    def __str__(self):
+        return (
+            f'InvalidFieldError: The invalid field, "{self.field}" was '
+            f'passed to the endpoint, "{self.endpoint}"'
+        )
+
+    def __repr__(self):
+        return (
+            f'InvalidFieldError: The invalid field, "{self.field}" was '
+            f'passed to the endpoint, "{self.endpoint}"'
         )
