@@ -17,10 +17,14 @@ from config.api.vector_tiles import VectorTiles
 
 # Exception Handling
 from models.exceptions import InvalidImageResolution, InvalidImageKey
-from controller.rules.verify import image_check, thumbnail_size_check, shape_bbox_check
+from controller.rules.verify import image_check, image_bbox_check, sequence_bbox_check
 
 # Client
 from models.client import Client
+
+# Utils
+from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
+from utils.filter import pipeline
 
 # Library imports
 import json
@@ -157,37 +161,37 @@ def get_image_thumbnail_controller(image_id, resolution: int) -> str:
 
 
 def get_images_in_bbox_controller(
-    bbox: dict, layer: str, zoom: int, kwargs: dict
-) -> dict:
+    bbox: dict, layer: str, zoom: int, filters: dict
+) -> str:
     """For getting a complete list of images that lie within a bounding box,
-     that can be filered via the kwargs argument
+     that can be filered via the filters argument
 
     :param bbox: A bounding box representation
     example: {
-        'east': 'BOUNDARY_FROM_EAST',
-        'south': 'BOUNDARY_FROM_SOUTH',
         'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
         'north': 'BOUNDARY_FROM_NORTH'
     }
     :type bbox: dict
 
-    :param kwargs.max_date: The max date that can be filtered upto
-    :type kwargs.max_date: str
+    :param filters.max_date: The max date that can be filtered upto
+    :type filters.max_date: str
 
-    :param kwargs.min_date: The min date that can be filtered from
-    :type kwargs.min_date: str
+    :param filters.min_date: The min date that can be filtered from
+    :type filters.min_date: str
 
-    :param kwargs.image_type: Either 'pano', 'flat' or 'all'
-    :type kwargs.image_type: str
+    :param filters.image_type: Either 'pano', 'flat' or 'all'
+    :type filters.image_type: str
 
-    :param kwargs.compass_angle:
-    :type kwargs.compass_angle: float
+    :param filters.compass_angle:
+    :type filters.compass_angle: float
 
-    :param kwargs.org_id:
-    :type kwargs.org_id: int
+    :param filters.org_id:
+    :type filters.org_id: int
 
-    :param kwargs.sequence_id:
-    :type kwargs.sequence_id: str
+    :param filters.sequence_id:
+    :type filters.sequence_id: str
 
     '''
     :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
@@ -195,43 +199,61 @@ def get_images_in_bbox_controller(
     '''
 
     :return: GeoJSON
-    :rtype: dict
+    :rtype: str
     """
-    # TODO: Refactor with Saif's Adapter classes (PR #58)
 
     # Check if the given filters are valid ones
-    kwargs["zoom"] = kwargs.get("zoom", zoom)
-    shape_bbox_check(kwargs)
+    filters["zoom"] = filters.get("zoom", zoom)
+    image_bbox_check(filters) if layer == "image" else sequence_bbox_check(filters)
 
     # Instantiate the Client
     client = Client()
 
-    # filtered images or sequence data will be appended to the features of this geojson
-    geojson = { "type": "FeatureCollection", "features": [] }
+    # filtered images or sequence data will be appended to this list
+    filtered_results = []
 
     # A list of tiles that are either confined within or intersect with the bbox
-    print(bbox)
     tiles = list(
         mercantile.tiles(
             east=bbox["east"],
             south=bbox["south"],
             west=bbox["west"],
             north=bbox["north"],
-            zooms=14,
+            zooms=zoom,
         )
     )
 
-    print(tiles)
     for tile in tiles:
-        res = client.get(VectorTiles.get_image_layer(x=tile.x, y=tile.y, z=tile.z))
-        
-        data = vt_bytes_to_geojson(b_content=res.content, x=tile.x, y=tile.y, z=14, layer=layer)
-        print(data)
+        url = (
+            VectorTiles.get_image_layer(x=tile.x, y=tile.y, z=tile.z)
+            if layer == "image"
+            else VectorTiles.get_sequence_layer(x=tile.x, y=tile.y, z=tile.z)
+        )
 
-    # Modified later  
-    return data
+        # Get the response from the API
+        res = client.get(url)
+        # If the response is not valid, raise an exception
+        res.raise_for_status()
 
-    
+        # Get the GeoJSON response by decoding the byte tile
+        geojson = vt_bytes_to_geojson(
+            b_content=res.content, layer=layer, z=tile.z, x=tile.x, y=tile.y
+        )
+
+        # Separating feature objects from the decoded data
+        unfiltered_results = geojson_to_feature_object(geojson=geojson)
+
+        # Filter the unfiltered results by the given filters
+        filtered_results.extend(pipeline(
+            data=unfiltered_results,
+            components=[
+                
+            ]
+        )
+    )
+
+    # Modified later
+    return
 
 
 def get_images_in_shape_controller(
@@ -269,6 +291,6 @@ def get_images_in_shape_controller(
 
     # TODO: Requirement# 9
 
-    shape_bbox_check(kwargs)
+    image_bbox_check(kwargs)
 
     return {"Message": "Hello, World!"}
