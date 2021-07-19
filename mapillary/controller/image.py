@@ -61,8 +61,8 @@ def get_image_close_to_controller(
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
 
-    :param kwargs.org_id: The organization to retrieve the data for
-    :type kwargs.org_id: str
+    :param kwargs.organization_id: The organization to retrieve the data for
+    :type kwargs.organization_id: str
 
     :param kwargs.fields: Fields to pass to the endpoint
     :type kwargs.fields: list[str]
@@ -111,8 +111,8 @@ def get_image_looking_at_controller(
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
 
-    :param kwargs.org_id: The organization to retrieve the data for
-    :type kwargs.org_id: str
+    :param kwargs.organization_id: The organization to retrieve the data for
+    :type kwargs.organization_id: str
 
     :param kwargs.fields: Fields to pass to the endpoint
     :type kwargs.fields: list[str]
@@ -187,8 +187,8 @@ def get_images_in_bbox_controller(
     :param filters.compass_angle:
     :type filters.compass_angle: float
 
-    :param filters.org_id:
-    :type filters.org_id: int
+    :param filters.organization_id:
+    :type filters.organization_id: int
 
     :param filters.sequence_id:
     :type filters.sequence_id: str
@@ -204,7 +204,7 @@ def get_images_in_bbox_controller(
 
     # Check if the given filters are valid ones
     filters["zoom"] = filters.get("zoom", zoom)
-    image_bbox_check(filters) if layer == "image" else sequence_bbox_check(filters)
+    filters = image_bbox_check(filters) if layer == "image" else sequence_bbox_check(filters)
 
     # Instantiate the Client
     client = Client()
@@ -241,19 +241,37 @@ def get_images_in_bbox_controller(
         )
 
         # Separating feature objects from the decoded data
-        unfiltered_results = geojson_to_feature_object(geojson=geojson)
+        unfiltered_results = geojson_to_feature_object(geojson)
 
         # Filter the unfiltered results by the given filters
         filtered_results.extend(pipeline(
             data=unfiltered_results,
             components=[
-                
+                {"filter": "features_in_bounding_box", "bbox": bbox}
+                if layer == "image"
+                else {},
+                {'filter': 'max_date', 'max_timestamp': filters.get("max_date")}
+                if filters['max_date'] is not None
+                else {},
+                {'filter': 'min_date', 'min_timestamp': filters.get("min_date")}
+                if filters['min_date'] is not None
+                else {},
+                {'filter': 'image_type', 'type': filters.get("image_type")}
+                if filters['image_type'] is not None or filters['image_type'] != "all"
+                else {},
+                {'filter': 'organization_id', 'organization_ids': filters.get("organization_id")}
+                if filters['organization_id'] is not None
+                else {},
+                {'filter': 'sequence_id', 'ids': filters.get("sequence_id")}
+                if layer == "image" and filters['sequence_id'] is not None
+                else {},
+                {'filter': 'compass_angle', 'angles': filters.get("compass_angle")}
+                if layer == "image" and filters['compass_angle'] is not None 
+                else {},
             ]
-        )
-    )
+        ))
 
-    # Modified later
-    return
+    return merged_features_list_to_geojson(filtered_results)
 
 
 def get_images_in_shape_controller(
