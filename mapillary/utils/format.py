@@ -5,6 +5,7 @@ mapillary.utils.format
 This module deals with converting
 data to and from different file formats
 """
+import json
 
 
 def feature_list_to_geojson(json_data):
@@ -14,16 +15,16 @@ def feature_list_to_geojson(json_data):
     From,
     {'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
-    
+
     To,
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}    
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
 
     return {"type": "FeatureCollection", "features": json_data['features']}
 
 
-def image_entities_to_geojson(json_data_list: list) -> list:
+def features_list_to_geojson(json_data_list: list) -> list:
 
     """From
     [{'geometry': {'type': 'Point', 'coordinates': [30.003755665554, 30.985948744314]},
@@ -36,25 +37,27 @@ def image_entities_to_geojson(json_data_list: list) -> list:
     return {
         "type": "FeatureCollection",
         "features": [
-            image_entity_to_geojson(json_data) for json_data in json_data_list
+            feature_list_to_geojson(json_data) for json_data in json_data_list
         ],
     }
 
 
-def image_entity_to_geojson(json_data: dict) -> dict:
+def feature_to_geojson(json_data: dict) -> dict:
 
     """From
     {'geometry': {'type': 'Point', 'coordinates': [30.003755665554, 30.985948744314]}, 'id':
     '506566177256016'}
     To get,
     {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}}
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
 
     # The geometry property will always be present
     keys = [key for key in json_data.keys() if key != "geometry"]
 
     feature = {"type": "Feature", "geometry": {}, "properties": {}}
+    # Make sure that all keys exist and retrieve their values if specified
+    feature["type"] = feature.get("type", json_data["type"])
     feature["geometry"] = json_data["geometry"]
 
     for key in keys:
@@ -120,3 +123,42 @@ def join_geojson_with_keys(
                         ][new_property]
 
     return geojson_src
+
+
+def geojson_to_feature_object(json_data):
+    """Converts a decoded output GeoJSON to a list of feature objects
+    example:
+    From,
+    {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
+
+    To,
+    [{'type': 'Feature', 'geometry': {'type': 'Point',
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]
+
+    The purpose of this formatting utility is to obtain a list of individual features for
+    decoded tiles that can be later extended to the output GeoJSON
+    """
+
+    return json_data["features"]
+
+
+def merged_features_list_to_geojson(features_list: list) -> str:
+    """Converts a processed features list (i.e. a features list with all the needed features merged
+    from multiple tiles) into a fully-featured GeoJSON
+
+    :param features_list: a list of processed features merged from different tiles within a bbox
+    :type features_list: list
+    example:
+    From,
+    [{'type': 'Feature', 'geometry': {'type': 'Point',
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}, ...]
+
+    To,
+    {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
+    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}, ...]}
+
+    :return: GeoJSON string formatted with all the extra commas removed.
+    :rtype: str
+    """
+    return json.dumps({"type": "FeatureCollection", "features": features_list})
