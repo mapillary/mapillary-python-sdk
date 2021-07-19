@@ -26,8 +26,9 @@ def date_to_unix_timestamp(date: str):
         "1603393200"
     """
 
-    # Returns current timestamp
+    # Returns the epoch current timestamp in milliseconds
     if date == "*":
-        return int(datetime.datetime.now().timestamp())
+        return int(datetime.datetime.now().timestamp()) * 1000
 
-    return int(datetime.datetime.fromisoformat(date).timestamp())
+    # Return the epoch timestamp in miliseconds
+    return int(datetime.datetime.fromisoformat(date).timestamp()) * 1000

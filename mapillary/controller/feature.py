@@ -11,10 +11,23 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-# Local imports
+# Configs
+from config.api.vector_tiles import VectorTiles
 
-# # Exception Handling
-from controller.rules.verify import shape_bbox_check
+# Client
+from models.client import Client
+
+# Exception Handling
+from controller.rules.verify import shape_bbox_check, points_traffic_signs_check
+
+# Utils
+from utils.filter import pipeline
+from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
+
+# Package imports
+import mercantile
+from vt2geojson.tools import vt_bytes_to_geojson
+
 
 def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
     """For extracting all map features within a shape
@@ -51,7 +64,7 @@ def get_feature_map_key_controller(key: str, fields: list) -> dict:
 
     # TODO: Requirement# 11A
 
-    # ? The checking of the fields can be done within the /config/api/, right?    
+    # ? The checking of the fields can be done within the /config/api/, right?
 
     return {"Message": "Hello, World!"}
 
@@ -78,27 +91,93 @@ def get_feature_image_key_controller(key: str, fields: list) -> dict:
     return {"Message": "Hello, World!"}
 
 
-def get_map_features_in_bbox_controller(bbox: list, layer: str, kwargs: dict) -> dict:
-    """For extracing all map features within a bounding box
+def get_map_features_in_bbox_controller(
+    bbox: dict,
+    filter_values: list,
+    filters: dict,
+    layer: str = "points",
+) -> str:
+    """For extracing either map feature points or traffic signs within a bounding box
 
     :param bbox: Bounding box coordinates as argument
-    :type bbox: list
+    :type bbox: dict
 
-    :param layer: 'Points' or 'Traffic' signs
+    :param layer: 'points' or 'traffic_signs'
     :type layer: str
 
-    :param kwargs.value: Value list as argument (only one value or multiple values or “all”)
-    :type kwargs.value: list or str
+    :param filter_values: a list of filter values supported by the API.
+    :type filter_values: list
 
-    :param kwargs.date: Date to filter by
-    :type kwargs.date: str
+    :param filters: Chronological filters
+    :type filters: dict
 
     :return: GeoJSON
-    :rtype: dict
+    :rtype: str
     """
 
-    # TODO: Requirement# 8
-    # ? Maybe split this into 2 functions, one for
-    # ? traffic signs and one for points
+    # Verifying the existence of the filter kwargs
+    filters = points_traffic_signs_check(filters)
 
-    return {"Message": "Hello, World!"}
+    # Instatinatin Client for API requests
+    client = Client()
+
+    # Getting all tiles within or interseting the bbox
+    tiles = list(
+        mercantile.tiles(
+            east=bbox["east"],
+            south=bbox["south"],
+            west=bbox["west"],
+            north=bbox["north"],
+            zooms=14,
+        )
+    )
+
+    # Filtered features lists from different tiles will be merged into
+    # filtered_features
+    filtered_features = []
+
+    for tile in tiles:
+        # Decide which endpoint to send a request to based on the layer
+        url = (
+            VectorTiles.get_map_feature_point(x=tile.x, y=tile.y, z=tile.z)
+            if layer == "points"
+            else VectorTiles.get_map_feature_traffic_signs(x=tile.x, y=tile.y, z=tile.z)
+        )
+
+        res = client.get(url)
+
+        # Decoding byte tiles
+        data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
+
+        # Separating feature objects from the decoded data
+        unfiltered_features = geojson_to_feature_object(data)
+
+        filtered_features.extend(
+            pipeline(
+                data=unfiltered_features,
+                components=[
+                    # Skip filtering based on filter_values if they're not specified by the user
+                    {
+                        "filter": "filter_values",
+                        "values": filter_values,
+                        "property": "value",
+                    }
+                    if filter_values is not None else {},
+                    # Check if the features actually lie within the bbox
+                    {"filter": "features_in_bounding_box", "bbox": bbox},
+                    # Checks if the feature existed after a given date
+                    {"filter": "existed_after", "existed_after": filters["existed_after"]}
+                    if filters["existed_after"] is not None
+                    else {},
+                    # Filter out all the features after a given timestamp
+                    {
+                        "filter": "existed_before",
+                        "existed_before": filters["existed_before"],
+                    }
+                    if filters["existed_before"] is not None
+                    else {},
+                ],
+            )
+        )
+
+    return merged_features_list_to_geojson(filtered_features)

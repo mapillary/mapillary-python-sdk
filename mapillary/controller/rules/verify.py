@@ -14,6 +14,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 
 from models.exceptions import ContradictingError, InvalidKwargError, InvalidOptionError
 
+
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
     if kwargs is not None:
         for key in kwargs.keys():
@@ -27,7 +28,7 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
     # If 'min_date' or 'max_date' is in the keys
     if ("min_date" in kwargs or "max_date" in kwargs) and ("daterange" in kwargs):
-        
+
         # Check if two contradicting keys have not been given
         raise ContradictingError(
             contradicts="daterange",
@@ -38,13 +39,11 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
     # If 'zoom' is in kwargs
     if ("zoom" in kwargs) and (kwargs["zoom"] < 14 or kwargs["zoom"] > 17):
-        
+
         # Raising exception for invalid zoom value
         raise InvalidOptionError(
-            param='zoom',
-            value=kwargs["zoom"],
-            options=[14, 15, 16, 17]
-            )
+            param="zoom", value=kwargs["zoom"], options=[14, 15, 16, 17]
+        )
 
     # if 'image_type' is in kwargs
     if ('image_type' in kwargs) and (kwargs['image_type'] not in ['pano', 'flat', 'all']):
@@ -58,17 +57,22 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
     return True
 
+
 def image_check(kwargs) -> bool:
 
-    return kwarg_check(kwargs=kwargs, options=[
-                "min_date",
-                "max_date",
-                "daterange",
-                "radius",
-                "image_type",
-                "org_id",
-                "fields",
-            ], callback='image_check')
+    return kwarg_check(
+        kwargs=kwargs,
+        options=[
+            "min_date",
+            "max_date",
+            "daterange",
+            "radius",
+            "image_type",
+            "org_id",
+            "fields",
+        ],
+        callback="image_check",
+    )
 
 
 def thumbnail_size_check(thumbnail_size: int) -> bool:
@@ -77,10 +81,9 @@ def thumbnail_size_check(thumbnail_size: int) -> bool:
 
     # Raising exception for thumbnail_size value
     raise InvalidOptionError(
-        param='thumbnail_size',
-        value=thumbnail_size,
-        options=[256, 1024, 2048]
-        )
+        param="thumbnail_size", value=thumbnail_size, options=[256, 1024, 2048]
+    )
+
 
 def image_bbox_check(kwargs: dict) -> bool:
 
@@ -103,3 +106,17 @@ def sequence_bbox_check(kwargs: dict) -> bool:
                 "org_id",
                 "zoom",
             ], callback='sequence_bbox_check')
+
+
+
+def points_traffic_signs_check(kwargs: dict) -> dict:
+
+    if kwarg_check(
+        kwargs=kwargs,
+        options=["existed_after", "existed_before"],
+        callback="points_traffic_signs_check",
+    ):
+        return {
+            "existed_after": kwargs.get("existed_after", None),
+            "existed_before": kwargs.get("existed_before", None),
+        }
