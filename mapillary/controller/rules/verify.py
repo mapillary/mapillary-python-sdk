@@ -68,7 +68,7 @@ def image_check(kwargs) -> bool:
             "daterange",
             "radius",
             "image_type",
-            "org_id",
+            "organization_id",
             "fields",
         ],
         callback="image_check",
@@ -87,25 +87,40 @@ def thumbnail_size_check(thumbnail_size: int) -> bool:
 
 def image_bbox_check(kwargs: dict) -> bool:
 
-    return kwarg_check(kwargs=kwargs, options=[
+    if kwarg_check(kwargs=kwargs, options=[
                 "max_date",
                 "min_date",
                 "image_type",
                 "compass_angle",
-                "org_id",
+                "organization_id",
                 "sequence_id",
                 "zoom",
-            ], callback='image_bbox_check')
+            ], callback='image_bbox_check'): 
+        return {
+            "max_date": kwargs.get("max_date", None),
+            "min_date": kwargs.get("min_date", None),
+            "image_type": kwargs.get("image_type", None),
+            "compass_angle": kwargs.get("compass_angle", None),
+            "sequence_id": kwargs.get("sequence_id", None),
+            "zoom": kwargs.get("zoom", None),
+            "organization_id": kwargs.get("organization_id", None),
+        }
 
 def sequence_bbox_check(kwargs: dict) -> bool:
 
-    return kwarg_check(kwargs=kwargs, options=[
+    if kwarg_check(kwargs=kwargs, options=[
                 "max_date",
                 "min_date",
                 "image_type",
-                "org_id",
+                "organization_id",
                 "zoom",
-            ], callback='sequence_bbox_check')
+            ], callback='sequence_bbox_check'):
+        return {
+            "max_date": kwargs.get("max_date", None),
+            "min_date": kwargs.get("min_date", None),
+            "image_type": kwargs.get("image_type", None),
+            "organization_id": kwargs.get("organization_id", None),
+        }
 
 
 
