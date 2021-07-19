@@ -253,7 +253,7 @@ def image_thumbnail(image_id, resolution=1024) -> str:
 
 
 @auth()
-def images_in_bbox(bbox, layer="image", zoom=14, **filters):
+def images_in_bbox(bbox, **filters):
     """Gets a complete list of all images within a BBox
 
     :param bbox: Bounding box coordinates
@@ -287,9 +287,46 @@ def images_in_bbox(bbox, layer="image", zoom=14, **filters):
     """
 
     return image.get_images_in_bbox_controller(
-        bbox=bbox, layer=layer, zoom=zoom, kwargs=filters
+        bbox=bbox, layer='image', zoom=14, filters=filters
     )
 
+@auth()
+def sequences_in_bbox(bbox, **filters):
+    """Gets a complete list of all images within a BBox
+
+    :param bbox: Bounding box coordinates
+    example: {
+        'east': 'BOUNDARY_FROM_EAST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'west': 'BOUNDARY_FROM_WEST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: dict
+
+    :param **filters: Different filters that may be applied to the output.
+    example filters:
+    - max_date
+    - min_date
+    - image_type: pano, flat, or all
+    - compass_angle
+    - sequence_id
+    - org_id
+    :type **filters: dict
+
+    :return: Output is a GeoJSON object. Could do the
+    same for sequences and leave as an option to return
+    either image (point) or sequences (line). Sequences
+    would NOT be cut at BBox boundary, would select all
+    sequences which are partially or entirely in BBox
+    :rtype: <class 'dict'>
+
+    Usage::
+        # TODO: Write code here to display how the function works
+    """
+
+    return image.get_images_in_bbox_controller(
+        bbox=bbox, layer='sequence', zoom=14, filters=filters
+    )
 
 @auth()
 def get_all_map_features_in_bbox(bbox, layer, **filters):
