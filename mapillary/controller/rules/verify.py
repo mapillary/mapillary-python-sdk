@@ -82,7 +82,7 @@ def thumbnail_size_check(thumbnail_size: int) -> bool:
         options=[256, 1024, 2048]
         )
 
-def shape_bbox_check(kwargs: dict) -> bool:
+def image_bbox_check(kwargs: dict) -> bool:
 
     return kwarg_check(kwargs=kwargs, options=[
                 "max_date",
@@ -92,4 +92,14 @@ def shape_bbox_check(kwargs: dict) -> bool:
                 "org_id",
                 "sequence_id",
                 "zoom",
-            ], callback='shape_bbox_check')    
+            ], callback='image_bbox_check')
+
+def sequence_bbox_check(kwargs: dict) -> bool:
+
+    return kwarg_check(kwargs=kwargs, options=[
+                "max_date",
+                "min_date",
+                "image_type",
+                "org_id",
+                "zoom",
+            ], callback='sequence_bbox_check')
