@@ -350,7 +350,7 @@ class VectorTilesAdapter(object):
         # Convert bytes to GeoJSON
         return vt_bytes_to_geojson(
             # Paramters, appropriately
-            b_content=self.client.get(url),
+            b_content=self.client.get(url).content,
             x=tile.x,
             y=tile.y,
             z=tile.z,
