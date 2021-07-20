@@ -12,6 +12,7 @@ REFERENCE,
 
 # ! TODO: Remove options from VectorTiles
 
+
 class VectorTiles:
     """Vector tiles provide an easy way to visualize vast amounts of
     data. Mapillary APIs are heavily based on vector tiles to provide
