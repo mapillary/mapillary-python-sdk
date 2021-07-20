@@ -8,40 +8,6 @@ data to and from different file formats
 import json
 
 
-def feature_list_to_geojson(json_data):
-    """Converts from only a given feature list into a fully featured
-    GeoJSON
-
-    From,
-    {'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
-
-    To,
-    {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
-    """
-
-    return {"type": "FeatureCollection", "features": json_data["features"]}
-
-
-def features_list_to_geojson(json_data_list: list) -> list:
-
-    """From
-    [{'geometry': {'type': 'Point', 'coordinates': [30.003755665554, 30.985948744314]},
-    'id': '506566177256016'}, ..., ... ]
-    To get,
-    {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-    'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
-    """
-
-    return {
-        "type": "FeatureCollection",
-        "features": [
-            feature_list_to_geojson(json_data) for json_data in json_data_list
-        ],
-    }
-
-
 def feature_to_geojson(json_data: dict) -> dict:
 
     """From
