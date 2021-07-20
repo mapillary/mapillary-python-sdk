@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+
+"""
+tests.utils.test_extract
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+For testing the functions under mapillary/utils/extract.py
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
+"""
+
 import requests
 import mercantile
 from vt2geojson.tools import vt_bytes_to_geojson
