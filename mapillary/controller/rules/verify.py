@@ -26,17 +26,6 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
                     options=options,
                 )
 
-    # If 'min_date' or 'max_date' is in the keys
-    if ("min_date" in kwargs or "max_date" in kwargs) and ("daterange" in kwargs):
-
-        # Check if two contradicting keys have not been given
-        raise ContradictingError(
-            contradicts="daterange",
-            contradicted="min_date/max_date",
-            message="Using either or both of min_date and max_date, or use daterange, "
-            "but not both at the same time",
-        )
-
     # If 'zoom' is in kwargs
     if ("zoom" in kwargs) and (kwargs["zoom"] < 14 or kwargs["zoom"] > 17):
 
@@ -67,7 +56,6 @@ def image_check(kwargs) -> bool:
         options=[
             "min_date",
             "max_date",
-            "daterange",
             "radius",
             "image_type",
             "organization_id",
