@@ -10,6 +10,7 @@ filtering logic
 # Package imports
 import datetime
 
+
 def date_to_unix_timestamp(date: str):
     """A utility function that converts the given date
     into its UNIX epoch timestamp equivalent. It accepts the formats, ranging from

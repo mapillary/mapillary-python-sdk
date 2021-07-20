@@ -21,7 +21,7 @@ def feature_list_to_geojson(json_data):
     'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
     """
 
-    return {"type": "FeatureCollection", "features": json_data['features']}
+    return {"type": "FeatureCollection", "features": json_data["features"]}
 
 
 def features_list_to_geojson(json_data_list: list) -> list:

@@ -28,9 +28,9 @@ def extract_properties(geojson: dict, properties: list) -> dict:
         >>> from tests.utils.test_extract import test_extract_properties
         >>> test_extract_properties(['id'])
         {"Test": "Success"}
-    
+
     Test::
-        >>> pytest -m tests/    
+        >>> pytest -m tests/
     """
 
     extracted_fields = {}
