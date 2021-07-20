@@ -18,8 +18,8 @@ from config.api.entities import Entities
 from config.api.vector_tiles import VectorTiles
 
 # Exception Handling
-from models.exceptions import InvalidImageResolution, InvalidImageKey
-from controller.rules.verify import image_check, image_bbox_check, sequence_bbox_check
+from models.exceptions import InvalidImageKey
+from controller.rules.verify import image_check, image_bbox_check, sequence_bbox_check, resolution_check
 
 # Client
 from models.client import Client
@@ -57,20 +57,14 @@ def get_image_close_to_controller(
     :param kwargs.max_date: The maximum date to filter upto
     :type kwargs.max_date: str
 
-    :param kwargs.daterange: A list of a range to filter by
-    :type kwargs.daterange: list
-
-    :param kwargs.radius: The radius that the geometry points will lie in
-    :type kwargs.radius: float
-
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
 
     :param kwargs.organization_id: The organization to retrieve the data for
     :type kwargs.organization_id: str
 
-    :param kwargs.fields: Fields to pass to the endpoint
-    :type kwargs.fields: list[str]
+    :param kwargs.radius: The radius that the geometry points will lie in
+    :type kwargs.radius: float
 
     :return: GeoJSON
     :rtype: dict
@@ -80,7 +74,9 @@ def get_image_close_to_controller(
     # exception
     image_check(kwargs=kwargs)
 
-    data = VectorTilesAdapter().fetch_layer(
+    filtered_data = []
+
+    unfiltered_data = VectorTilesAdapter().fetch_layer(
         layer="image",
         zoom=kwargs["zoom"] if "zoom" in kwargs else 14,
         longitude=longitude,
@@ -88,23 +84,37 @@ def get_image_close_to_controller(
     )
 
     # Filtering for the attributes obtained above
-    if data["features"] != {} and data["features"][0]["properties"] != {}:
-        return pipeline(
-            data=data,
-            components=[
-                {"filter": "image_type", "tile": kwargs["image_type"]}
-                if "image_type" in kwargs
-                else {},
-                {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-                if "org_id" in kwargs
-                else {},
-                {
-                    "filter": "haversine_dist",
-                    "radius": kwargs["radius"] if "radius" in kwargs else 1000,
-                    "coords": [longitude, latitude],
-                },
-            ],
+    if unfiltered_data["features"] != {} and unfiltered_data["features"][0]["properties"] != {}:
+        filtered_data.extend(
+            pipeline(
+                data=unfiltered_data,
+                components=[
+                    # Filter using kwargs.min_date
+                    {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
+                    if "min_date" in kwargs
+                    else {},
+                    # Filter using kwargs.max_date
+                    {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
+                    if "max_date" in kwargs
+                    else {},                
+                    # Filter using kwargs.image_type
+                    {"filter": "image_type", "tile": kwargs["image_type"]}
+                    if "image_type" in kwargs
+                    else {},
+                    # Filter using kwargs.organization_id
+                    {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
+                    if "org_id" in kwargs
+                    else {},
+                    # Filter using kwargs.radius
+                    {"filter": "haversine_dist", "radius": kwargs["radius"],
+                        "coords": [longitude, latitude]}
+                    if "radius" in kwargs
+                    else {},
+                ],
+            )
         )
+
+    return merged_features_list_to_geojson(filtered_data)
 
 
 def get_image_looking_at_controller(
@@ -172,8 +182,7 @@ def get_image_thumbnail_controller(image_id, resolution: int) -> str:
     """
 
     # check if the entered resolution is one of the supported image sizes
-    if resolution not in [256, 1024, 2048]:
-        raise InvalidImageResolution(resolution)
+    resolution_check(resolution)
 
     try:
         res = Client().get(Entities.get_image(image_id, [f"thumb_{resolution}_url"]))
@@ -181,9 +190,7 @@ def get_image_thumbnail_controller(image_id, resolution: int) -> str:
         # If given ID is an invalid image ID, let the user know
         raise InvalidImageKey(image_id)
 
-    thumbnail = json.loads(res.content.decode("utf-8"))[f"thumb_{resolution}_url"]
-
-    return thumbnail
+    return json.loads(res.content.decode("utf-8"))[f"thumb_{resolution}_url"]
 
 
 def get_images_in_bbox_controller(

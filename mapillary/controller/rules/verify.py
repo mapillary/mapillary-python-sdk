@@ -92,11 +92,11 @@ def image_check(kwargs) -> bool:
     )
 
 
-def thumbnail_size_check(thumbnail_size: int) -> bool:
+def resolution_check(resolution: int) -> bool:
     """Checking for the proper thumbnail size of the argument
     
-    :param thumbnail_size: The image size to fetch for
-    :type thumbnail_size: int
+    :param resolution: The image size to fetch for
+    :type resolution: int
 
     '''
     :raises InvalidOptionError: Invalid thumbnail size passed raises exception
@@ -106,13 +106,11 @@ def thumbnail_size_check(thumbnail_size: int) -> bool:
     :rtype: bool
     """
 
-    if thumbnail_size in [256, 1024, 2048]:
-        return True
-
-    # Raising exception for thumbnail_size value
-    raise InvalidOptionError(
-        param="thumbnail_size", value=thumbnail_size, options=[256, 1024, 2048]
-    )
+    if resolution not in [256, 1024, 2048]:
+        # Raising exception for resolution value
+        raise InvalidOptionError(
+            param="resolution", value=resolution, options=[256, 1024, 2048]
+        )
 
 
 def image_bbox_check(kwargs: dict) -> dict:
