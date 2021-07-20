@@ -162,11 +162,15 @@ def get_map_features_in_bbox_controller(
                         "values": filter_values,
                         "property": "value",
                     }
-                    if filter_values is not None else {},
+                    if filter_values is not None
+                    else {},
                     # Check if the features actually lie within the bbox
                     {"filter": "features_in_bounding_box", "bbox": bbox},
                     # Checks if the feature existed after a given date
-                    {"filter": "existed_after", "existed_after": filters["existed_after"]}
+                    {
+                        "filter": "existed_after",
+                        "existed_after": filters["existed_after"],
+                    }
                     if filters["existed_after"] is not None
                     else {},
                     # Filter out all the features after a given timestamp

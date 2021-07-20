@@ -86,23 +86,21 @@ def get_image_close_to_controller(
     )
 
     # Filtering for the attributes obtained above
-    if data['features'] != {} and data["features"][0]["properties"] != {}:
+    if data["features"] != {} and data["features"][0]["properties"] != {}:
         return pipeline(
             data=data,
             components=[
                 {"filter": "image_type", "tile": kwargs["image_type"]}
                 if "image_type" in kwargs
                 else {},
-
                 {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
                 if "org_id" in kwargs
                 else {},
-
                 {
                     "filter": "haversine_dist",
-                    "radius": kwargs["radius"] if 'radius' in kwargs else 1000,
+                    "radius": kwargs["radius"] if "radius" in kwargs else 1000,
                     "coords": [longitude, latitude],
-                }
+                },
             ],
         )
 
@@ -232,7 +230,9 @@ def get_images_in_bbox_controller(
 
     # Check if the given filters are valid ones
     filters["zoom"] = filters.get("zoom", zoom)
-    filters = image_bbox_check(filters) if layer == "image" else sequence_bbox_check(filters)
+    filters = (
+        image_bbox_check(filters) if layer == "image" else sequence_bbox_check(filters)
+    )
 
     # Instantiate the Client
     client = Client()
@@ -272,32 +272,38 @@ def get_images_in_bbox_controller(
         unfiltered_results = geojson_to_feature_object(geojson)
 
         # Filter the unfiltered results by the given filters
-        filtered_results.extend(pipeline(
-            data=unfiltered_results,
-            components=[
-                {"filter": "features_in_bounding_box", "bbox": bbox}
-                if layer == "image"
-                else {},
-                {'filter': 'max_date', 'max_timestamp': filters.get("max_date")}
-                if filters['max_date'] is not None
-                else {},
-                {'filter': 'min_date', 'min_timestamp': filters.get("min_date")}
-                if filters['min_date'] is not None
-                else {},
-                {'filter': 'image_type', 'type': filters.get("image_type")}
-                if filters['image_type'] is not None or filters['image_type'] != "all"
-                else {},
-                {'filter': 'organization_id', 'organization_ids': filters.get("organization_id")}
-                if filters['organization_id'] is not None
-                else {},
-                {'filter': 'sequence_id', 'ids': filters.get("sequence_id")}
-                if layer == "image" and filters['sequence_id'] is not None
-                else {},
-                {'filter': 'compass_angle', 'angles': filters.get("compass_angle")}
-                if layer == "image" and filters['compass_angle'] is not None 
-                else {},
-            ]
-        ))
+        filtered_results.extend(
+            pipeline(
+                data=unfiltered_results,
+                components=[
+                    {"filter": "features_in_bounding_box", "bbox": bbox}
+                    if layer == "image"
+                    else {},
+                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
+                    if filters["max_date"] is not None
+                    else {},
+                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
+                    if filters["min_date"] is not None
+                    else {},
+                    {"filter": "image_type", "type": filters.get("image_type")}
+                    if filters["image_type"] is not None
+                    or filters["image_type"] != "all"
+                    else {},
+                    {
+                        "filter": "organization_id",
+                        "organization_ids": filters.get("organization_id"),
+                    }
+                    if filters["organization_id"] is not None
+                    else {},
+                    {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                    if layer == "image" and filters["sequence_id"] is not None
+                    else {},
+                    {"filter": "compass_angle", "angles": filters.get("compass_angle")}
+                    if layer == "image" and filters["compass_angle"] is not None
+                    else {},
+                ],
+            )
+        )
 
     return merged_features_list_to_geojson(filtered_results)
 

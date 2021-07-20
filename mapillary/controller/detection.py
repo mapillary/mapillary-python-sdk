@@ -11,6 +11,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
+
 def get_image_detections_controller(key: str) -> dict:
     """Get image detections with given (image) key
 
@@ -34,10 +35,10 @@ def get_map_feature_detections_controller(key: str) -> dict:
     :type key: str
 
     :return: GeoJSON
-    :rtype: dict    
+    :rtype: dict
     """
 
     # TODO: Requirement# 5
-    # TODO: Needs to have key checked if it belongs to a map_feature    
+    # TODO: Needs to have key checked if it belongs to a map_feature
 
     return {"Message": "Hello, World!"}
