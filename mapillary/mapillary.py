@@ -369,7 +369,7 @@ def map_feature_points_in_bbox(
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
     Chronological filters:
-    - existed_after: checks if a feature existed after a certain date depending on the time it
+    - existed_at: checks if a feature existed after a certain date depending on the time it
     was first seen at.
     - existed_before: filters out the features that existed after a given date
     :type **filters: dict
@@ -388,7 +388,7 @@ def map_feature_points_in_bbox(
         ...         'north': 'BOUNDARY_FROM_NORTH'
         ...     },
         ...     filter_values=['object--support--utility-pole', 'object--street-light'],
-        ...     existed_after='YYYY-MM-DD HH:MM:SS',
+        ...     existed_at='YYYY-MM-DD HH:MM:SS',
         ...     existed_before='YYYY-MM-DD HH:MM:SS'
         ... )
     """
@@ -419,7 +419,7 @@ def traffic_signs_in_bbox(
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
     Chronological filters:
-    - existed_after: checks if a feature existed after a certain date depending on the time it
+    - existed_at: checks if a feature existed after a certain date depending on the time it
     was first seen at.
     - existed_before: filters out the features that existed after a given date
     :type **filters: dict
@@ -441,7 +441,7 @@ def traffic_signs_in_bbox(
         ...        'regulatory--advisory-maximum-speed-limit--g1',
         ...        'regulatory--atvs-permitted--g1'
         ...    ],
-        ...    existed_after='YYYY-MM-DD HH:MM:SS',
+        ...    existed_at='YYYY-MM-DD HH:MM:SS',
         ...    existed_before='YYYY-MM-DD HH:MM:SS'
         ... )
     """

@@ -189,10 +189,10 @@ def points_traffic_signs_check(kwargs: dict) -> dict:
 
     if kwarg_check(
         kwargs=kwargs,
-        options=["existed_after", "existed_before"],
+        options=["existed_at", "existed_before"],
         callback="points_traffic_signs_check",
     ):
         return {
-            "existed_after": kwargs.get("existed_after", None),
+            "existed_at": kwargs.get("existed_at", None),
             "existed_before": kwargs.get("existed_before", None),
         }

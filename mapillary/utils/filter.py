@@ -85,7 +85,7 @@ def pipeline(data: list, components: list):
         "image_type": image_type,
         "organization_id": organization_id,
         "features_in_bounding_box": features_in_bounding_box,
-        "existed_after": existed_after,
+        "existed_at": existed_at,
         "existed_before": existed_before,
         "sequence_id": sequence_id,
         "compass_angle": compass_angle,
@@ -216,12 +216,12 @@ def filter_values(data: list, values: list, property: str = "value") -> list:
     return [feature for feature in data if feature["properties"][property] in values]
 
 
-def existed_after(data: list, existed_after: str) -> list:
+def existed_at(data: list, existed_at: str) -> list:
     return [
         feature
         for feature in data
         if feature["properties"]["first_seen_at"]
-        > date_to_unix_timestamp(existed_after)
+        > date_to_unix_timestamp(existed_at)
     ]
 
 
