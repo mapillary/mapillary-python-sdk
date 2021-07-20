@@ -11,16 +11,15 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-# Local imports
-
-# # Entities
+# Configs
 from config.api.entities import Entities
+from config.api.vector_tiles import VectorTiles
 
-# # Exception Handling
+# Exception Handling
 from models.exceptions import InvalidImageResolution, InvalidImageKey
-from controller.rules.verify import image_check, thumbnail_size_check, shape_bbox_check
+from controller.rules.verify import image_check, image_bbox_check, sequence_bbox_check
 
-# # Client
+# Client
 from models.client import Client
 
 # # Adapters
@@ -28,10 +27,14 @@ from models.api.vector_tiles import VectorTilesAdapter
 
 # # Utilities
 from utils.filter import pipeline
+from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
 
 # Library imports
 import json
+import mercantile
 from requests import HTTPError
+from vt2geojson.tools import vt_bytes_to_geojson
+
 
 def get_image_close_to_controller(
     longitude: float,
@@ -61,9 +64,8 @@ def get_image_close_to_controller(
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
 
-    :param kwargs.org_id: The organization to retrieve the data for. Use 856718694933026 for
-    testing
-    :type kwargs.org_id: str
+    :param kwargs.organization_id: The organization to retrieve the data for
+    :type kwargs.organization_id: str
 
     :param kwargs.fields: Fields to pass to the endpoint
     :type kwargs.fields: list[str]
@@ -104,6 +106,7 @@ def get_image_close_to_controller(
             ],
         )
 
+
 def get_image_looking_at_controller(
     coordinates_looker: tuple,
     coordinates_at: tuple,
@@ -134,8 +137,8 @@ def get_image_looking_at_controller(
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
 
-    :param kwargs.org_id: The organization to retrieve the data for
-    :type kwargs.org_id: str
+    :param kwargs.organization_id: The organization to retrieve the data for
+    :type kwargs.organization_id: str
 
     :param kwargs.fields: Fields to pass to the endpoint
     :type kwargs.fields: list[str]
@@ -150,8 +153,9 @@ def get_image_looking_at_controller(
     # has been passed to  the function
     # If that is the case, throw an exception
     image_check(kwargs=kwargs)
-    
+
     return {"Message": "Hello, World!"}
+
 
 def get_image_thumbnail_controller(image_id, resolution: int) -> str:
     """This controller holds the business logic for retrieving
@@ -181,20 +185,39 @@ def get_image_thumbnail_controller(image_id, resolution: int) -> str:
 
     return thumbnail
 
-def get_images_in_bbox_controller(bbox: list, kwargs: dict) -> dict:
-    """For getting a complete list of images that lie within a bounding box, that can be filered via the kwargs argument
 
-    :param bbox: A bounding box representation ([east, south, west, north] as coordinates)
-    :type bbox: list
+def get_images_in_bbox_controller(
+    bbox: dict, layer: str, zoom: int, filters: dict
+) -> str:
+    """For getting a complete list of images that lie within a bounding box,
+     that can be filered via the filters argument
 
-    :param kwargs.max_date: The max date that can be filtered upto
-    :type kwargs.max_date: str
+    :param bbox: A bounding box representation
+    example: {
+        'west': 'BOUNDARY_FROM_WEST',
+        'south': 'BOUNDARY_FROM_SOUTH',
+        'east': 'BOUNDARY_FROM_EAST',
+        'north': 'BOUNDARY_FROM_NORTH'
+    }
+    :type bbox: dict
 
-    :param kwargs.min_date: The min date that can be filtered from
-    :type kwargs.min_date: str
+    :param filters.max_date: The max date that can be filtered upto
+    :type filters.max_date: str
 
-    :param kwargs.is_pano: Either 'pano', 'flat' or 'all'
-    :type kwargs.is_pano: str
+    :param filters.min_date: The min date that can be filtered from
+    :type filters.min_date: str
+
+    :param filters.image_type: Either 'pano', 'flat' or 'all'
+    :type filters.image_type: str
+
+    :param filters.compass_angle:
+    :type filters.compass_angle: float
+
+    :param filters.organization_id:
+    :type filters.organization_id: int
+
+    :param filters.sequence_id:
+    :type filters.sequence_id: str
 
     '''
     :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
@@ -202,18 +225,86 @@ def get_images_in_bbox_controller(bbox: list, kwargs: dict) -> dict:
     '''
 
     :return: GeoJSON
-    :rtype: dict
+    :rtype: str
+
+    Reference: https://www.mapillary.com/developer/api-documentation/#coverage-tiles
     """
 
-    # TODO: Requirement# 7
+    # Check if the given filters are valid ones
+    filters["zoom"] = filters.get("zoom", zoom)
+    filters = image_bbox_check(filters) if layer == "image" else sequence_bbox_check(filters)
 
-    shape_bbox_check(kwargs)
+    # Instantiate the Client
+    client = Client()
 
-    return {"Message": "Hello, World!"}
+    # filtered images or sequence data will be appended to this list
+    filtered_results = []
+
+    # A list of tiles that are either confined within or intersect with the bbox
+    tiles = list(
+        mercantile.tiles(
+            east=bbox["east"],
+            south=bbox["south"],
+            west=bbox["west"],
+            north=bbox["north"],
+            zooms=zoom,
+        )
+    )
+
+    for tile in tiles:
+        url = (
+            VectorTiles.get_image_layer(x=tile.x, y=tile.y, z=tile.z)
+            if layer == "image"
+            else VectorTiles.get_sequence_layer(x=tile.x, y=tile.y, z=tile.z)
+        )
+
+        # Get the response from the API
+        res = client.get(url)
+        # If the response is not valid, raise an exception
+        res.raise_for_status()
+
+        # Get the GeoJSON response by decoding the byte tile
+        geojson = vt_bytes_to_geojson(
+            b_content=res.content, layer=layer, z=tile.z, x=tile.x, y=tile.y
+        )
+
+        # Separating feature objects from the decoded data
+        unfiltered_results = geojson_to_feature_object(geojson)
+
+        # Filter the unfiltered results by the given filters
+        filtered_results.extend(pipeline(
+            data=unfiltered_results,
+            components=[
+                {"filter": "features_in_bounding_box", "bbox": bbox}
+                if layer == "image"
+                else {},
+                {'filter': 'max_date', 'max_timestamp': filters.get("max_date")}
+                if filters['max_date'] is not None
+                else {},
+                {'filter': 'min_date', 'min_timestamp': filters.get("min_date")}
+                if filters['min_date'] is not None
+                else {},
+                {'filter': 'image_type', 'type': filters.get("image_type")}
+                if filters['image_type'] is not None or filters['image_type'] != "all"
+                else {},
+                {'filter': 'organization_id', 'organization_ids': filters.get("organization_id")}
+                if filters['organization_id'] is not None
+                else {},
+                {'filter': 'sequence_id', 'ids': filters.get("sequence_id")}
+                if layer == "image" and filters['sequence_id'] is not None
+                else {},
+                {'filter': 'compass_angle', 'angles': filters.get("compass_angle")}
+                if layer == "image" and filters['compass_angle'] is not None 
+                else {},
+            ]
+        ))
+
+    return merged_features_list_to_geojson(filtered_results)
 
 
-def get_images_in_shape_controller(data: dict, is_geojson: bool = True,
-    kwargs: dict = None) -> dict:
+def get_images_in_shape_controller(
+    data: dict, is_geojson: bool = True, kwargs: dict = None
+) -> dict:
     """For extracting images that lie within a shape, either GeoJSON or a Bounding Box, and merges
     the results of the found GeoJSON(s) into a single object - by merging all the features into
     one list in a feature collection.
@@ -244,8 +335,8 @@ def get_images_in_shape_controller(data: dict, is_geojson: bool = True,
     :rtype: dict
     """
 
-    # TODO: Requirement# 9    
+    # TODO: Requirement# 9
 
-    shape_bbox_check(kwargs)
+    image_bbox_check(kwargs)
 
     return {"Message": "Hello, World!"}

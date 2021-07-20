@@ -45,13 +45,15 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
             param="zoom", value=kwargs["zoom"], options=[14, 15, 16, 17]
         )
 
-    # if 'is_pano' is in kwargs
-    if ("is_pano" in kwargs) and (kwargs["is_pano"] not in ["pano", "flat", "all"]):
+    # if 'image_type' is in kwargs
+    if ('image_type' in kwargs) and (kwargs['image_type'] not in ['pano', 'flat', 'all']):
 
-        # Raising exception for invalid is_pano value
+        # Raising exception for invalid image_type value
         raise InvalidOptionError(
-            param="is_pano", value=kwargs["is_pano"], options=["pano", "flat", "all"]
-        )
+            param='image_type',
+            value=kwargs["image_type"],
+            options=['pano', 'flat', 'all']
+            )
 
     return True
 
@@ -66,7 +68,7 @@ def image_check(kwargs) -> bool:
             "daterange",
             "radius",
             "image_type",
-            "org_id",
+            "organization_id",
             "fields",
         ],
         callback="image_check",
@@ -83,17 +85,42 @@ def thumbnail_size_check(thumbnail_size: int) -> bool:
     )
 
 
-def shape_bbox_check(kwargs: dict) -> bool:
+def image_bbox_check(kwargs: dict) -> bool:
 
-    return kwarg_check(
-        kwargs=kwargs,
-        options=[
-            "max_date",
-            "min_date",
-            "is_pano",
-        ],
-        callback="shape_bbox_check",
-    )
+    if kwarg_check(kwargs=kwargs, options=[
+                "max_date",
+                "min_date",
+                "image_type",
+                "compass_angle",
+                "organization_id",
+                "sequence_id",
+                "zoom",
+            ], callback='image_bbox_check'): 
+        return {
+            "max_date": kwargs.get("max_date", None),
+            "min_date": kwargs.get("min_date", None),
+            "image_type": kwargs.get("image_type", None),
+            "compass_angle": kwargs.get("compass_angle", None),
+            "sequence_id": kwargs.get("sequence_id", None),
+            "organization_id": kwargs.get("organization_id", None),
+        }
+
+def sequence_bbox_check(kwargs: dict) -> bool:
+
+    if kwarg_check(kwargs=kwargs, options=[
+                "max_date",
+                "min_date",
+                "image_type",
+                "organization_id",
+                "zoom",
+            ], callback='sequence_bbox_check'):
+        return {
+            "max_date": kwargs.get("max_date", None),
+            "min_date": kwargs.get("min_date", None),
+            "image_type": kwargs.get("image_type", None),
+            "organization_id": kwargs.get("organization_id", None),
+        }
+
 
 
 def points_traffic_signs_check(kwargs: dict) -> dict:

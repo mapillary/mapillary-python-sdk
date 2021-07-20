@@ -10,6 +10,7 @@ REFERENCE,
 1. https://www.mapillary.com/developer/api-documentation/
 """
 
+# ! TODO: Remove options from VectorTiles
 
 class VectorTiles:
     """Vector tiles provide an easy way to visualize vast amounts of

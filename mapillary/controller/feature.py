@@ -18,7 +18,7 @@ from config.api.vector_tiles import VectorTiles
 from models.client import Client
 
 # Exception Handling
-from controller.rules.verify import shape_bbox_check, points_traffic_signs_check
+from controller.rules.verify import points_traffic_signs_check
 
 # Utils
 from utils.filter import pipeline
@@ -44,7 +44,7 @@ def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
 
     # TODO: Requirement# 10
 
-    shape_bbox_check(kwargs=kwargs)
+    points_traffic_signs_check(kwargs=kwargs)
 
     return {"Message": "Hello, World!"}
 
