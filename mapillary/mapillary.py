@@ -52,19 +52,9 @@ def set_access_token(token: str):
 
 
 @auth()
-def get_image_close_to(
-    latitude,
-    longitude,
-    fields=["all"],
-    radius=200,
-    image_type="pano",
-    date=datetime.today().strftime("%Y-%m-%d"),
-    org_id=-1,
-):
-    """Function that takes a longitude, latitude as
-    argument and outputs the near images. This makes
-    an API call with the token set in set_access_token
-    and returns a JSON object.
+def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
+    """Function that takes a longitude, latitude as argument and outputs the near images. This
+    makes an API call with the token set in set_access_token and returns a JSON object.
 
     :param longitude: The longitude
     :type longitude: float or double
@@ -72,47 +62,52 @@ def get_image_close_to(
     :param latitude: The latitude
     :type latitude: float or double
 
-    :param fields: A list of options, either as 'all',
-    or individually accounted lists of fields. For more
-    details about the fields themselves, please take a
-    look at https://www.mapillary.com/developer/api-documentation/,
-    under 'Fields'.
-    Geometry must always be included in the fields, even in indvidual
-    :type fields: list
+    :param kwargs.fields: A list of options, either as ['all'], or a list of fields.
+    See https://www.mapillary.com/developer/api-documentation/, under 'Fields' for more insight.
+    :type kwargs.fields: list
 
-    :param radius: The radius of the images obtained
-    from a center center
-    :type radius: float or int or double
+    :param kwargs.radius: The radius of the images obtained from a center center
+    :type kwargs.radius: float or int or double
 
-    :param coverge: The tile image_type to be obtained,
-    either as 'flat', 'pano' (panoramic), or 'both'.
-    For more information, please take a look at
-    https://www.mapillary.com/developer/api-documentation/
-    under 'image_type Tiles'
-    :type image_type: str
+    :param kwargs.image_type: The tile image_type to be obtained, either as 'flat', 'pano' (panoramic),
+    or 'both'. See https://www.mapillary.com/developer/api-documentation/ under 'image_type Tiles'
+    for more information
+    :type kwargs.image_type: str
 
-    :param date: The date to filter to, if needed.
-    The date format currently is 'YYYY-MM-DD', or '%Y-%m-%d'
-    :type date: datetime
+    :param kwargs.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.min_date: str
 
-    :param org_id: The organization id, ID of the
-    organization this image (or sets of images) belong
-    to. It can be absent. Thus, default is -1 (None)
-    :type org_id: int
+    :param kwargs.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.max_date: str
 
-    :return: None
-    :rtype: None
+    :param kwargs.org_id: The organization id, ID of the organization this image (or sets of
+    images) belong to. It can be absent. Thus, default is -1 (None)
+    :type kwargs.org_id: int
+
+    :return: GeoJSON
+    :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> mly.get_image_close_to(longitude=31, latitude=30)
+        {'type': 'FeatureCollection', 'features': [{'type': 'Feature',
+        'geometry': {'type': 'Point', 'coordinates': [30.9912246465683,
+        29.99794091267283]}, 'properties': {'captured_at': 1621008070596,
+        'compass_angle': 322.56726074219, 'id': 499412381300321, 'is_pano':
+        False, 'sequence_id': '94afmyyhq85xd9bi8p44ve'}} ...
     """
 
-    # ? It may make sense to set an option for
-    # ? the response format to be GeoJSON which
-    # ? slightly reshuffles the data format. See issue #13 for more
-    # ? context
+    # ! Currently blocked by PR "[Config API] Documentation Fixes, Bug Removal, Functions For
+    # ! Retrieving Field Lists #38"
+    # The below will throw an error because of a missing parameter that this branch has,
+    # but has been fixed in #38
 
-    return None
+    return image.get_image_close_to_controller(
+        latitude=latitude,
+        longitude=longitude,
+        kwargs=kwargs,
+    )
 
 
 @auth()
