@@ -1,15 +1,15 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.mapillary
 ~~~~~~~~~~~~~~~~~~~
 
-This module implements the basic functionalities
-of the Mapillary Python SDK, a pythonic
-implementation of the Mapillary API v4. For
-more information, please check out
+This module implements the basic functionalities of the Mapillary Python SDK, a pythonic
+implementation of the Mapillary API v4. For more information, please check out
 https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 ...
-:license: See LICENSE for more details
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 # Datetime
