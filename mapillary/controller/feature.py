@@ -126,9 +126,9 @@ def get_map_features_in_bbox_controller(
     # Getting all tiles within or interseting the bbox
     tiles = list(
         mercantile.tiles(
-            east=bbox["east"],
-            south=bbox["south"],
             west=bbox["west"],
+            south=bbox["south"],
+            east=bbox["east"],
             north=bbox["north"],
             zooms=14,
         )

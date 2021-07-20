@@ -245,9 +245,9 @@ def get_images_in_bbox_controller(
     # A list of tiles that are either confined within or intersect with the bbox
     tiles = list(
         mercantile.tiles(
-            east=bbox["east"],
-            south=bbox["south"],
             west=bbox["west"],
+            south=bbox["south"],
+            east=bbox["east"],
             north=bbox["north"],
             zooms=zoom,
         )
@@ -262,8 +262,6 @@ def get_images_in_bbox_controller(
 
         # Get the response from the API
         res = client.get(url)
-        # If the response is not valid, raise an exception
-        res.raise_for_status()
 
         # Get the GeoJSON response by decoding the byte tile
         geojson = vt_bytes_to_geojson(
