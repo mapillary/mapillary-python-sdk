@@ -147,8 +147,10 @@ class Client:
                 logger.debug(f"Error details: {str(res.json())}")
 
             except ValueError:
-                logger.debug(f'[Client - _initiate_request, ValueError] res.json() not available,' 
-                    'empty response')
+                logger.debug(
+                    "[Client - _initiate_request, ValueError] res.json() not available,"
+                    "empty response"
+                )
 
             res.raise_for_status()
 
@@ -165,9 +167,7 @@ class Client:
             logger.error("You need to specify an endpoint!")
             return
 
-        self.session.headers.update(
-            {"Authorization": f"OAuth {self.__access_token}"}
-        )
+        self.session.headers.update({"Authorization": f"OAuth {self.__access_token}"})
 
         return self._initiate_request(url=url, method="GET", params=params)
 

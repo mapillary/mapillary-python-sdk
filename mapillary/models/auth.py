@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 
 """
@@ -16,11 +15,8 @@ from functools import wraps
 
 
 def auth():
-
     def auth_decorator(f):
-
         @wraps(f)
-
         def wrapper(*args, **kwargs):
 
             if Client.get_token() == "":
