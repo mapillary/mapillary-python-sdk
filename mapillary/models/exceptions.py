@@ -114,39 +114,6 @@ class InvalidImageKey(MapillaryException):
         return f'An exception occured, "{self._image_id}" is not a valid image ID/key'
 
 
-class ContradictingError(MapillaryException):
-    """When two or more opposing keys in kwargs
-    has been provided
-    :var contradicts: The kwarg that contradicts
-    :var contradicted: the kwarg contradicted
-    """
-
-    def __init__(
-        self,
-        contradicts: str,
-        contradicted: str,
-        message: str,
-    ):
-        """Initializing ContradictingError constructor"""
-        self.contradicts = contradicts
-        self.contradicted = contradicted
-        self.message = message
-
-    def __str__(self):
-        return (
-            f'ContradictingError: Kwarg, "{self.contradicted}" '
-            f'contradicted due to kwarg, "{self.contradicts}" '
-            f'with error message, "{self.message}"'
-        )
-
-    def __repr__(self):
-        return (
-            f'ContradictingError: Kwarg, "{self.contradicted}" '
-            f'contradicted due to kwarg, "{self.contradicts}" '
-            f'with error message, "{self.message}"'
-        )
-
-
 class InvalidKwargError(MapillaryException):
     """Raised when a function is called with the invalid
     keyword argument(s) that do not belong to the
