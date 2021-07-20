@@ -69,9 +69,9 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     :param kwargs.radius: The radius of the images obtained from a center center
     :type kwargs.radius: float or int or double
 
-    :param kwargs.image_type: The tile image_type to be obtained, either as 'flat', 'pano' (panoramic),
-    or 'both'. See https://www.mapillary.com/developer/api-documentation/ under 'image_type Tiles'
-    for more information
+    :param kwargs.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'both'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
     :type kwargs.image_type: str
 
     :param kwargs.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
@@ -295,8 +295,9 @@ def images_in_bbox(bbox: dict, **filters) -> str:
     """
 
     return image.get_images_in_bbox_controller(
-        bbox=bbox, layer='image', zoom=14, filters=filters
+        bbox=bbox, layer="image", zoom=14, filters=filters
     )
+
 
 @auth()
 def sequences_in_bbox(bbox: dict, **filters) -> str:
@@ -320,7 +321,7 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
     - org_id
     :type **filters: dict
 
-    :return: Output is a GeoJSON string that contains all the filtered sequences within a bbox. 
+    :return: Output is a GeoJSON string that contains all the filtered sequences within a bbox.
     Sequences would NOT be cut at BBox boundary, would select all sequences which are partially
     or entirely in BBox
     :rtype: <class 'str'>
@@ -343,8 +344,9 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
     """
 
     return image.get_images_in_bbox_controller(
-        bbox=bbox, layer='sequence', zoom=14, filters=filters
+        bbox=bbox, layer="sequence", zoom=14, filters=filters
     )
+
 
 @auth()
 def map_feature_points_in_bbox(
@@ -367,7 +369,7 @@ def map_feature_points_in_bbox(
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
     Chronological filters:
-    - existed_after: checks if a feature existed after a certain date depending on the time it 
+    - existed_after: checks if a feature existed after a certain date depending on the time it
     was first seen at.
     - existed_before: filters out the features that existed after a given date
     :type **filters: dict
@@ -417,7 +419,7 @@ def traffic_signs_in_bbox(
 
     :param **filters: kwarg filters to be applied on the resulted GeoJSON
     Chronological filters:
-    - existed_after: checks if a feature existed after a certain date depending on the time it 
+    - existed_after: checks if a feature existed after a certain date depending on the time it
     was first seen at.
     - existed_before: filters out the features that existed after a given date
     :type **filters: dict
@@ -430,9 +432,9 @@ def traffic_signs_in_bbox(
         >>> mly.set_access_token('MLY|XXX')
         >>> mly.traffic_signs_in_bbox(
         ...    bbox={
-        ...         'west': 'BOUNDARY_FROM_WEST', 
-        ...         'south': 'BOUNDARY_FROM_SOUTH', 
-        ...         'east': 'BOUNDARY_FROM_EAST', 
+        ...         'west': 'BOUNDARY_FROM_WEST',
+        ...         'south': 'BOUNDARY_FROM_SOUTH',
+        ...         'east': 'BOUNDARY_FROM_EAST',
         ...         'north': 'BOUNDARY_FROM_NORTH'
         ...    },
         ...    filter_values=[
