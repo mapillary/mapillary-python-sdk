@@ -1,13 +1,17 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.config.api.vector_tiles
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module contains the class implementation of the
 VectorTile functionalities for the Vector Tile aspect
 of the APIv4 of Mapillary.
 
-REFERENCE,
+For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-1. https://www.mapillary.com/developer/api-documentation/
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 # ! TODO: Remove options from VectorTiles

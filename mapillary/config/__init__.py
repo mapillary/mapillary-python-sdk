@@ -1,5 +1,8 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.config.api
+~~~~~~~~~~~~~~~~~~~~
 
 This module contains the APIv4 configuration
 and URL arguments. Created to help in ease of
@@ -22,9 +25,8 @@ access tokens. Tokens can be sent in two ways
     client token from https://mapillary.com/dashboard/developers
     This method works for the Entity API
 
-REFERENCE,
+For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-1. https://www.mapillary.com/developer/api-documentation/
-2. https://blog.mapillary.com/update/2021/06/23/getting-started-with-\
-the-new-mapillary-api-v4.html
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
