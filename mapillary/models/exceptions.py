@@ -2,8 +2,14 @@
 
 """
 mapillary.models.exceptions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the set of Mapillary's exceptions
+This module contains the set of Mapillary Exceptions used internally.
+
+For more information, please check out https://www.mapillary.com/developer/api-documentation/.
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 

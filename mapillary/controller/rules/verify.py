@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.controller.rules.verify
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
