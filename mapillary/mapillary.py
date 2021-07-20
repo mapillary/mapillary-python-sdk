@@ -12,9 +12,6 @@ https://www.mapillary.com/developer/api-documentation/
 :license: MIT LICENSE
 """
 
-# Datetime
-from datetime import datetime
-
 # Local
 from models.client import Client
 from models.auth import auth
@@ -98,11 +95,6 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
         False, 'sequence_id': '94afmyyhq85xd9bi8p44ve'}} ...
     """
 
-    # ! Currently blocked by PR "[Config API] Documentation Fixes, Bug Removal, Functions For
-    # ! Retrieving Field Lists #38"
-    # The below will throw an error because of a missing parameter that this branch has,
-    # but has been fixed in #38
-
     return image.get_image_close_to_controller(
         latitude=latitude,
         longitude=longitude,
@@ -112,14 +104,10 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
 
 @auth()
 def get_image_looking_at(
-    coordinates_looker,
-    coordinates_at,
-    fields=["all"],
-    radius=200,
-    image_type="pano",
-    date=datetime.today().strftime("%Y-%m-%d"),
-    org_id=-1,
-):
+    coordinates_looker: tuple,
+    coordinates_at: tuple,
+    kwargs: dict,
+) -> dict:
     """Function that takes two sets of latitude and
     longitude, where the 2nd set is the "looking at"
     location from 1st set's perspective
@@ -173,19 +161,13 @@ def get_image_looking_at(
         # TODO: Write code here to display how the function works
     """
 
-    # * `coordinates_looker` and `coordinates_at`
-    # * can be the same or different
-
-    # ? It may be useful to have the function
-    # ? exclude images that are too close to the
-    # ? looking at longitude, latitude, as if
-    # ? within 3 meters, as the returned photo may
-    # ? be too close to be useful. 10+ meters may be
-    # ? best
-
     # TODO: This functions needs implementation
 
-    return None
+    return image.get_image_close_to_controller(
+        coordinates_looker=coordinates_looker,
+        coordinates_at=coordinates_at,
+        kwargs=kwargs,
+    )
 
 
 @auth()
