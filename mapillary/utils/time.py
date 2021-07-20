@@ -2,9 +2,13 @@
 
 """
 mapillary.utils.time
-This module contains the time utilies for the UNIX epoch
-seconds, the time and the date range, and the date
-filtering logic
+~~~~~~~~~~~~~~~~~~~~
+
+This module contains the time utilies for the UNIX epoch seconds, the time and the date range, and
+the date filtering logic.
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 # Package imports

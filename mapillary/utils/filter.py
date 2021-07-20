@@ -2,7 +2,12 @@
 
 """
 mapillary.utils.filter
+~~~~~~~~~~~~~~~~~~~~~~
+
 This module contains the filter utilies for high level filtering logic
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 # Local imports

@@ -2,9 +2,15 @@
 
 """
 mapillary.utils.format
-This module deals with converting
-data to and from different file formats
+~~~~~~~~~~~~~~~~~~~~~~
+
+This module deals with converting data to and from different file formats.
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
+
+# Package imports
 import json
 
 
