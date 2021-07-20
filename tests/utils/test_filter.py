@@ -1,3 +1,16 @@
+# -*- coding: utf-8 -*-
+
+"""
+tests.utils.test_filter
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+For testing the functions under mapillary/utils/filter.py
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
+"""
+
+
 import requests
 import mercantile
 from vt2geojson.tools import vt_bytes_to_geojson

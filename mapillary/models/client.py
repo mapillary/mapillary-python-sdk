@@ -1,30 +1,26 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.utils.client
+~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains aims to serve as a generalization for all API
-requests within the mapillary python SDK.
-
-# Notes:
-- To enter DEBUG mode, set a DEBUG environment variable = 1
+This module contains aims to serve as a generalization for all API requests within the Mapillary
+Python SDK.
 
 ## Over Authentication
 
-1. All requests against https://graph.mapillary.com
-must be authorized. They require a client or user
-access tokens. Tokens can be sent in two ways
-    1. Using ?access_token=XXX query parameters. This
-    is a preferred method for interacting with vector
-    tiles. Using this method is STRONGLY discouraged
-    for sending user access tokens
-    2. using a header such as Authorization: OAuth XXX,
-    where XXX is the token obtained either through the
-    OAuth flow that your application implements or a
-    client token from https://mapillary.com/dashboard/developers
-    This method works for the Entity API
+1. All requests against https://graph.mapillary.com must be authorized. They require a client or
+user access tokens. Tokens can be sent in two ways
+    1. Using ?access_token=XXX query parameters. This is a preferred method for interacting with
+    vector tiles. Using this method is STRONGLY discouraged for sending user access tokens
+    2. Using a header such as Authorization: OAuth XXX, where XXX is the token obtained either
+    through the OAuth flow that your application implements or a client token from
+    https://mapillary.com/dashboard/developers.
 
-# References:
-- https://www.mapillary.com/developer/api-documentation/
-- https://github.com/michaeldbianchi/Python-API-Client-Boilerplate
+For more information, please check out https://www.mapillary.com/developer/api-documentation/.
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 import requests
@@ -147,8 +143,10 @@ class Client:
                 logger.debug(f"Error details: {str(res.json())}")
 
             except ValueError:
-                logger.debug(f'[Client - _initiate_request, ValueError] res.json() not available,' 
-                    'empty response')
+                logger.debug(
+                    "[Client - _initiate_request, ValueError] res.json() not available,"
+                    "empty response"
+                )
 
             res.raise_for_status()
 
@@ -165,9 +163,7 @@ class Client:
             logger.error("You need to specify an endpoint!")
             return
 
-        self.session.headers.update(
-            {"Authorization": f"OAuth {self.__access_token}"}
-        )
+        self.session.headers.update({"Authorization": f"OAuth {self.__access_token}"})
 
         return self._initiate_request(url=url, method="GET", params=params)
 

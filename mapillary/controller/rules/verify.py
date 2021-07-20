@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.controller.rules.verify
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -12,10 +14,28 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-from models.exceptions import ContradictingError, InvalidKwargError, InvalidOptionError
+from models.exceptions import InvalidKwargError, InvalidOptionError
 
 
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
+    """Checks for keyword arguments amongst the kwarg argument to fall into the options list
+
+    :param kwargs: A dictionary that contains the keyword key-value pair arguments
+    :type kwargs: dict
+
+    :param options: A list of possible arguments in kwargs
+    :type options: list
+
+    :param callback: The function that called 'kwarg_check' in the case of an exception
+    :type callback: str
+
+    '''
+    :raise InvalidOptionError: Invalid option exception
+    '''
+
+    :return: A boolean, whether the kwargs are appropriate or not
+    :rtype: bool
+    """
     if kwargs is not None:
         for key in kwargs.keys():
             if key not in options:
@@ -26,17 +46,6 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
                     options=options,
                 )
 
-    # If 'min_date' or 'max_date' is in the keys
-    if ("min_date" in kwargs or "max_date" in kwargs) and ("daterange" in kwargs):
-
-        # Check if two contradicting keys have not been given
-        raise ContradictingError(
-            contradicts="daterange",
-            contradicted="min_date/max_date",
-            message="Using either or both of min_date and max_date, or use daterange, "
-            "but not both at the same time",
-        )
-
     # If 'zoom' is in kwargs
     if ("zoom" in kwargs) and (kwargs["zoom"] < 14 or kwargs["zoom"] > 17):
 
@@ -46,26 +55,34 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
         )
 
     # if 'image_type' is in kwargs
-    if ('image_type' in kwargs) and (kwargs['image_type'] not in ['pano', 'flat', 'all']):
+    if ("image_type" in kwargs) and (
+        kwargs["image_type"] not in ["pano", "flat", "all"]
+    ):
 
         # Raising exception for invalid image_type value
         raise InvalidOptionError(
-            param='image_type',
+            param="image_type",
             value=kwargs["image_type"],
-            options=['pano', 'flat', 'all']
-            )
+            options=["pano", "flat", "all"],
+        )
 
+    # If all tests pass, return True
     return True
 
 
 def image_check(kwargs) -> bool:
-
+    """For image entities, check if the arguments provided fall in the right category
+    
+    :param kwargs: A dictionary that contains the keyword key-value pair arguments
+    :type kwargs: dict
+    """
+    
+    # Kwarg argument check
     return kwarg_check(
         kwargs=kwargs,
         options=[
             "min_date",
             "max_date",
-            "daterange",
             "radius",
             "image_type",
             "organization_id",
@@ -76,6 +93,19 @@ def image_check(kwargs) -> bool:
 
 
 def thumbnail_size_check(thumbnail_size: int) -> bool:
+    """Checking for the proper thumbnail size of the argument
+    
+    :param thumbnail_size: The image size to fetch for
+    :type thumbnail_size: int
+
+    '''
+    :raises InvalidOptionError: Invalid thumbnail size passed raises exception
+    '''
+
+    :return: A check if the size is correct
+    :rtype: bool
+    """
+
     if thumbnail_size in [256, 1024, 2048]:
         return True
 
@@ -85,17 +115,29 @@ def thumbnail_size_check(thumbnail_size: int) -> bool:
     )
 
 
-def image_bbox_check(kwargs: dict) -> bool:
+def image_bbox_check(kwargs: dict) -> dict:
+    """Check if the right arguments have been provided for the image bounding box
+    
+    :param kwargs: The dictionary parameters
+    :type kwargs: dict
 
-    if kwarg_check(kwargs=kwargs, options=[
-                "max_date",
-                "min_date",
-                "image_type",
-                "compass_angle",
-                "organization_id",
-                "sequence_id",
-                "zoom",
-            ], callback='image_bbox_check'): 
+    :return: A final dictionary with the kwargs
+    :rtype: dict
+    """
+
+    if kwarg_check(
+        kwargs=kwargs,
+        options=[
+            "max_date",
+            "min_date",
+            "image_type",
+            "compass_angle",
+            "organization_id",
+            "sequence_id",
+            "zoom",
+        ],
+        callback="image_bbox_check",
+    ):
         return {
             "max_date": kwargs.get("max_date", None),
             "min_date": kwargs.get("min_date", None),
@@ -105,15 +147,28 @@ def image_bbox_check(kwargs: dict) -> bool:
             "organization_id": kwargs.get("organization_id", None),
         }
 
-def sequence_bbox_check(kwargs: dict) -> bool:
 
-    if kwarg_check(kwargs=kwargs, options=[
-                "max_date",
-                "min_date",
-                "image_type",
-                "organization_id",
-                "zoom",
-            ], callback='sequence_bbox_check'):
+def sequence_bbox_check(kwargs: dict) -> dict:
+    """Checking of the sequence bounding box
+
+    :param kwargs: The final dictionary with the correct keys
+    :type kwargs: dict
+
+    :return: A dictionary with all the options available specifically
+    :rtype: dict
+    """
+
+    if kwarg_check(
+        kwargs=kwargs,
+        options=[
+            "max_date",
+            "min_date",
+            "image_type",
+            "organization_id",
+            "zoom",
+        ],
+        callback="sequence_bbox_check",
+    ):
         return {
             "max_date": kwargs.get("max_date", None),
             "min_date": kwargs.get("min_date", None),
@@ -122,8 +177,15 @@ def sequence_bbox_check(kwargs: dict) -> bool:
         }
 
 
-
 def points_traffic_signs_check(kwargs: dict) -> dict:
+    """Checks for traffic sign arguments
+
+    :param kwargs: The parameters to be passed for filtering
+    :type kwargs: dict
+
+    :return: A dictionary with all the options available specifically
+    :rtype: dict
+    """
 
     if kwarg_check(
         kwargs=kwargs,

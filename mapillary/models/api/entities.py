@@ -32,6 +32,7 @@ from config.api.entities import Entities
 # Library imports
 from requests import HTTPError
 
+
 class EntityAdapter(object):
     """Adapter model for dealing with the Entity API, through the DRY principle. The EntityAdapter
     class can be instantiated in the controller modules, providing an abstraction layer that uses
@@ -58,10 +59,9 @@ class EntityAdapter(object):
         # client object to deal with session and requests
         self.client = Client()
 
-
     def fetch_image(self, image_id: int, fields: list = []) -> dict:
         """Fetches images depending on the image_id and the fields provided
-        
+
         :param image_id: The image_id to extract for
         :type image_id: int
 
@@ -71,43 +71,33 @@ class EntityAdapter(object):
         :return: The fetched GeoJSON
         :rtype: dict
         """
-        
+
         # TODO: Apply image_entity_to_geojson when PR#44 merged
 
         # Getting the results through the client, and return after decoding
         try:
             return (
-
                 # Converts the dict to a GeoJSON format
                 # image_entity_to_geojson(
-
-                    # ast converts the str dict to a dict object
-                    ast.literal_eval(
-
-                        # The results returned here are the str dicts 
-                        self.client.get(
-
-                            # Calling the endpoint with the parameters ...
-                            Entities.get_image(
-
-                                # ... image_id, for the needed image ...
-                                image_id=image_id,
-
-                                # ... the fields passed in in ...
-                                fields=fields
-
-                                # ... only if the fields are not empty ...
-                                if fields != []
-
-                                # ... if they are, get all the fields as a list instead
-
-                                # * The below function should be available after #38 is merged                            
-                                else Entities.get_image_fields(),
-                            ),
-
+                # ast converts the str dict to a dict object
+                ast.literal_eval(
+                    # The results returned here are the str dicts
+                    self.client.get(
+                        # Calling the endpoint with the parameters ...
+                        Entities.get_image(
+                            # ... image_id, for the needed image ...
+                            image_id=image_id,
+                            # ... the fields passed in in ...
+                            fields=fields
+                            # ... only if the fields are not empty ...
+                            if fields != []
+                            # ... if they are, get all the fields as a list instead
+                            # * The below function should be available after #38 is merged
+                            else Entities.get_image_fields(),
+                        ),
                         # After retrieval of response, only get the content, decode to utf-8
-                        ).content.decode("utf-8")
-                    )
+                    ).content.decode("utf-8")
+                )
                 # )
             )
         except HTTPError:
@@ -116,7 +106,7 @@ class EntityAdapter(object):
 
     def fetch_map_features(self, map_feature_id: int, fields: list = []):
         """Fetches map feaures depending on the map_feature_id and the fields provided
-        
+
         :param map_feature_id: The map_feature_id to extract for
         :type map_feature_id: int
 
@@ -131,35 +121,30 @@ class EntityAdapter(object):
 
         # Getting the results through the client, and return after decoding
         return self.client.get(
-
-            # Calling the endpoint with the parameters ...            
+            # Calling the endpoint with the parameters ...
             Entities.get_map_feature(
-
-                # ... image_id, for the needed image ...                
+                # ... image_id, for the needed image ...
                 map_feature_id=map_feature_id,
-
-                # ... the fields passed in in ...                
+                # ... the fields passed in in ...
                 fields=fields
-
-                # ... only if the fields are not empty ...                
+                # ... only if the fields are not empty ...
                 if fields != []
-
                 # ... if they are, get all the fields as a list instead
-
-                # * The below function should be available after #38 is merged            
+                # * The below function should be available after #38 is merged
                 else Entities.get_map_feature_fields(),
             ),
-
-        # After retrieval of response, only get the content, decode to utf-8            
+            # After retrieval of response, only get the content, decode to utf-8
         ).content.decode("utf-8")
 
     def fetch_detections(self, id: int, id_type: bool = True, fields: list = []):
-        """Fetches detections depending on the id, detections for either map_features or images and the fields provided
-        
+        """Fetches detections depending on the id, detections for either map_features or
+        images and the fields provided
+
         :param id: The id to extract for
         :type id: int
 
-        :param id_type: Either True(id is for image), or False(id is for map_feature), defaults to True
+        :param id_type: Either True(id is for image), or False(id is for map_feature),
+        defaults to True
         :type id_type: bool
 
         :param fields: The fields to extract properties for, defaults to []
@@ -167,7 +152,7 @@ class EntityAdapter(object):
 
         :return: The fetched GeoJSON
         :rtype: dict
-        """        
+        """
 
         # TODO: This function should be tested, not yet fit for use
 
@@ -176,39 +161,29 @@ class EntityAdapter(object):
 
             # Store the URL as ...
             url = Entities.get_detection_with_image_id(
-
                 # .. extracted by setting image_id as id ...
                 image_id=id,
-
                 # ... passing in the fields given ...
                 fields=fields
-
                 # ... only if the fields are not provided empty ...
                 if fields != []
-
                 # ... but if they are, set the fields as all possible fields ...
-
                 # * The below function should be available after #38 is merged
                 else Entities.get_detection_with_image_id_fields(),
             )
 
-        # If id_type is False(id is for map_feature)            
+        # If id_type is False(id is for map_feature)
         else:
 
             # Store the URL as ...
             url = Entities.get_detection_with_map_feature_id(
-
                 # ... extracted by setting map_feature_id as id ...
                 map_feature_id=id,
-
                 # ... passing in the fields given ...
                 fields=fields
-
                 # ... only if the fields are not provided empty ...
                 if fields != []
-
-                # ... but if they are, set the fields as all possible fields ...                
-
+                # ... but if they are, set the fields as all possible fields ...
                 # * The below function should be available after #38 is merged
                 else Entities.get_detection_with_map_feature_id_fields(),
             )

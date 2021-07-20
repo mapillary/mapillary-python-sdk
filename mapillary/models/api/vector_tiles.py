@@ -39,7 +39,8 @@ class VectorTilesAdapter(object):
     It performs parsing, handling of layers, properties, and fields to make it easier to
     write higher level logic for extracing information, and lets developers to focus only
     on writing the high level business logic without having to repeat the process of parsing
-    and using libraries such as `mercantile`, 'vt2geojson' and others, caring only about inputs/outputs
+    and using libraries such as `mercantile`, 'vt2geojson' and others, caring only about
+    inputs/outputs
 
     Usage::
         >>> VectorTilesAdapter().fetch_layer(layer="image", zoom=14, longitude=longitude,
@@ -50,7 +51,7 @@ class VectorTilesAdapter(object):
             )
         >>> VectorTilesAdapter().fetch_layer(layer="overview", zoom=3, longitude=longitude,
                 latitude=latitude,
-            )            
+            )
     """
 
     # FOR DEVELOPERS
@@ -60,7 +61,8 @@ class VectorTilesAdapter(object):
     # 2. The zoom levels themselves
     # 2.1. Most likely changes in __init__
     # 3. Preprocessing steps depending on the layer targeted
-    # 3.1. Most likely changes in __preprocess_layer, __preprocess_computed_layer, __preprocess_features
+    # 3.1. Most likely changes in __preprocess_layer, __preprocess_computed_layer,
+    # __preprocess_features
 
     def __init__(self) -> None:
         """Initializing VectorTilesAdapter constructor"""
@@ -76,7 +78,9 @@ class VectorTilesAdapter(object):
         # Setting the min zoom value
         self.__max_zoom = 14
 
-    def fetch_layer(self, layer: str, longitude: float, latitude: float, zoom: int = 14) -> dict:
+    def fetch_layer(
+        self, layer: str, longitude: float, latitude: float, zoom: int = 14
+    ) -> dict:
         """Fetches an image tile layer depending on the coordinates, and the layer selected
         along with the zoom level
 
@@ -97,21 +101,20 @@ class VectorTilesAdapter(object):
         """
 
         # Checking if the correct parameters are passed
-        self.__check_parameters(longitude=longitude, latitude=latitude, layer=layer, zoom=zoom)
+        self.__check_parameters(
+            longitude=longitude, latitude=latitude, layer=layer, zoom=zoom
+        )
 
         # Return the results of the layer after preprocessing steps
         return self.__preprocess_layer(
             # The layer to retrieve from
             layer=layer,
-
             # The longitude
             longitude=longitude,
-
             # The latitude
             latitude=latitude,
-
             # The zoom level
-            zoom=zoom
+            zoom=zoom,
         )
 
     def fetch_computed_layer(
@@ -133,33 +136,31 @@ class VectorTilesAdapter(object):
         :type latitude: float
 
         :return: A GeoJSON for that specific layer and the specified zoom level
-        :rtype: dict        
+        :rtype: dict
         """
 
         # Checking if the correct parameters are passed
-        self.__check_parameters(longitude=longitude, latitude=latitude, layer=layer, zoom=zoom)
-
+        self.__check_parameters(
+            longitude=longitude, latitude=latitude, layer=layer, zoom=zoom
+        )
 
         # Return the results of the layer after preprocessing steps
         return self.__preprocess_computed_layer(
             # The layer to retrieve from
             layer=layer,
-
             # The longitude
             longitude=longitude,
-
             # The latitude
             latitude=latitude,
-
             # The zoom level
-            zoom=zoom
+            zoom=zoom,
         )
 
     def fetch_features(
         self, feature_type: str, zoom: int, longitude: float, latitude: float
     ):
         """Fetches specified features from the coordinates with the apppropriate zoom level
-        
+
         :param feature_type: Either `point`, or `tiles`
         :type feature_type: str
 
@@ -177,13 +178,17 @@ class VectorTilesAdapter(object):
         """
 
         # Checking if the correct parameters are passed
-        self.__check_parameters(longitude=longitude, latitude=latitude, layer='map', zoom=zoom)
+        self.__check_parameters(
+            longitude=longitude, latitude=latitude, layer="map", zoom=zoom
+        )
 
         return self.__preprocess_features(
             feature_type=feature_type, longitude=longitude, latitude=latitude, zoom=zoom
         )
 
-    def __check_parameters(self, longitude: float, latitude: float, layer: str, zoom: int):
+    def __check_parameters(
+        self, longitude: float, latitude: float, layer: str, zoom: int
+    ):
         """Range checking for the paramters of longitude, latitude, layer, zoom
 
         :param layer: Either 'overview', 'sequence', 'image'
@@ -201,20 +206,24 @@ class VectorTilesAdapter(object):
         :return: A GeoJSON for that specific layer and the specified zoom level
         :rtype: dict
         """
-        
+
         # Lng, Lat ranges, https://docs.mapbox.com/help/glossary/lat-lon/
 
         # If lng not in the range [-180, 180], inclusive
         if longitude <= -180 or longitude >= 180:
 
             # Raise exception
-            raise InvalidOptionError(param='longitude', value=longitude, options=[-180, 180])
-        
+            raise InvalidOptionError(
+                param="longitude", value=longitude, options=[-180, 180]
+            )
+
         # If lat not in the range [-90, 90], inclusive
         if latitude <= -90 or latitude >= 90:
 
             # Raise exception
-            raise InvalidOptionError(param='latitude', value=latitude, options=[-180, 180])
+            raise InvalidOptionError(
+                param="latitude", value=latitude, options=[-180, 180]
+            )
 
         # Check for the correct zoom values against the layer specified
         self.__zoom_range_check(layer=layer, zoom=zoom)
@@ -226,7 +235,7 @@ class VectorTilesAdapter(object):
         :param layer: Either 'overview', 'sequence', 'image', or 'map'
         :type layer: str
 
-        :param zoom: The zoom levls, 
+        :param zoom: The zoom levls,
         :type zoom: int
 
         ...
@@ -242,10 +251,10 @@ class VectorTilesAdapter(object):
 
             # Raise an exception for the invalid values passed
             raise InvalidOptionError(
-
                 # Parameters accordingly
-                param='zoom', value=zoom, options=[_ for _ in
-                    range(self.__min_zoom, self.__max_zoom + 1)]
+                param="zoom",
+                value=zoom,
+                options=[_ for _ in range(self.__min_zoom, self.__max_zoom + 1)],
             )
 
         # If layer was specified to be 'overview'
@@ -256,10 +265,10 @@ class VectorTilesAdapter(object):
 
                 # Raise an exception for the invalid zoom value
                 raise InvalidOptionError(
-
                     # Parameters accordingly
-                    param='zoom', value=zoom, options=[_ for _ in
-                        range(self.__min_zoom, 5 + 1)]
+                    param="zoom",
+                    value=zoom,
+                    options=[_ for _ in range(self.__min_zoom, 5 + 1)],
                 )
 
         # If layer was specified to be 'sequence'
@@ -270,9 +279,10 @@ class VectorTilesAdapter(object):
 
                 # Raise an exception for the invalid zoom value
                 raise InvalidOptionError(
-
                     # Parameters accordingly
-                    param='zoom', value=zoom, options=[_ for _ in range(6, 14 + 1)]
+                    param="zoom",
+                    value=zoom,
+                    options=[_ for _ in range(6, 14 + 1)],
                 )
 
         # If layer was specified to be 'image' or 'map'
@@ -282,14 +292,13 @@ class VectorTilesAdapter(object):
             if zoom != 14:
 
                 # Raise an exception for the invalid zoom value
-                raise InvalidOptionError(param='zoom', value=zoom, options=[14])
+                raise InvalidOptionError(param="zoom", value=zoom, options=[14])
 
         # Else, an invalid layer string was passed
         else:
 
-            # Raise a InvalidOptionError 
+            # Raise a InvalidOptionError
             raise InvalidOptionError(
-
                 # Parameters accordingly
                 param="layer",
                 value=layer,
@@ -300,7 +309,7 @@ class VectorTilesAdapter(object):
         self, layer: str, longitude: float, latitude: float, zoom: int
     ):
         """Preprocessing uncomputed layers
-        
+
         :param layer: Either 'overview', 'sequence', 'image'
         :type layer: str
 
@@ -317,7 +326,7 @@ class VectorTilesAdapter(object):
         :rtype: dict
         """
 
-        # * See "FOR DEVELOPERS (3, 3.1)"        
+        # * See "FOR DEVELOPERS (3, 3.1)"
 
         # Turn coordinates into a tile
         tile = mercantile.tile(lng=longitude, lat=latitude, zoom=zoom)
@@ -340,16 +349,19 @@ class VectorTilesAdapter(object):
 
         # Convert bytes to GeoJSON
         return vt_bytes_to_geojson(
-
             # Paramters, appropriately
-            b_content=self.client.get(url), x=tile.x, y=tile.y, z=tile.z, layer=layer
+            b_content=self.client.get(url),
+            x=tile.x,
+            y=tile.y,
+            z=tile.z,
+            layer=layer,
         )
 
     def __preprocess_computed_layer(
         self, layer: str, longitude: float, latitude: float, zoom: int
     ):
         """Preprocessing computed layers
-        
+
         :param layer: Either 'overview', 'sequence', 'image'
         :type layer: str
 
@@ -366,7 +378,7 @@ class VectorTilesAdapter(object):
         :rtype: dict
         """
 
-        # * See "FOR DEVELOPERS (3, 3.1)"        
+        # * See "FOR DEVELOPERS (3, 3.1)"
 
         # Turn coordinates into a tile
         tile = mercantile.tile(lng=longitude, lat=latitude, zoom=zoom)
@@ -387,15 +399,19 @@ class VectorTilesAdapter(object):
 
         # Convert bytes to geojson
         return vt_bytes_to_geojson(
-
             # Parameters appropriately
-            b_content=self.client.get(url), x=tile.x, y=tile.y, z=tile.z, layer=layer
+            b_content=self.client.get(url),
+            x=tile.x,
+            y=tile.y,
+            z=tile.z,
+            layer=layer,
         )
 
-    def __preprocess_features(self, feature_type: str, longitude: float,
-        latitude: float, zoom: int) -> dict:
+    def __preprocess_features(
+        self, feature_type: str, longitude: float, latitude: float, zoom: int
+    ) -> dict:
         """Preprocess features
-        
+
         :param feature_type: Either 'point', 'traffic_signs'
         :type feature_type: str
 
@@ -409,10 +425,10 @@ class VectorTilesAdapter(object):
         :type zoom: int
 
         :return: A GeoJSON
-        :rtype: dict        
+        :rtype: dict
         """
 
-        # * See "FOR DEVELOPERS (3, 3.1)"        
+        # * See "FOR DEVELOPERS (3, 3.1)"
 
         # Turn coordinates into a tile
         tile = mercantile.tile(lng=longitude, lat=latitude, zoom=zoom)
@@ -432,14 +448,17 @@ class VectorTilesAdapter(object):
         else:
             # Raise an exception for the invalid values passed
             raise InvalidOptionError(
-
                 # Parameters accordingly
-                param='feature_type', value=feature_type, options=['point', 'tiles']
+                param="feature_type",
+                value=feature_type,
+                options=["point", "tiles"],
             )
 
         # Convert bytes to GeoJSON, and return
         return vt_bytes_to_geojson(
-
             # Parameters appropriately
-            b_content=self.client.get(url), x=tile.x, y=tile.y, z=tile.z,
+            b_content=self.client.get(url),
+            x=tile.x,
+            y=tile.y,
+            z=tile.z,
         )

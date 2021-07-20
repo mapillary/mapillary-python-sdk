@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 mapillary.controllers.save
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -9,6 +11,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
+
 
 def save_as_csv_controller(data: dict, path: str) -> bool:
     """Save data as CSV to given file path

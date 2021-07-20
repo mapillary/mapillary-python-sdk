@@ -2,8 +2,14 @@
 
 """
 mapillary.models.exceptions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the set of Mapillary's exceptions
+This module contains the set of Mapillary Exceptions used internally.
+
+For more information, please check out https://www.mapillary.com/developer/api-documentation/.
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 
@@ -44,6 +50,7 @@ class InvalidTokenError(MapillaryException):
             + f'Code: "{self.code}",'
             + f'fbtrace_id: "{self.fbtrace_id}"'
         )
+
 
 class AuthError(MapillaryException):
     """Raised when a function is called without
@@ -112,37 +119,6 @@ class InvalidImageKey(MapillaryException):
     def __repr__(self) -> str:
         return f'An exception occured, "{self._image_id}" is not a valid image ID/key'
 
-class ContradictingError(MapillaryException):
-    """When two or more opposing keys in kwargs
-    has been provided
-    :var contradicts: The kwarg that contradicts
-    :var contradicted: the kwarg contradicted
-    """
-
-    def __init__(
-        self,
-        contradicts: str,
-        contradicted: str,
-        message: str,
-    ):
-        """Initializing ContradictingError constructor"""
-        self.contradicts = contradicts
-        self.contradicted = contradicted
-        self.message = message
-
-    def __str__(self):
-        return (
-            f'ContradictingError: Kwarg, "{self.contradicted}" '
-            f'contradicted due to kwarg, "{self.contradicts}" '
-            f'with error message, "{self.message}"'
-        )
-
-    def __repr__(self):
-        return (
-            f'ContradictingError: Kwarg, "{self.contradicted}" '
-            f'contradicted due to kwarg, "{self.contradicts}" '
-            f'with error message, "{self.message}"'
-        )
 
 class InvalidKwargError(MapillaryException):
     """Raised when a function is called with the invalid
@@ -184,6 +160,7 @@ class InvalidKwargError(MapillaryException):
             f'{", ".join(self.options)}'
         )
 
+
 class InvalidOptionError(MapillaryException):
     """Out of bound zoom error
     :var zoom: The zoom value used
@@ -212,6 +189,7 @@ class InvalidOptionError(MapillaryException):
             f'InvalidOptionError: Given {self.param} value, "{self.value}" '
             f'while possible {self.param} options, [{", ".join(self.options)}] '
         )
+
 
 class InvalidFieldError(MapillaryException):
     """Raised when an API endpoint is passed invalid

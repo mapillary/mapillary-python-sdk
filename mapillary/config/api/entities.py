@@ -88,7 +88,7 @@ class Entities:
             given_fields=fields,
             actual_fields=Entities.get_image_fields(),
             endpoint="https://graph.mapillary.com/:image_id?fields=",
-            )                
+        )
 
         return f"https://graph.mapillary.com/{image_id}/?fields={','.join(fields)}"
 
@@ -143,7 +143,7 @@ class Entities:
             given_fields=fields,
             actual_fields=Entities.get_map_feature_fields(),
             endpoint="https://graph.mapillary.com/:map_feature_id?fields=",
-            )
+        )
 
         return (
             f"https://graph.mapillary.com/{map_feature_id}/?fields={','.join(fields)}"
@@ -185,11 +185,9 @@ class Entities:
             given_fields=fields,
             actual_fields=Entities.get_detection_with_image_id_fields(),
             endpoint="https://graph.mapillary.com/:image_id/detections/?fields=",
-            )        
-
-        return (
-            f"https://graph.mapillary.com/{image_id}/detections/?fields={','.join(fields)}"
         )
+
+        return f"https://graph.mapillary.com/{image_id}/detections/?fields={','.join(fields)}"
 
     @staticmethod
     def get_detection_with_image_id_fields() -> list:
@@ -220,11 +218,9 @@ class Entities:
             given_fields=fields,
             actual_fields=Entities.get_detection_with_map_feature_id_fields(),
             endpoint="https://graph.mapillary.com/:map_feature_id/detections/?fields=",
-            )
-
-        return (
-            f"https://graph.mapillary.com/{map_feature_id}/detections/?fields={','.join(fields)}"
         )
+
+        return f"https://graph.mapillary.com/{map_feature_id}/detections/?fields={','.join(fields)}"
 
     @staticmethod
     def get_detection_with_map_feature_id_fields() -> list:
@@ -250,8 +246,8 @@ class Entities:
         fields = Entities.__field_validity(
             given_fields=fields,
             actual_fields=Entities.get_organization_id_fields(),
-            endpoint="https://graph.mapillary.com/:organization_id?fields="
-            )
+            endpoint="https://graph.mapillary.com/:organization_id?fields=",
+        )
 
         return (
             f"https://graph.mapillary.com/{organization_id}/?fields={','.join(fields)}"
@@ -278,50 +274,50 @@ class Entities:
         return f"https://graph.mapillary.com/image_ids?sequence_id={sequence_id}"
 
     @staticmethod
-    def __field_validity(given_fields: list, actual_fields: list, endpoint: str) -> list:
+    def __field_validity(
+        given_fields: list, actual_fields: list, endpoint: str
+    ) -> list:
         """Checks if the given_fields are the actual correct fields for the given endpoint
         Compares against the list provided in `actual_fields`
-        
+
         :param given_fields: The fields given as argument to check in
         :type given_fields: list
-        
+
         :param actual_fields: The fields to check against
         :type actual_fields: list
-        
+
         :param endpoint: The endpoint that is being targeted
         :type endpoint: str
-        
+
         ...
         :raises InvalidFieldError: Raised when an API endpoint is passed invalid field elements
         ...
-        
+
         :return: The given_fields if everything is correct
         :rtype: list
         """
-        
+
         # Converting the given_fields into lowercase
         given_fields = [field.lower() for field in given_fields]
-        
+
         # Going through all the given fields
         for field in given_fields:
-            
+
             # If 'all' is encountered ...
-            if field == 'all':
-    
+            if field == "all":
+
                 # ... simply return the actual_fields list
-               return actual_fields
+                return actual_fields
 
             # If a field does not exist in the actual_fields ...
             if field not in actual_fields:
-    
-                # Raise an InvalidFieldError error 
-                raise InvalidFieldError(
 
+                # Raise an InvalidFieldError error
+                raise InvalidFieldError(
                     # Specifying what endpoint was specified
                     endpoint=endpoint,
-                    
                     # Specify what field triggered the exception
-                    field=field
+                    field=field,
                 )
 
         # If no error occured, and all the fields are correct, return the given_fields

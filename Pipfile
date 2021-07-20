@@ -50,6 +50,7 @@ webencodings = "==0.5.1"
 Pygments = "==2.9.0"
 haversine = "*"
 python-dotenv = "*"
+osmnx = "*"
 
 [dev-packages]
 pip = "==19.0.3"

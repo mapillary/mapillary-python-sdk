@@ -2,7 +2,12 @@
 
 """
 mapillary.utils.filter
+~~~~~~~~~~~~~~~~~~~~~~
+
 This module contains the filter utilies for high level filtering logic
+
+:copyright: (c) 2021 Facebook
+:license: MIT LICENSE
 """
 
 # Local imports
@@ -103,7 +108,8 @@ def pipeline(data: list, components: list):
             # Send over the data
             data=__data,
             # Specify the message on the exception thrown
-            exception_message=f'[pipeline - {component["filter"]}] Filter not applied, exception thrown',
+            exception_message=f'[pipeline - {component["filter"]}] Filter not applied,'
+            "exception thrown",
             # Except the filter name, select the rest as args
             args=tuple(list(component.values())[1:]),
         )
