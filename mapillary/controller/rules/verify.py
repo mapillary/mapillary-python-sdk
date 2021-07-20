@@ -12,7 +12,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-from models.exceptions import ContradictingError, InvalidKwargError, InvalidOptionError
+from models.exceptions import InvalidKwargError, InvalidOptionError
 
 
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
