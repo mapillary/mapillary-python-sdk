@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates. (http://www.facebook.com)
+
 from setuptools import setup, find_packages, Command
 import io, os, sys
 from shutil import rmtree
