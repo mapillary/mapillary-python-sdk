@@ -6,6 +6,8 @@
 - [Building a Python Open Source Project](https://towardsdatascience.com/build-your-first-open-source-python-project-53471c9942a7)
 - [Example geospatial Python library, which we can reference for inspiration](https://github.com/gboeing/osmnx)
 - [Mapillary blog on API v4 examples](https://blog.mapillary.com/update/2021/06/23/getting-started-with-the-new-mapillary-api-v4.html)
+- Facebook Open Source Legal Terms: https://opensource.fb.com/legal/terms/
+- Facebook Open Source Privacy Policy: https://opensource.fb.com/legal/privacy/
 
 ## mapillary-python-sdk -External Documentation
 
