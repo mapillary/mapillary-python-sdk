@@ -70,3 +70,11 @@ make style
 ```
 
 This runs the `style` policy from the `Makefile`.
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING](CONTRIBUTING.md) for details on how to get started, and our [code of conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+Mapillary-Python-SDK is MIT licensed, as found in the [LICENSE](LICENSE) file.
