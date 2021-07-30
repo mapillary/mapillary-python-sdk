@@ -15,6 +15,8 @@ This module contains the filter utilies for high level filtering logic
 from utils.time import date_to_unix_timestamp
 
 # Package imports
+from turfpy.measurement import bearing
+from geojson import Point, Feature
 import haversine
 import logging
 
@@ -90,6 +92,7 @@ def pipeline(data: list, components: list):
         "existed_before": existed_before,
         "sequence_id": sequence_id,
         "compass_angle": compass_angle,
+        "hits_by_look_at": hits_by_look_at,
         # Simply add the mapping of a new function,
         # nothing else will really need to changed
     }
@@ -371,3 +374,90 @@ def compass_angle(data: list, angles: tuple = (0.0, 360.0)) -> list:
         for feature in data
         if angles[0] <= feature["properties"]["compass_angle"] <= angles[1]
     ]
+
+
+def is_looking_at(image_feature: Feature, look_at_feature: Feature) -> bool:
+    """Return whether the image_feature is looking at the look_at_feature
+
+    :param image_feature: The feature set of the image
+    :type image_feature: dict
+
+    :param look_at_feature: The feature that is being looked at
+    :type look_at_feature: dict
+
+    :return: Whether the diff is greater than 310, or less than 50
+    :rtype: bool
+    """
+
+    # Pano accessible via the `get_image_layer`
+    # in config/api/vector_tiles.py
+    if image_feature['properties']['is_pano']:
+        return True
+
+    # Compass angle accessible via the `get_image_layer`
+    # in config/api/vector_tiles.py
+    if image_feature['properties']['compass_angle'] < 0:
+        return False
+
+    # Getting the difference between the two provided GeoJSONs and the compass angle
+    diff: int = (
+        abs(
+            bearing(start=image_feature, end=look_at_feature)
+            - image_feature['properties']['compass_angle']
+        )
+        % 360
+    )
+
+    # If diff > 310 OR diff < 50
+    return 310 < diff or diff < 50
+
+
+def by_look_at_feature(image: dict, look_at_feature: Feature) -> bool:
+    """Filter through the given image features and return only features with the look_at_feature
+
+    :param image: The feature dictionary
+    :type image: dict
+
+    :param look_at_feature: Feature description
+    :type look_at_feature: A WGS84 GIS feature, TurfPy
+
+    :return: Whether the given feature is looking at the `look_at_features`
+    :rtype: bool
+    """
+
+    # Converting the coordinates in coords
+    coords = [image['geometry']['coordinates'][0], image['geometry']['coordinates'][1]]
+
+    # Getting the feature using `Feature`, `Point` from TurfPy
+    image_feature = Feature(
+        geometry=Point(coords, {"compass_angle": image['properties']['compass_angle']})
+    )
+
+    image_feature['properties'] = image['properties']
+
+    # Does the `image_feature` look at the `look_at_feature`?
+    return is_looking_at(image_feature, look_at_feature)
+
+
+def hits_by_look_at(data: list, at: dict) -> list:
+    """Whether the given data have any feature that look at the `at` coordinates
+
+    :param data: List of features with an Image entity
+    :type data: list
+
+    :param at: The lng and lat coordinates. An example would be,
+        >>> at = {
+        >>>     'lng': <longitudinal parameter>,
+        >>>     'lat': <latitude parameter>,
+        >>> }
+    :type at: dict
+
+    :return: Filtered results of features only looking at `at`
+    :rtype: list
+    """
+
+    # Converting the `at` into a Feature object from TurfPy
+    at_feature = Feature(geometry=Point((at['lng'], at['lat'])))
+
+    return list(filter(lambda image: by_look_at_feature(image, at_feature), data['features'])
+)
