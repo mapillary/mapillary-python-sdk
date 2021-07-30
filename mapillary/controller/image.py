@@ -75,7 +75,7 @@ def get_image_close_to_controller(
     # exception
     image_check(kwargs=kwargs)
 
-    filtered_data = []
+    filtered_data = {}
 
     unfiltered_data = VectorTilesAdapter().fetch_layer(
         layer="image",
@@ -86,7 +86,7 @@ def get_image_close_to_controller(
 
     # Filtering for the attributes obtained above
     if unfiltered_data["features"] != {} and unfiltered_data["features"][0]["properties"] != {}:
-        filtered_data.extend(
+        filtered_data = (
             pipeline(
                 data=unfiltered_data,
                 components=[
