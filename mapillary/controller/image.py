@@ -119,53 +119,89 @@ def get_image_close_to_controller(
 
 
 def get_image_looking_at_controller(
-    coordinates_looker: tuple,
-    coordinates_at: tuple,
-    kwargs: dict,
+    looker: dict,
+    at: dict,
+    filters: dict,
 ) -> dict:
     """Extracting the GeoJSON for the image data from a 'looker' and 'at' coordinate view
 
-    :param coordinates_looker: The tuple of coordinates of the position of the looking from
-    coordinates, in the format (long, lat)
-    :type longitude: tuple
+    :param looker: The dictionary of coordinates of the position of the looking from
+    coordinates, in the format,
+        >>> looker = {
+        >>>     'lng': <longitudinal parameter>
+        >>>     'lat': <latitude parameters>    
+        >>> }
+    :type looker: dict
 
-    :param coordinates_at: The tuple of coordinates of the position of the looking at
-    coordinates, in the format (long, lat)
-    :type latitude: tuple
+    :param at: The dict of coordinates of the position of the looking at
+    coordinates, in the format,
+        >>> at = {
+        >>>     'lng': <longitudinal parameter>
+        >>>     'lat': <latitude parameters>    
+        >>> }    
+    :type at: dict
 
-    :param kwargs.min_date: The minimum date to filter till
-    :type kwargs.min_date: str
+    :param filters.min_date: The minimum date to filter till
+    :type filters.min_date: str
 
-    :param kwargs.max_date: The maximum date to filter upto
-    :type kwargs.max_date: str
+    :param filters.max_date: The maximum date to filter upto
+    :type filters.max_date: str
 
-    :param kwargs.daterange: A list of a range to filter by
-    :type kwargs.daterange: list
+    :param filters.radius: The radius that the geometry points will lie in
+    :type filters.radius: float
 
-    :param kwargs.radius: The radius that the geometry points will lie in
-    :type kwargs.radius: float
+    :param filters.image_type: Either 'pano', 'flat' or 'all'
+    :type filters.image_type: str
 
-    :param kwargs.image_type: Either 'pano', 'flat' or 'all'
-    :type kwargs.image_type: str
-
-    :param kwargs.organization_id: The organization to retrieve the data for
-    :type kwargs.organization_id: str
-
-    :param kwargs.fields: Fields to pass to the endpoint
-    :type kwargs.fields: list[str]
+    :param filters.organization_id: The organization to retrieve the data for
+    :type filters.organization_id: str
 
     :return: GeoJSON
     :rtype: dict
     """
 
-    # TODO: Requirement# 3
-
     # Checking if a non valid key
     # has been passed to  the function
     # If that is the case, throw an exception
-    image_check(kwargs=kwargs)
+    image_check(kwargs=filters)
 
-    return {"Message": "Hello, World!"}
+    looker = json.loads(get_image_close_to_controller(
+        longitude=looker['lng'], latitude=looker['lat'], kwargs=filters
+    ))
+
+    # Filter the unfiltered rsults by the given filters
+    if looker["features"] != {} and looker["features"][0]["properties"] != {}:
+        return merged_features_list_to_geojson(
+            pipeline(
+                data=looker,
+                components=[
+                    # Filter by `max_date`
+                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
+                    if "max_date" in filters
+                    else {},
+                    # Filter by `min_date`
+                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
+                    if "min_date" in filters
+                    else {},
+                    # Filter by `image_type`
+                    {"filter": "image_type", "type": filters.get("image_type")}
+                    if "image_type" in filters and filters["image_type"] != "all"
+                    else {},
+                    # Filter by `organization_id`
+                    {
+                        "filter": "organization_id",
+                        "organization_ids": filters.get("organization_id"),
+                    }
+                    if "organization_id" in filters
+                    else {},
+                    # Filter by `hits_by_look_at`
+                    {
+                        "filter": "hits_by_look_at",
+                        "at": at 
+                    }
+                ],
+            )
+        )
 
 
 def get_image_thumbnail_controller(image_id, resolution: int) -> str:
