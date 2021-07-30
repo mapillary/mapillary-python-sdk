@@ -116,15 +116,15 @@ def get_image_looking_at(
     :param looker: The coordinate sets from where a certain point is being looked at in the format,
         >>> looker = {
         >>>     'lng': <longitudinal parameter>
-        >>>     'lat': <latitude parameters>    
-        >>> }    
+        >>>     'lat': <latitude parameters>
+        >>> }
     :type looker: dict
 
     :param at: The coordinate sets to where a certain point is being looked at in the format
         >>> at = {
         >>>     'lng': <longitudinal parameter>
-        >>>     'lat': <latitude parameters>    
-        >>> }        
+        >>>     'lat': <latitude parameters>
+        >>> }
     :type at: dict
 
     :param filters.min_date: The minimum date to filter till
@@ -191,7 +191,7 @@ def get_image_looking_at(
                     },
                     radius = 5000,
                 )
-        >>> data_2 = json.loads(data_2)  
+        >>> data_2 = json.loads(data_2)
         >>> len(data_1['features']) == len(data_2['features'])
         ... True
         >>> # The total features did not change on increasing the radius

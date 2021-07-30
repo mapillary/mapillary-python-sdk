@@ -20,7 +20,12 @@ from config.api.vector_tiles import VectorTiles
 
 # Exception Handling
 from models.exceptions import InvalidImageKey
-from controller.rules.verify import image_check, image_bbox_check, sequence_bbox_check, resolution_check
+from controller.rules.verify import (
+    image_check,
+    image_bbox_check,
+    sequence_bbox_check,
+    resolution_check,
+)
 
 # Client
 from models.client import Client
@@ -85,34 +90,38 @@ def get_image_close_to_controller(
     )
 
     # Filtering for the attributes obtained above
-    if unfiltered_data["features"] != {} and unfiltered_data["features"][0]["properties"] != {}:
-        filtered_data = (
-            pipeline(
-                data=unfiltered_data,
-                components=[
-                    # Filter using kwargs.min_date
-                    {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
-                    if "min_date" in kwargs
-                    else {},
-                    # Filter using kwargs.max_date
-                    {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
-                    if "max_date" in kwargs
-                    else {},                
-                    # Filter using kwargs.image_type
-                    {"filter": "image_type", "tile": kwargs["image_type"]}
-                    if "image_type" in kwargs
-                    else {},
-                    # Filter using kwargs.organization_id
-                    {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-                    if "org_id" in kwargs
-                    else {},
-                    # Filter using kwargs.radius
-                    {"filter": "haversine_dist", "radius": kwargs["radius"],
-                        "coords": [longitude, latitude]}
-                    if "radius" in kwargs
-                    else {},
-                ],
-            )
+    if (
+        unfiltered_data["features"] != {}
+        and unfiltered_data["features"][0]["properties"] != {}
+    ):
+        filtered_data = pipeline(
+            data=unfiltered_data,
+            components=[
+                # Filter using kwargs.min_date
+                {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
+                if "min_date" in kwargs
+                else {},
+                # Filter using kwargs.max_date
+                {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
+                if "max_date" in kwargs
+                else {},
+                # Filter using kwargs.image_type
+                {"filter": "image_type", "tile": kwargs["image_type"]}
+                if "image_type" in kwargs
+                else {},
+                # Filter using kwargs.organization_id
+                {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
+                if "org_id" in kwargs
+                else {},
+                # Filter using kwargs.radius
+                {
+                    "filter": "haversine_dist",
+                    "radius": kwargs["radius"],
+                    "coords": [longitude, latitude],
+                }
+                if "radius" in kwargs
+                else {},
+            ],
         )
 
     return merged_features_list_to_geojson(filtered_data)
@@ -129,7 +138,7 @@ def get_image_looking_at_controller(
     coordinates, in the format,
         >>> looker = {
         >>>     'lng': <longitudinal parameter>
-        >>>     'lat': <latitude parameters>    
+        >>>     'lat': <latitude parameters>
         >>> }
     :type looker: dict
 
@@ -137,8 +146,8 @@ def get_image_looking_at_controller(
     coordinates, in the format,
         >>> at = {
         >>>     'lng': <longitudinal parameter>
-        >>>     'lat': <latitude parameters>    
-        >>> }    
+        >>>     'lat': <latitude parameters>
+        >>> }
     :type at: dict
 
     :param filters.min_date: The minimum date to filter till
@@ -165,9 +174,11 @@ def get_image_looking_at_controller(
     # If that is the case, throw an exception
     image_check(kwargs=filters)
 
-    looker = json.loads(get_image_close_to_controller(
-        longitude=looker['lng'], latitude=looker['lat'], kwargs=filters
-    ))
+    looker = json.loads(
+        get_image_close_to_controller(
+            longitude=looker["lng"], latitude=looker["lat"], kwargs=filters
+        )
+    )
 
     # Filter the unfiltered rsults by the given filters
     if looker["features"] != {} and looker["features"][0]["properties"] != {}:
@@ -195,10 +206,7 @@ def get_image_looking_at_controller(
                     if "organization_id" in filters
                     else {},
                     # Filter by `hits_by_look_at`
-                    {
-                        "filter": "hits_by_look_at",
-                        "at": at 
-                    }
+                    {"filter": "hits_by_look_at", "at": at},
                 ],
             )
         )

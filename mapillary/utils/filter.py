@@ -224,8 +224,7 @@ def existed_at(data: list, existed_at: str) -> list:
     return [
         feature
         for feature in data
-        if feature["properties"]["first_seen_at"]
-        > date_to_unix_timestamp(existed_at)
+        if feature["properties"]["first_seen_at"] > date_to_unix_timestamp(existed_at)
     ]
 
 
@@ -391,19 +390,19 @@ def is_looking_at(image_feature: Feature, look_at_feature: Feature) -> bool:
 
     # Pano accessible via the `get_image_layer`
     # in config/api/vector_tiles.py
-    if image_feature['properties']['is_pano']:
+    if image_feature["properties"]["is_pano"]:
         return True
 
     # Compass angle accessible via the `get_image_layer`
     # in config/api/vector_tiles.py
-    if image_feature['properties']['compass_angle'] < 0:
+    if image_feature["properties"]["compass_angle"] < 0:
         return False
 
     # Getting the difference between the two provided GeoJSONs and the compass angle
     diff: int = (
         abs(
             bearing(start=image_feature, end=look_at_feature)
-            - image_feature['properties']['compass_angle']
+            - image_feature["properties"]["compass_angle"]
         )
         % 360
     )
@@ -426,14 +425,14 @@ def by_look_at_feature(image: dict, look_at_feature: Feature) -> bool:
     """
 
     # Converting the coordinates in coords
-    coords = [image['geometry']['coordinates'][0], image['geometry']['coordinates'][1]]
+    coords = [image["geometry"]["coordinates"][0], image["geometry"]["coordinates"][1]]
 
     # Getting the feature using `Feature`, `Point` from TurfPy
     image_feature = Feature(
-        geometry=Point(coords, {"compass_angle": image['properties']['compass_angle']})
+        geometry=Point(coords, {"compass_angle": image["properties"]["compass_angle"]})
     )
 
-    image_feature['properties'] = image['properties']
+    image_feature["properties"] = image["properties"]
 
     # Does the `image_feature` look at the `look_at_feature`?
     return is_looking_at(image_feature, look_at_feature)
@@ -457,7 +456,8 @@ def hits_by_look_at(data: list, at: dict) -> list:
     """
 
     # Converting the `at` into a Feature object from TurfPy
-    at_feature = Feature(geometry=Point((at['lng'], at['lat'])))
+    at_feature = Feature(geometry=Point((at["lng"], at["lat"])))
 
-    return list(filter(lambda image: by_look_at_feature(image, at_feature), data['features'])
-)
+    return list(
+        filter(lambda image: by_look_at_feature(image, at_feature), data["features"])
+    )

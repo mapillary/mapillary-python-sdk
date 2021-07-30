@@ -73,11 +73,11 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
 def image_check(kwargs) -> bool:
     """For image entities, check if the arguments provided fall in the right category
-    
+
     :param kwargs: A dictionary that contains the keyword key-value pair arguments
     :type kwargs: dict
     """
-    
+
     # Kwarg argument check
     return kwarg_check(
         kwargs=kwargs,
@@ -95,7 +95,7 @@ def image_check(kwargs) -> bool:
 
 def resolution_check(resolution: int) -> bool:
     """Checking for the proper thumbnail size of the argument
-    
+
     :param resolution: The image size to fetch for
     :type resolution: int
 
@@ -116,7 +116,7 @@ def resolution_check(resolution: int) -> bool:
 
 def image_bbox_check(kwargs: dict) -> dict:
     """Check if the right arguments have been provided for the image bounding box
-    
+
     :param kwargs: The dictionary parameters
     :type kwargs: dict
 
