@@ -256,8 +256,8 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
     :rtype: dict
     """
 
-    # Define an empty geojson
-    output = {"type": "FeatureCollection", "features": []}
+    # Define an empty list
+    output = []
 
     # Go through the features
     for feature in data["features"]:
@@ -269,7 +269,7 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
         ):
 
             # ... append to the output
-            output["features"].append(feature)
+            output.append(feature)
 
     # Return the output
     return output
