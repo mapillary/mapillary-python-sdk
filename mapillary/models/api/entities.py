@@ -192,12 +192,8 @@ class EntityAdapter(object):
 
         # Retrieve the relevant data with `url`, get content, decode to utf-8, return
         return detection_features_to_geojson(
-                json.loads(
-                        self.client.get(url)
-                        .content
-                        .decode("utf-8")
-                    )['data']
-                )
+            json.loads(self.client.get(url).content.decode("utf-8"))["data"]
+        )
 
     def is_image_id(self, id: int, fields: list = []) -> dict:
         """Determines whether the given id is an image_id or a map_feature_id
@@ -216,5 +212,5 @@ class EntityAdapter(object):
         try:
             self.fetch_image(image_id=id, fields=fields)
             return True
-        except:
+        except Exception:
             return False

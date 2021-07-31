@@ -22,6 +22,7 @@ from models.api.entities import EntityAdapter
 # # Rules
 from controller.rules.verify import valid_id
 
+
 def get_image_detections_controller(image_id: int, filters: dict) -> dict:
     """Get image detections with given (image) key
 
@@ -46,6 +47,7 @@ def get_image_detections_controller(image_id: int, filters: dict) -> dict:
         fields=filters["fields"] if "fields" in filters else [],
     )
 
+
 def get_map_feature_detections_controller(map_feature_id: str, filters: dict) -> dict:
     """Get image detections with given (map feature) key
 
@@ -62,7 +64,7 @@ def get_map_feature_detections_controller(map_feature_id: str, filters: dict) ->
 
     # Checks if the Id given is indeed a valid image_id
     valid_id(id=map_feature_id, image=False)
-    
+
     # Return results from the Adapter
     return EntityAdapter().fetch_detections(
         id=map_feature_id,

@@ -74,11 +74,11 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
 def image_check(kwargs) -> bool:
     """For image entities, check if the arguments provided fall in the right category
-    
+
     :param kwargs: A dictionary that contains the keyword key-value pair arguments
     :type kwargs: dict
     """
-    
+
     # Kwarg argument check
     return kwarg_check(
         kwargs=kwargs,
@@ -96,7 +96,7 @@ def image_check(kwargs) -> bool:
 
 def resolution_check(resolution: int) -> bool:
     """Checking for the proper thumbnail size of the argument
-    
+
     :param resolution: The image size to fetch for
     :type resolution: int
 
@@ -117,7 +117,7 @@ def resolution_check(resolution: int) -> bool:
 
 def image_bbox_check(kwargs: dict) -> dict:
     """Check if the right arguments have been provided for the image bounding box
-    
+
     :param kwargs: The dictionary parameters
     :type kwargs: dict
 
@@ -218,15 +218,17 @@ def valid_id(id: int, image=True):
 
     # IF image == False, and error_check == True, this becomes True
     # IF image == True, and error_check == False, this becomes True
-    if (image ^ EntityAdapter().is_image_id(id=id, fields=[])):
+    if image ^ EntityAdapter().is_image_id(id=id, fields=[]):
 
         # The EntityAdapter() sends a request to the server, checking
         # if the id is indeed an image_id, TRUE is so, else FALSE
 
         # Raises an exception of InvalidOptionError
         raise InvalidOptionError(
-            param='id',
-            value=f'Id: {id}, image: {image}',
-            options=['Id is image_id AND image is True', 'key is map_feature_id AND'
-                'image is False']
-            )
+            param="id",
+            value=f"Id: {id}, image: {image}",
+            options=[
+                "Id is image_id AND image is True",
+                "key is map_feature_id AND" "image is False",
+            ],
+        )
