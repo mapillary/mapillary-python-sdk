@@ -135,3 +135,51 @@ def merged_features_list_to_geojson(features_list: list) -> str:
     :rtype: str
     """
     return json.dumps({"type": "FeatureCollection", "features": features_list})
+
+def detection_features_to_geojson(feature_list: list) -> dict:
+    """Converts a preprocessed list (i.e, features from the detections of either images or 
+    map_features from multiple segments) into a fully featured GeoJSON
+
+    :param features_list: A list of processed features merged from different segments within a
+    detection
+    :type features_list: list
+
+    Example::
+        >>> # From
+        >>> [{'created_at': '2021-05-20T17:49:01+0000', 'geometry': 
+        ... 'GjUKBm1weS1vchIVEgIAABgDIg0JhiekKBoqAABKKQAPGgR0eXBlIgkKB3BvbHlnb24ogCB4AQ==',
+        ... 'image': {'geometry': {'type': 'Point', 'coordinates': [-97.743279722222,
+        ... 30.270651388889]}, 'id': '1933525276802129'}, 'value': 'regulatory--no-parking--g2',
+        ... 'id': '1942105415944115'}, ... ]
+        >>> # To
+        >>> {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry':
+        ... {'type': 'Point', 'coordinates': [-97.743279722222, 30.270651388889]}, 'properties': {
+        ... 'image_id': '1933525276802129', 'created_at': '2021-05-20T17:49:01+0000',
+        ... 'pixel_geometry':
+        ... 'GjUKBm1weS1vchIVEgIAABgDIg0JhiekKBoqAABKKQAPGgR0eXBlIgkKB3BvbHlnb24ogCB4AQ=='`,
+        ... 'value': 'regulatory--no-parking--g2', 'id': '1942105415944115' } }, ... ]}
+
+    :return: GeoJSON formatted as expected in a detection format
+    :rtype: dict
+    """
+    
+    return {
+            'type': 'FeatureCollection',
+            'features': [
+                    {
+                        'type': 'Feature',
+                        'geometry': { 
+                            'type': 'Point',
+                            'coordinates': feature['image']['geometry']['coordinates']
+                        },
+                        'properties': {
+                            'image_id': feature['image']['id'],
+                            'created_at': feature['created_at'],
+                            'pixel_geometry': feature['geometry'],
+                            'value': feature['value'],
+                            'id': feature['id'],
+                        },
+                    }
+                    for feature in feature_list
+                ]
+            }
