@@ -14,12 +14,13 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 # Package Imports
+import json
 import ast
 
 # Local imports
 
-# # Utils
-# from utils.format import image_entity_to_geojson
+# # Utilities
+from utils.format import detection_features_to_geojson
 
 # # Models
 from models.client import Client
@@ -190,4 +191,30 @@ class EntityAdapter(object):
             )
 
         # Retrieve the relevant data with `url`, get content, decode to utf-8, return
-        return self.client.get(url).content.decode("utf-8")
+        return detection_features_to_geojson(
+                json.loads(
+                        self.client.get(url)
+                        .content
+                        .decode("utf-8")
+                    )['data']
+                )
+
+    def is_image_id(self, id: int, fields: list = []) -> dict:
+        """Determines whether the given id is an image_id or a map_feature_id
+
+        :param id: The ID given to test
+        :type id: int
+
+        :param fields: The fields to extract properties for, defaults to []
+        :type fields: list
+
+        :return: True if id is image, else False
+        :rtype: bool
+
+        """
+
+        try:
+            self.fetch_image(image_id=id, fields=fields)
+            return True
+        except:
+            return False
