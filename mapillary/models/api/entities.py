@@ -74,8 +74,6 @@ class EntityAdapter(object):
         :rtype: dict
         """
 
-        # TODO: Apply image_entity_to_geojson when PR#44 merged
-
         # Getting the results through the client, and return after decoding
         try:
             return (
@@ -119,8 +117,6 @@ class EntityAdapter(object):
         :rtype: dict
         """
 
-        # TODO: This function should be tested, not yet fit for use
-
         # Getting the results through the client, and return after decoding
         return self.client.get(
             # Calling the endpoint with the parameters ...
@@ -155,8 +151,6 @@ class EntityAdapter(object):
         :return: The fetched GeoJSON
         :rtype: dict
         """
-
-        # TODO: This function should be tested, not yet fit for use
 
         # If id_type is True(id is for image)
         if id_type:
@@ -210,7 +204,14 @@ class EntityAdapter(object):
         """
 
         try:
+            # If image data is fetched without an exception being thrown ...
             self.fetch_image(image_id=id, fields=fields)
+
+            # ... return True
             return True
+
+        # An exception to catch the InvalidImageKey exception
         except Exception:
+
+            # If exception, return False
             return False
