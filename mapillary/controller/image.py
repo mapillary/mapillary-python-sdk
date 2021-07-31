@@ -20,7 +20,7 @@ from config.api.vector_tiles import VectorTiles
 
 # Exception Handling
 from models.exceptions import InvalidImageKey
-from controller.rules.verify import (
+from utils.verify import (
     image_check,
     image_bbox_check,
     sequence_bbox_check,

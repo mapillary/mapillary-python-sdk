@@ -20,7 +20,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 from models.api.entities import EntityAdapter
 
 # # Rules
-from controller.rules.verify import valid_id
+from utils.verify import valid_id
 
 
 def get_image_detections_controller(image_id: int, filters: dict) -> dict:
