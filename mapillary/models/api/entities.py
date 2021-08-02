@@ -105,7 +105,7 @@ class EntityAdapter(object):
             # If given ID is an invalid image ID, let the user know
             raise InvalidImageKey(image_id)
 
-    def fetch_map_features(self, map_feature_id: int, fields: list = []):
+    def fetch_map_feature(self, map_feature_id: int, fields: list = []):
         """Fetches map feaures depending on the map_feature_id and the fields provided
 
         :param map_feature_id: The map_feature_id to extract for

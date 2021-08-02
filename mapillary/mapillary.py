@@ -484,7 +484,7 @@ def get_all_map_features_in_shape(geoJSON, **filters):
 
 
 @auth()
-def get_feature_from_map_feature_key(map_feature_key, fields):
+def feature_from_key(key: int, fields: list = []) -> dict:
     """Gets features for the given map_key argument
 
     :param map_feature_key: The map feature key to
@@ -505,7 +505,7 @@ def get_feature_from_map_feature_key(map_feature_key, fields):
 
     # TODO: This functions needs implementation
 
-    return None
+    return feature.get_feature_from_key_controller(key=int(key), fields=fields)
 
 
 @auth()

@@ -27,6 +27,9 @@ from controller.rules.verify import points_traffic_signs_check
 from utils.filter import pipeline
 from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
 
+# Adapters
+from models.api.entities import EntityAdapter
+
 # Package imports
 import mercantile
 from vt2geojson.tools import vt_bytes_to_geojson
@@ -52,7 +55,7 @@ def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
     return {"Message": "Hello, World!"}
 
 
-def get_feature_map_key_controller(key: str, fields: list) -> dict:
+def get_feature_from_key_controller(key: int, fields: list) -> dict:
     """Extracting features from the map features endpoint with specified key
 
     :param key: The image key
@@ -65,12 +68,12 @@ def get_feature_map_key_controller(key: str, fields: list) -> dict:
     :rtype: dict
     """
 
-    # TODO: Requirement# 11A
-
     # ? The checking of the fields can be done within the /config/api/, right?
 
-    return {"Message": "Hello, World!"}
-
+    return EntityAdapter().fetch_map_feature(
+        map_feature_id=key,
+        fields=fields
+    )
 
 def get_feature_image_key_controller(key: str, fields: list) -> dict:
     """Extracting features from the image endpoint with specified key
