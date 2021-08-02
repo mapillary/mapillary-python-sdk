@@ -21,7 +21,7 @@ from config.api.vector_tiles import VectorTiles
 from models.client import Client
 
 # Exception Handling
-from controller.rules.verify import points_traffic_signs_check
+from utils.verify import points_traffic_signs_check
 
 # Utils
 from utils.filter import pipeline

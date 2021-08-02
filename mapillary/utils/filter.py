@@ -221,8 +221,7 @@ def existed_at(data: list, existed_at: str) -> list:
     return [
         feature
         for feature in data
-        if feature["properties"]["first_seen_at"]
-        > date_to_unix_timestamp(existed_at)
+        if feature["properties"]["first_seen_at"] > date_to_unix_timestamp(existed_at)
     ]
 
 

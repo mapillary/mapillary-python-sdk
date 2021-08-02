@@ -14,12 +14,13 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 # Package Imports
+import json
 import ast
 
 # Local imports
 
-# # Utils
-# from utils.format import image_entity_to_geojson
+# # Utilities
+from utils.format import detection_features_to_geojson
 
 # # Models
 from models.client import Client
@@ -73,8 +74,6 @@ class EntityAdapter(object):
         :rtype: dict
         """
 
-        # TODO: Apply image_entity_to_geojson when PR#44 merged
-
         # Getting the results through the client, and return after decoding
         try:
             return (
@@ -118,8 +117,6 @@ class EntityAdapter(object):
         :rtype: dict
         """
 
-        # TODO: This function should be tested, not yet fit for use
-
         # Getting the results through the client, and return after decoding
         return self.client.get(
             # Calling the endpoint with the parameters ...
@@ -155,8 +152,6 @@ class EntityAdapter(object):
         :rtype: dict
         """
 
-        # TODO: This function should be tested, not yet fit for use
-
         # If id_type is True(id is for image)
         if id_type:
 
@@ -190,4 +185,33 @@ class EntityAdapter(object):
             )
 
         # Retrieve the relevant data with `url`, get content, decode to utf-8, return
-        return self.client.get(url).content.decode("utf-8")
+        return detection_features_to_geojson(
+            json.loads(self.client.get(url).content.decode("utf-8"))["data"]
+        )
+
+    def is_image_id(self, id: int, fields: list = []) -> dict:
+        """Determines whether the given id is an image_id or a map_feature_id
+
+        :param id: The ID given to test
+        :type id: int
+
+        :param fields: The fields to extract properties for, defaults to []
+        :type fields: list
+
+        :return: True if id is image, else False
+        :rtype: bool
+
+        """
+
+        try:
+            # If image data is fetched without an exception being thrown ...
+            self.fetch_image(image_id=id, fields=fields)
+
+            # ... return True
+            return True
+
+        # An exception to catch the InvalidImageKey exception
+        except Exception:
+
+            # If exception, return False
+            return False
