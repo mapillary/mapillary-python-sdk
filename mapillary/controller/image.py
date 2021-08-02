@@ -91,7 +91,7 @@ def get_image_close_to_controller(
 
     # Filtering for the attributes obtained above
     if (
-        unfiltered_data["features"] != {}
+        unfiltered_data["features"] != []
         and unfiltered_data["features"][0]["properties"] != {}
     ):
         filtered_data = pipeline(
@@ -181,7 +181,7 @@ def get_image_looking_at_controller(
     )
 
     # Filter the unfiltered rsults by the given filters
-    if looker["features"] != {} and looker["features"][0]["properties"] != {}:
+    if looker["features"] != [] and looker["features"][0]["properties"] != {}:
         return merged_features_list_to_geojson(
             pipeline(
                 data=looker,
