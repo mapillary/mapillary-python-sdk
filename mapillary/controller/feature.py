@@ -20,12 +20,10 @@ from config.api.vector_tiles import VectorTiles
 # Client
 from models.client import Client
 
-# Exception Handling
-from utils.verify import points_traffic_signs_check
-
 # Utils
 from utils.filter import pipeline
 from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
+from utils.verify import valid_id, points_traffic_signs_check
 
 # Adapters
 from models.api.entities import EntityAdapter
@@ -35,7 +33,7 @@ import mercantile
 from vt2geojson.tools import vt_bytes_to_geojson
 
 
-def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
+def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> str:
     """For extracting all map features within a shape
 
     :param geojson: The initial data
@@ -68,7 +66,7 @@ def get_feature_from_key_controller(key: int, fields: list) -> dict:
     :rtype: dict
     """
 
-    # ? The checking of the fields can be done within the /config/api/, right?
+    valid_id(id=key, image=True)
 
     return EntityAdapter().fetch_map_feature(
         map_feature_id=key,
