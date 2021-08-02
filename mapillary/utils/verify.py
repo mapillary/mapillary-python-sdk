@@ -5,7 +5,7 @@
 mapillary.controller.rules.verify
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module implements the verification of the filters passed to each of the controllers
+This module implements the verification of the filters or keys passed to each of the controllers
 under `./controllers` that implemeent the business logic functionalities of the Mapillary
 Python SDK.
 
@@ -16,6 +16,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 from models.exceptions import InvalidKwargError, InvalidOptionError
+from models.api.entities import EntityAdapter
 
 
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
@@ -73,11 +74,11 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
 def image_check(kwargs) -> bool:
     """For image entities, check if the arguments provided fall in the right category
-    
+
     :param kwargs: A dictionary that contains the keyword key-value pair arguments
     :type kwargs: dict
     """
-    
+
     # Kwarg argument check
     return kwarg_check(
         kwargs=kwargs,
@@ -95,7 +96,7 @@ def image_check(kwargs) -> bool:
 
 def resolution_check(resolution: int) -> bool:
     """Checking for the proper thumbnail size of the argument
-    
+
     :param resolution: The image size to fetch for
     :type resolution: int
 
@@ -116,7 +117,7 @@ def resolution_check(resolution: int) -> bool:
 
 def image_bbox_check(kwargs: dict) -> dict:
     """Check if the right arguments have been provided for the image bounding box
-    
+
     :param kwargs: The dictionary parameters
     :type kwargs: dict
 
@@ -195,3 +196,39 @@ def points_traffic_signs_check(kwargs: dict) -> dict:
             "existed_at": kwargs.get("existed_at", None),
             "existed_before": kwargs.get("existed_before", None),
         }
+
+
+def valid_id(id: int, image=True):
+    """Checks if a given id is valid as it is assumed. For example, is a given id expectedly an
+    image_id or not? Is the id expectedly a map_feature_id or not?
+
+    :param id: The ID passed
+    :type id: int
+
+    :param image: Is the passed id an image_id?
+    :type image: bool
+
+    '''
+    :raises InvalidOptionError: Raised when invalid arguments are passed
+    '''
+
+    :return: None
+    :rtype: None
+    """
+
+    # IF image == False, and error_check == True, this becomes True
+    # IF image == True, and error_check == False, this becomes True
+    if image ^ EntityAdapter().is_image_id(id=id, fields=[]):
+
+        # The EntityAdapter() sends a request to the server, checking
+        # if the id is indeed an image_id, TRUE is so, else FALSE
+
+        # Raises an exception of InvalidOptionError
+        raise InvalidOptionError(
+            param="id",
+            value=f"Id: {id}, image: {image}",
+            options=[
+                "Id is image_id AND image is True",
+                "key is map_feature_id AND" "image is False",
+            ],
+        )

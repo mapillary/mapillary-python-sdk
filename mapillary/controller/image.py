@@ -20,7 +20,12 @@ from config.api.vector_tiles import VectorTiles
 
 # Exception Handling
 from models.exceptions import InvalidImageKey
-from controller.rules.verify import image_check, image_bbox_check, sequence_bbox_check, resolution_check
+from utils.verify import (
+    image_check,
+    image_bbox_check,
+    sequence_bbox_check,
+    resolution_check,
+)
 
 # Client
 from models.client import Client
@@ -85,7 +90,10 @@ def get_image_close_to_controller(
     )
 
     # Filtering for the attributes obtained above
-    if unfiltered_data["features"] != {} and unfiltered_data["features"][0]["properties"] != {}:
+    if (
+        unfiltered_data["features"] != {}
+        and unfiltered_data["features"][0]["properties"] != {}
+    ):
         filtered_data.extend(
             pipeline(
                 data=unfiltered_data,
@@ -97,7 +105,7 @@ def get_image_close_to_controller(
                     # Filter using kwargs.max_date
                     {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
                     if "max_date" in kwargs
-                    else {},                
+                    else {},
                     # Filter using kwargs.image_type
                     {"filter": "image_type", "tile": kwargs["image_type"]}
                     if "image_type" in kwargs
@@ -107,8 +115,11 @@ def get_image_close_to_controller(
                     if "org_id" in kwargs
                     else {},
                     # Filter using kwargs.radius
-                    {"filter": "haversine_dist", "radius": kwargs["radius"],
-                        "coords": [longitude, latitude]}
+                    {
+                        "filter": "haversine_dist",
+                        "radius": kwargs["radius"],
+                        "coords": [longitude, latitude],
+                    }
                     if "radius" in kwargs
                     else {},
                 ],
