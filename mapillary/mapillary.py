@@ -457,19 +457,41 @@ def traffic_signs_in_bbox(
 
 
 @auth()
-def get_all_images_in_a_shape(geoJSON, **filters):
+def images_in_geojson(geojson: dict, **filters: dict):
     """Extracts all images within a shape
 
-    :param geoJSON: Bbox coordinates as the argument
-    :type geoJSON: list
+    :param geojson: A geojson as the shape acting as the query extent
+    :type geojson: dict
 
-    :param **filters: Contains filter arguments
-    for date, pano/flat. Such is 'date', 'is_pano',
-    'is_flat', 'is_both'
-    :type **filters: dict
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
 
-    :return: # ? Not sure, need to ask Chris
-    :rtype: # ? Not sure, need to ask Chris
+    :param filters.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_date: str
+
+    :param filters.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_date: str
+
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
+
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
+
+    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
+    filters.
+    :rtype: dict
+
+    :return: A feature collection as a GeoJSON
+    :rtype: dict
 
     Usage::
         # TODO: Write code here to display how the function works
@@ -481,7 +503,53 @@ def get_all_images_in_a_shape(geoJSON, **filters):
 
 
 @auth()
-def get_all_map_features_in_shape(geoJSON, **filters):
+def images_in_shape(shape, **filters: dict):
+    """Extracts all images within a shape
+
+    :param shape: ??? # ! Fill in documentation
+    :type shape: ??? # ! Fill in documentation
+
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
+
+    :param filters.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_date: str
+
+    :param filters.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_date: str
+
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
+
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
+
+    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
+    filters.
+    :rtype: dict
+
+    :return: A feature collection as a GeoJSON
+    :rtype: dict
+
+    Usage::
+        # TODO: Write code here to display how the function works
+    """
+
+    # TODO: This functions needs implementation
+
+    return None
+
+
+@auth()
+def get_map_features_in_shape(geoJSON, **filters):
     """Extracts all images within a shape
 
     :param geoJSON: Bbox coordinates as the argument

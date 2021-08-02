@@ -327,41 +327,93 @@ def get_images_in_bbox_controller(
     return merged_features_list_to_geojson(filtered_results)
 
 
-def get_images_in_shape_controller(
-    data: dict, is_geojson: bool = True, kwargs: dict = None
-) -> dict:
-    """For extracting images that lie within a shape, either GeoJSON or a Bounding Box, and merges
-    the results of the found GeoJSON(s) into a single object - by merging all the features into
-    one list in a feature collection.
+def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
+    """For extracting images that lie within a GeoJSON and merges the results of the found
+    GeoJSON(s) into a single object - by merging all the features into one feature list.
 
-    A bounding box is in the list order of ([east, south, west, north])
+    :param geojson: The geojson to act as the query extent
+    :type geojson: dict
 
-    :param data: GeoJSON | Bounding Box (Bbox)
-    :type data: dict | list
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
 
-    :param is_geojson: True if GeoJSON object will be passed, else False if Bbox, defaults to True
-    :type is_geojson: bool
+    :param filters.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_date: str
 
-    :param kwargs.max_date: The max date that can be filtered upto
-    :type kwargs.max_date: str
+    :param filters.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_date: str
 
-    :param kwargs.min_date: The min date that can be filtered from
-    :type kwargs.min_date: str
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
 
-    :param kwargs.is_pano: Either 'pano', 'flat' or 'all'
-    :type kwargs.is_pano: str
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
 
     '''
     :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
     that do not belong to the requested API end call
     '''
 
-    :return: GeoJSON
+    :return: A feature collection as a GeoJSON
     :rtype: dict
     """
 
-    # TODO: Requirement# 9
+    # TODO: Requirement# 9.1
 
-    image_bbox_check(kwargs)
+    image_bbox_check(filters)
+
+    return {"Message": "Hello, World!"}
+
+
+def images_in_shape_controller(shape, filters: dict = None) -> dict:
+    """For extracting images that lie within a shape, merging the results of the found features
+    into a single object - by merging all the features into one list in a feature collection.
+
+    :param shape: ??? # ! Fill in documentation
+    :type shape: ??? # ! Fill in documentation
+
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
+
+    :param filters.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_date: str
+
+    :param filters.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_date: str
+
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
+
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
+
+    '''
+    :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
+    that do not belong to the requested API end call
+    '''
+
+    :return: A feature collection as a GeoJSON
+    :rtype: dict
+    """
+
+    # TODO: Requirement# 9.2
+
+    image_bbox_check(filters)
 
     return {"Message": "Hello, World!"}
