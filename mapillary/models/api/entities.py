@@ -92,7 +92,6 @@ class EntityAdapter(object):
                             # ... only if the fields are not empty ...
                             if fields != []
                             # ... if they are, get all the fields as a list instead
-                            # * The below function should be available after #38 is merged
                             else Entities.get_image_fields(),
                         ),
                         # After retrieval of response, only get the content, decode to utf-8
@@ -128,7 +127,6 @@ class EntityAdapter(object):
                 # ... only if the fields are not empty ...
                 if fields != []
                 # ... if they are, get all the fields as a list instead
-                # * The below function should be available after #38 is merged
                 else Entities.get_map_feature_fields(),
             ),
             # After retrieval of response, only get the content, decode to utf-8
@@ -164,7 +162,6 @@ class EntityAdapter(object):
                 # ... only if the fields are not provided empty ...
                 if fields != []
                 # ... but if they are, set the fields as all possible fields ...
-                # * The below function should be available after #38 is merged
                 else Entities.get_detection_with_image_id_fields(),
             )
 
@@ -180,7 +177,6 @@ class EntityAdapter(object):
                 # ... only if the fields are not provided empty ...
                 if fields != []
                 # ... but if they are, set the fields as all possible fields ...
-                # * The below function should be available after #38 is merged
                 else Entities.get_detection_with_map_feature_id_fields(),
             )
 
