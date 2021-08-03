@@ -531,7 +531,7 @@ def feature_from_key(key: int, fields: list = []) -> dict:
 
 
 @auth()
-def get_feature_from_image_feature_key(image_feature_key):
+def image_from_key(key: int, fields: list = []) -> dict:
     """Gets features for the given map_key argument
 
     :param image_feature_key: The image feature key to
@@ -552,7 +552,7 @@ def get_feature_from_image_feature_key(image_feature_key):
 
     # TODO: This functions needs implementation
 
-    return None
+    return image.get_image_from_key_controller(key=int(key), fields=fields)
 
 
 @auth()

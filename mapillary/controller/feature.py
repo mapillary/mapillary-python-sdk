@@ -21,9 +21,13 @@ from config.api.vector_tiles import VectorTiles
 from models.client import Client
 
 # Utils
-from utils.filter import pipeline
-from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
 from utils.verify import valid_id, points_traffic_signs_check
+from utils.filter import pipeline
+from utils.format import (
+    geojson_to_features_list,
+    merged_features_list_to_geojson,
+    feature_to_geojson,
+)
 
 # Adapters
 from models.api.entities import EntityAdapter
@@ -62,37 +66,17 @@ def get_feature_from_key_controller(key: int, fields: list) -> dict:
     :param fields: List of possible fields
     :type fields: list
 
-    :return: GeoJSON
+    :return: JSON
     :rtype: dict
     """
 
-    valid_id(id=key, image=True)
+    valid_id(id=key, image=False)
 
-    return EntityAdapter().fetch_map_feature(
-        map_feature_id=key,
-        fields=fields
+    return merged_features_list_to_geojson(
+        feature_to_geojson(
+            EntityAdapter().fetch_map_feature(map_feature_id=key, fields=fields)
+        )
     )
-
-def get_feature_image_key_controller(key: str, fields: list) -> dict:
-    """Extracting features from the image endpoint with specified key
-
-    :param key: The image key
-    :type key: str
-
-    :param fields: List of possible fields
-    :type fields: list
-
-    :return: GeoJSON
-    :rtype: dict
-    """
-
-    # TODO: Requirement# 11B
-
-    # ? The checking of the fields for this endpoint are already
-    # ? done within the Entity class
-    # ? We should leave the checking of the fields to the /config/api/, right?
-
-    return {"Message": "Hello, World!"}
 
 
 def get_map_features_in_bbox_controller(
@@ -154,7 +138,7 @@ def get_map_features_in_bbox_controller(
         data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
 
         # Separating feature objects from the decoded data
-        unfiltered_features = geojson_to_feature_object(data)
+        unfiltered_features = geojson_to_features_list(data)
 
         filtered_features.extend(
             pipeline(
