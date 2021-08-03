@@ -97,7 +97,6 @@ class EntityAdapter(object):
                         # After retrieval of response, only get the content, decode to utf-8
                     ).content.decode("utf-8")
                 )
-                # )
             )
         except HTTPError:
             # If given ID is an invalid image ID, let the user know
@@ -117,20 +116,22 @@ class EntityAdapter(object):
         """
 
         # Getting the results through the client, and return after decoding
-        return self.client.get(
-            # Calling the endpoint with the parameters ...
-            Entities.get_map_feature(
-                # ... image_id, for the needed image ...
-                map_feature_id=map_feature_id,
-                # ... the fields passed in in ...
-                fields=fields
-                # ... only if the fields are not empty ...
-                if fields != []
-                # ... if they are, get all the fields as a list instead
-                else Entities.get_map_feature_fields(),
-            ),
-            # After retrieval of response, only get the content, decode to utf-8
-        ).content.decode("utf-8")
+        return ast.literal_eval(
+            self.client.get(
+                # Calling the endpoint with the parameters ...
+                Entities.get_map_feature(
+                    # ... image_id, for the needed image ...
+                    map_feature_id=map_feature_id,
+                    # ... the fields passed in in ...
+                    fields=fields
+                    # ... only if the fields are not empty ...
+                    if fields != []
+                    # ... if they are, get all the fields as a list instead
+                    else Entities.get_map_feature_fields(),
+                ),
+                # After retrieval of response, only get the content, decode to utf-8
+            ).content.decode("utf-8")
+        )
 
     def fetch_detections(self, id: int, id_type: bool = True, fields: list = []):
         """Fetches detections depending on the id, detections for either map_features or
