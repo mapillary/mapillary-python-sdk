@@ -497,17 +497,15 @@ def images_in_geojson(geojson: dict, **filters: dict):
         # TODO: Write code here to display how the function works
     """
 
-    # TODO: This functions needs implementation
-
-    return None
+    return image.images_in_geojson_controller(geojson=geojson, filters=filters)
 
 
 @auth()
 def images_in_shape(shape, **filters: dict):
     """Extracts all images within a shape
 
-    :param shape: ??? # ! Fill in documentation
-    :type shape: ??? # ! Fill in documentation
+    :param shape: A shape that describes features, formatted as a geojson
+    :type shape: dict
 
     :param **filters: Different filters that may be applied to the output, defaults to {}
     :type filters: dict (kwargs)
@@ -543,9 +541,7 @@ def images_in_shape(shape, **filters: dict):
         # TODO: Write code here to display how the function works
     """
 
-    # TODO: This functions needs implementation
-
-    return None
+    return image.images_in_shape_controller(shape=shape, filters=filters)
 
 
 @auth()

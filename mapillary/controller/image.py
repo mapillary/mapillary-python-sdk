@@ -370,8 +370,14 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
 
     image_bbox_check(filters)
 
-    return {"Message": "Hello, World!"}
+    coordinates = []
 
+    for feature in geojson["features"]:
+        coordinates.append(feature["geometry"]["coordinates"])
+
+    return VectorTilesAdapter().fetch_layers(
+        coordinates=coordinates, layer="image", zoom=14
+    )
 
 def images_in_shape_controller(shape, filters: dict = None) -> dict:
     """For extracting images that lie within a shape, merging the results of the found features
