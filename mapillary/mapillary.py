@@ -506,52 +506,52 @@ def get_all_map_features_in_shape(geoJSON, **filters):
 
 
 @auth()
-def feature_from_key(key: int, fields: list = []) -> dict:
-    """Gets features for the given map_key argument
+def feature_from_key(key: int, fields: list = []) -> str:
+    """Gets a map feature for the given key argument
 
-    :param map_feature_key: The map feature key to
-    extract features
-    :type map_feature_key: int
+    :param key: The map feature ID to which will be used to get the feature
+    :type key: int
 
-    :param fields: The fields to include. Geometry is
-    always included in the request
+    :param fields: The fields to include. The field 'geometry' is always included in the request
+    by default
     :type fields: list
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: A GeoJSON string that represents the queried feature
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.feature_from_key(
+        ...     key=VALID_MAP_FEATURE_KEY,
+        ...     fields=['object_value']
+        ... )
     """
-
-    # TODO: This functions needs implementation
-
     return feature.get_feature_from_key_controller(key=int(key), fields=fields)
 
 
 @auth()
-def image_from_key(key: int, fields: list = []) -> dict:
-    """Gets features for the given map_key argument
+def image_from_key(key: int, fields: list = []) -> str:
+    """Gets an image for the given key argument
 
-    :param image_feature_key: The image feature key to
-    extract features
-    :type image_feature_key: int
+    :param key: The image unique key which will be used for image retrieval
+    :type key: int
 
-    :param fields: The fields to include. Geometry is
-    always included in the request
+    :param fields: The fields to include. The field 'geometry' is always included in the request
+    by default
     :type fields: list
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: A GeoJSON string that represents the queried image
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.image_from_key(
+        ...     key=VALID_IMAGE_KEY,
+        ...     fields=['captured_at']
+        ... )
     """
-
-    # TODO: This functions needs implementation
-
     return image.get_image_from_key_controller(key=int(key), fields=fields)
 
 

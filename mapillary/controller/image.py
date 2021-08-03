@@ -332,7 +332,7 @@ def get_images_in_bbox_controller(
 
     return merged_features_list_to_geojson(filtered_results)
 
-def get_image_from_key_controller(key: int, fields: list) -> dict:
+def get_image_from_key_controller(key: int, fields: list) -> str:
     """
     A controller for getting properties of a certain image given the image key and
     the list of fields/properties to be returned
@@ -342,9 +342,8 @@ def get_image_from_key_controller(key: int, fields: list) -> dict:
     :param fields: The list of fields to be returned
     :type fields: list
 
-    :return: The requested image properties in JSON format
-    # ? should this be A GeoJSON?
-    :rtype: dict
+    :return: The requested image properties in GeoJSON format
+    :rtype: str
     """
 
     valid_id(id=key, image=True)

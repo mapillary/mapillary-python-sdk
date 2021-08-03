@@ -57,17 +57,18 @@ def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> str:
     return {"Message": "Hello, World!"}
 
 
-def get_feature_from_key_controller(key: int, fields: list) -> dict:
-    """Extracting features from the map features endpoint with specified key
+def get_feature_from_key_controller(key: int, fields: list) -> str:
+    """A controller for getting properties of a certain image given the image key and
+    the list of fields/properties to be returned
 
     :param key: The image key
-    :type key: str
+    :type key: int
 
     :param fields: List of possible fields
     :type fields: list
 
-    :return: JSON
-    :rtype: dict
+    :return: The requested feature properties in GeoJSON format
+    :rtype: str
     """
 
     valid_id(id=key, image=False)
