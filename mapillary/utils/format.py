@@ -30,7 +30,6 @@ def feature_to_geojson(json_data: dict) -> dict:
 
     feature = {"type": "Feature", "geometry": {}, "properties": {}}
     # Make sure that all keys exist and retrieve their values if specified
-    feature["type"] = feature.get("type", json_data["type"])
     feature["geometry"] = json_data["geometry"]
 
     for key in keys:
@@ -98,7 +97,7 @@ def join_geojson_with_keys(
     return geojson_src
 
 
-def geojson_to_feature_object(json_data):
+def geojson_to_features_list(json_data):
     """Converts a decoded output GeoJSON to a list of feature objects
     example:
     From,
