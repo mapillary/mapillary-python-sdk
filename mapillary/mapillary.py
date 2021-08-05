@@ -514,6 +514,18 @@ def feature_from_key(key: int, fields: list = []) -> str:
 
     :param fields: The fields to include. The field 'geometry' is always included in the request
     by default
+
+    Fields::
+            1. first_seen_at - timestamp, timestamp of the least recent
+            detection contributing to this feature
+            2. last_seen_at - timestamp, timestamp of the most recent
+            detection contributing to this feature
+            3. object_value - string, what kind of map feature it is
+            4. object_type - string, either a traffic_sign or point
+            5. geometry - GeoJSON Point geometry
+            6. images - list of IDs, which images this map feature was derived
+            from
+    refer to https://www.mapillary.com/developer/api-documentation/#map-feature for more details
     :type fields: list
 
     :return: A GeoJSON string that represents the queried feature
@@ -539,6 +551,37 @@ def image_from_key(key: int, fields: list = []) -> str:
 
     :param fields: The fields to include. The field 'geometry' is always included in the request
     by default
+
+    Fields::
+            1. altitude - float, original altitude from Exif
+            2. atomic_scale - FIXME, FIXME
+            3. camera_parameters - FIXME, FIXME
+            4. camera_type - enum, type of camera used for taking the phone.
+            VALUES: FIXME
+            5. captured_at - timestamp, capture time
+            6. compass_angle - float, original compass angle of the image
+            7. computed_altitude - float, altitude after running image
+            processing
+            8. computed_compass_angle - float, compass angle after running
+            image processing
+            9. computed_geometry - GeoJSON Point, location after running image
+            processing
+            10. computed_rotation - enum, corrected orientation of the image
+            11. exif_orientation - enum, original orientation of the image.
+            VALUES: FIXME
+            12. geometry - GeoJSON Point geometry
+            13. height - int, height of the original image uploaded
+            14. thumb_256_url - string, URL to the 256px wide thumbnail
+            15. thumb_1024_url - string, URL to the 1024px wide thumbnail
+            16. thumb_2048_url - string, URL to the 2048px wide thumbnail
+            17. merge_cc
+            18. mesh - { id: string, url: string } - URL to the mesh
+            19. quality_score - float, how good the image is (experimental)
+            20. sequence - string, ID of the sequence
+            21. sfm_cluster - { id: string, url: string } - URL to the point
+            cloud
+            22. width - int, width of the original image uploaded
+    refer to https://www.mapillary.com/developer/api-documentation/#image for more details
     :type fields: list
 
     :return: A GeoJSON string that represents the queried image
