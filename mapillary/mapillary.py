@@ -20,6 +20,7 @@ from models.auth import auth
 # Controllers
 import controller.image as image
 import controller.feature as feature
+import controller.detection as detection
 
 
 def set_access_token(token: str):
@@ -226,41 +227,62 @@ def get_image_looking_at(
 
 
 @auth()
-def get_detections_from_key(key):
+def get_detections_with_image_id(image_id: int, **filters):
     """Extracting all the detections within an image using an image key
 
-    :param key: The image key as the argument
-    :type key: int
+    :param image_id: The image key as the argument
+    :type image_id: int
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: The GeoJSON in response
+    :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> mly.get_detections_with_image_id(image_id=1933525276802129)
+        ... '{"data":[{"created_at":"2021-05-20T17:49:01+0000","geometry":
+        ... "GjUKBm1weS1vchIVEgIAABgDIg0JhiekKBoqAABKKQAPGgR0eXBlIgkKB3BvbHlnb24ogCB4AQ==","image"
+        ... :{"geometry":{"type":"Point","coordinates":[-97.743279722222,30.270651388889]},"id":
+        ... "1933525276802129"},"value":"regulatory--no-parking--g2","id":"1942105415944115"},
+        ... {"created_at":"2021-05-20T18:40:21+0000","geometry":
+        ... "GjYKBm1weS1vchIWEgIAABgDIg4J7DjqHxpWAADiAVUADxoEdHlwZSIJCgdwb2x5Z29uKIAgeAE=",
+        ... "image":{"geometry":{"type":"Point","coordinates":[-97.743279722222,30.270651388889]},
+        ... "id":"1933525276802129"},"value":"information--parking--g1","id":"1942144785940178"},
+        ... , ...}
     """
 
-    # TODO: This functions needs implementation
-
-    return None
+    return detection.get_image_detections_controller(
+        image_id=image_id,
+        filters=filters,
+    )
 
 
 @auth()
-def get_detections_for_feature_from_key(feature_key):
+def get_detections_with_map_feature_id(map_feature_id: int, **filters) -> dict:
     """Extracting all detections made for a map feature key
 
-    :param feature_key: A map feature key as the argument
-    :type feature_key: str # ? To check if valid
+    :param map_feature_id: A map feature key as the argument
+    :type map_feature_id: int
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: The GeoJSON in response
+    :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> mly.get_detections_with_map_feature_id(map_feature_id=1933525276802129)
+        ...     File "/home/saif/MLH/mapillary-python-sdk/mapillary/controller/rules/verify.py",
+        ...         line 227, in valid_id
+        ...             raise InvalidOptionError(
+        ... models.exceptions.InvalidOptionError: InvalidOptionError: Given id value,
+        ...     "Id: 1933525276802129, image: False" while possible id options, [Id is image_id
+        ...     AND image is True, key is map_feature_id ANDimage is False]
     """
 
-    # TODO: This functions needs implementation
-
-    return None
+    return detection.get_map_feature_detections_controller(
+        map_feature_id=map_feature_id,
+        filters=filters,
+    )
 
 
 @auth()
