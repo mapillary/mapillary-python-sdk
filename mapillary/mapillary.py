@@ -512,8 +512,8 @@ def feature_from_key(key: int, fields: list = []) -> str:
     :param key: The map feature ID to which will be used to get the feature
     :type key: int
 
-    :param fields: The fields to include. The field 'geometry' is always included in the request
-    by default
+    :param fields: The fields to include. The field 'geometry' will always be included 
+    so you do not need to specify it, or if you leave it off, it will still be returned.
 
     Fields::
             1. first_seen_at - timestamp, timestamp of the least recent
@@ -549,8 +549,8 @@ def image_from_key(key: int, fields: list = []) -> str:
     :param key: The image unique key which will be used for image retrieval
     :type key: int
 
-    :param fields: The fields to include. The field 'geometry' is always included in the request
-    by default
+    :param fields: The fields to include. The field 'geometry' will always be included 
+    so you do not need to specify it, or if you leave it off, it will still be returned.
 
     Fields::
             1. altitude - float, original altitude from Exif
