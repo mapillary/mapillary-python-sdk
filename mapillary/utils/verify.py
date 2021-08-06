@@ -14,9 +14,13 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
-
+# Local Imports
 from models.exceptions import InvalidKwargError, InvalidOptionError
-from models.api.entities import EntityAdapter
+from config.api.entities import Entities
+from models.client import Client
+
+# Package Imports
+import requests
 
 
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
@@ -218,7 +222,7 @@ def valid_id(id: int, image=True):
 
     # IF image == False, and error_check == True, this becomes True
     # IF image == True, and error_check == False, this becomes True
-    if image ^ EntityAdapter().is_image_id(id=id, fields=[]):
+    if image ^ is_image_id(id=id, fields=[]):
 
         # The EntityAdapter() sends a request to the server, checking
         # if the id is indeed an image_id, TRUE is so, else FALSE
@@ -226,9 +230,36 @@ def valid_id(id: int, image=True):
         # Raises an exception of InvalidOptionError
         raise InvalidOptionError(
             param="id",
-            value=f"Id: {id}, image: {image}",
+            value=f"ID: {id}, image: {image}",
             options=[
-                "Id is image_id AND image is True",
-                "key is map_feature_id AND" "image is False",
+                "ID is image_id AND image is True",
+                "ID is map_feature_id AND image is False",
             ],
         )
+
+
+def is_image_id(id: int, fields: list = []) -> bool:
+    """Checks if the id is an image_id
+
+    :param id: The id to be checked
+    :type id: int
+
+    :param fields: The fields to be checked
+    :type fields: list
+
+    :return: True if the id is an image_id, else False
+    """
+    try:
+        res = requests.get(
+            Entities.get_image(
+                image_id=id,
+                fields=fields
+                if fields != []
+                else Entities.get_image_fields()
+            ),
+            headers={"Authorization": f"OAuth {Client.get_token()}"}
+        )
+        return res.status_code == 200
+        
+    except requests.HTTPError:
+        return False

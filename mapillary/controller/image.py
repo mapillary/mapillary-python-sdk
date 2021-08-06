@@ -25,6 +25,7 @@ from utils.verify import (
     image_bbox_check,
     sequence_bbox_check,
     resolution_check,
+    valid_id
 )
 
 # Client
@@ -32,10 +33,15 @@ from models.client import Client
 
 # # Adapters
 from models.api.vector_tiles import VectorTilesAdapter
+from models.api.entities import EntityAdapter
 
 # # Utilities
 from utils.filter import pipeline
-from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
+from utils.format import (
+    geojson_to_features_list,
+    merged_features_list_to_geojson,
+    feature_to_geojson
+)
 
 # Library imports
 import json
@@ -323,7 +329,7 @@ def get_images_in_bbox_controller(
         )
 
         # Separating feature objects from the decoded data
-        unfiltered_results = geojson_to_feature_object(geojson)
+        unfiltered_results = geojson_to_features_list(geojson)
 
         # Filter the unfiltered results by the given filters
         filtered_results.extend(
@@ -361,7 +367,28 @@ def get_images_in_bbox_controller(
 
     return merged_features_list_to_geojson(filtered_results)
 
+def get_image_from_key_controller(key: int, fields: list) -> str:
+    """
+    A controller for getting properties of a certain image given the image key and
+    the list of fields/properties to be returned
+    :param key: The image key
+    :type key: int
 
+    :param fields: The list of fields to be returned
+    :type fields: list
+
+    :return: The requested image properties in GeoJSON format
+    :rtype: str
+    """
+
+    valid_id(id=key, image=True)
+    return merged_features_list_to_geojson(
+        feature_to_geojson(
+            EntityAdapter().fetch_image(image_id=key, fields=fields)
+        )
+    )
+    
+    
 def get_images_in_shape_controller(
     data: dict, is_geojson: bool = True, kwargs: dict = None
 ) -> dict:

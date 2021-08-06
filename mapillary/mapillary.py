@@ -560,53 +560,96 @@ def get_all_map_features_in_shape(geoJSON, **filters):
 
 
 @auth()
-def get_feature_from_map_feature_key(map_feature_key, fields):
-    """Gets features for the given map_key argument
+def feature_from_key(key: int, fields: list = []) -> str:
+    """Gets a map feature for the given key argument
 
-    :param map_feature_key: The map feature key to
-    extract features
-    :type map_feature_key: int
+    :param key: The map feature ID to which will be used to get the feature
+    :type key: int
 
-    :param fields: The fields to include. Geometry is
-    always included in the request
+    :param fields: The fields to include. The field 'geometry' will always be included 
+    so you do not need to specify it, or if you leave it off, it will still be returned.
+
+    Fields::
+            1. first_seen_at - timestamp, timestamp of the least recent
+            detection contributing to this feature
+            2. last_seen_at - timestamp, timestamp of the most recent
+            detection contributing to this feature
+            3. object_value - string, what kind of map feature it is
+            4. object_type - string, either a traffic_sign or point
+            5. geometry - GeoJSON Point geometry
+            6. images - list of IDs, which images this map feature was derived
+            from
+    refer to https://www.mapillary.com/developer/api-documentation/#map-feature for more details
     :type fields: list
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: A GeoJSON string that represents the queried feature
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.feature_from_key(
+        ...     key=VALID_MAP_FEATURE_KEY,
+        ...     fields=['object_value']
+        ... )
     """
-
-    # TODO: This functions needs implementation
-
-    return None
+    return feature.get_feature_from_key_controller(key=int(key), fields=fields)
 
 
 @auth()
-def get_feature_from_image_feature_key(image_feature_key):
-    """Gets features for the given map_key argument
+def image_from_key(key: int, fields: list = []) -> str:
+    """Gets an image for the given key argument
 
-    :param image_feature_key: The image feature key to
-    extract features
-    :type image_feature_key: int
+    :param key: The image unique key which will be used for image retrieval
+    :type key: int
 
-    :param fields: The fields to include. Geometry is
-    always included in the request
+    :param fields: The fields to include. The field 'geometry' will always be included 
+    so you do not need to specify it, or if you leave it off, it will still be returned.
+
+    Fields::
+            1. altitude - float, original altitude from Exif
+            2. atomic_scale - FIXME, FIXME
+            3. camera_parameters - FIXME, FIXME
+            4. camera_type - enum, type of camera used for taking the phone.
+            VALUES: FIXME
+            5. captured_at - timestamp, capture time
+            6. compass_angle - float, original compass angle of the image
+            7. computed_altitude - float, altitude after running image
+            processing
+            8. computed_compass_angle - float, compass angle after running
+            image processing
+            9. computed_geometry - GeoJSON Point, location after running image
+            processing
+            10. computed_rotation - enum, corrected orientation of the image
+            11. exif_orientation - enum, original orientation of the image.
+            VALUES: FIXME
+            12. geometry - GeoJSON Point geometry
+            13. height - int, height of the original image uploaded
+            14. thumb_256_url - string, URL to the 256px wide thumbnail
+            15. thumb_1024_url - string, URL to the 1024px wide thumbnail
+            16. thumb_2048_url - string, URL to the 2048px wide thumbnail
+            17. merge_cc
+            18. mesh - { id: string, url: string } - URL to the mesh
+            19. quality_score - float, how good the image is (experimental)
+            20. sequence - string, ID of the sequence
+            21. sfm_cluster - { id: string, url: string } - URL to the point
+            cloud
+            22. width - int, width of the original image uploaded
+    refer to https://www.mapillary.com/developer/api-documentation/#image for more details
     :type fields: list
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: A GeoJSON string that represents the queried image
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.image_from_key(
+        ...     key=VALID_IMAGE_KEY,
+        ...     fields=['captured_at']
+        ... )
     """
-
-    # TODO: This functions needs implementation
-
-    return None
+    return image.get_image_from_key_controller(key=int(key), fields=fields)
 
 
 @auth()
