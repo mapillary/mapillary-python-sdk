@@ -30,6 +30,9 @@ from models.client import Client
 # # Config
 from config.api.vector_tiles import VectorTiles
 
+# # Models
+from models.geojson import GeoJSON
+
 
 class VectorTilesAdapter(object):
     """Adapter model for dealing with the VectorTiles API, through the DRY principle. The
@@ -198,7 +201,7 @@ class VectorTilesAdapter(object):
         layer: str = "image",
         zoom: int = 14,
         is_computed: bool = False,
-    ) -> list:
+    ) -> GeoJSON:
         """Fetches multiple vector tiles based on a list of multiple coordinates in a listed format
 
         :param coordinates: A list of lists of coordinates to get the vector tiles for
@@ -224,8 +227,10 @@ class VectorTilesAdapter(object):
         # Let `tiles` be a unique tile set
         tiles = set()
 
-        # The list of results
-        results = []
+        # The output resultant geojson
+        geojson: GeoJSON = GeoJSON(
+            geojson={"type": "FeatureCollection", "features": []}
+        )
 
         # Extracing longitude, latitude from coordinates
         for longitude, latitude in coordinates:
@@ -251,7 +256,7 @@ class VectorTilesAdapter(object):
                         # The zoom level
                         zoom=zoom,
                     )
-                )['features']
+                )["features"]
             else:
                 result = (
                     self.__preprocess_layer(
@@ -262,11 +267,11 @@ class VectorTilesAdapter(object):
                         # The zoom level
                         zoom=zoom,
                     )
-                )['features']
+                )["features"]
 
-            results.append(result)
+            geojson.append_features(result)
 
-        return {'type': 'FeatureCollection', 'features': results}
+        return geojson
 
     def __check_parameters(
         self,

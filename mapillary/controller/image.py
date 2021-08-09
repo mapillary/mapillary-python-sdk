@@ -32,19 +32,23 @@ from models.client import Client
 
 # # Adapters
 from models.api.vector_tiles import VectorTilesAdapter
-from models.api.entities import EntityAdapter
+
+# # Class Representation
+from models.geojson import GeoJSON
 
 # # Utilities
 from utils.filter import pipeline
 from utils.format import (
     geojson_to_features_list,
     merged_features_list_to_geojson,
+    geojson_to_polgyon,
 )
 
 # Library imports
 import json
 import mercantile
 from requests import HTTPError
+from shapely.geometry import shape
 from vt2geojson.tools import vt_bytes_to_geojson
 
 
@@ -96,36 +100,34 @@ def get_image_close_to_controller(
         unfiltered_data["features"] != {}
         and unfiltered_data["features"][0]["properties"] != {}
     ):
-        return (
-            pipeline(
-                data=unfiltered_data,
-                components=[
-                    # Filter using kwargs.min_date
-                    {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
-                    if "min_date" in kwargs
-                    else {},
-                    # Filter using kwargs.max_date
-                    {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
-                    if "max_date" in kwargs
-                    else {},
-                    # Filter using kwargs.image_type
-                    {"filter": "image_type", "tile": kwargs["image_type"]}
-                    if "image_type" in kwargs
-                    else {},
-                    # Filter using kwargs.organization_id
-                    {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-                    if "org_id" in kwargs
-                    else {},
-                    # Filter using kwargs.radius
-                    {
-                        "filter": "haversine_dist",
-                        "radius": kwargs["radius"],
-                        "coords": [longitude, latitude],
-                    }
-                    if "radius" in kwargs
-                    else {},
-                ],
-            )
+        return pipeline(
+            data=unfiltered_data,
+            components=[
+                # Filter using kwargs.min_date
+                {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
+                if "min_date" in kwargs
+                else {},
+                # Filter using kwargs.max_date
+                {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
+                if "max_date" in kwargs
+                else {},
+                # Filter using kwargs.image_type
+                {"filter": "image_type", "tile": kwargs["image_type"]}
+                if "image_type" in kwargs
+                else {},
+                # Filter using kwargs.organization_id
+                {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
+                if "org_id" in kwargs
+                else {},
+                # Filter using kwargs.radius
+                {
+                    "filter": "haversine_dist",
+                    "radius": kwargs["radius"],
+                    "coords": [longitude, latitude],
+                }
+                if "radius" in kwargs
+                else {},
+            ],
         )
 
 
@@ -361,6 +363,7 @@ def get_images_in_bbox_controller(
 
     return merged_features_list_to_geojson(filtered_results)
 
+
 def get_image_from_key_controller(key: int, fields: list) -> str:
     """
     A controller for getting properties of a certain image given the image key and
@@ -375,6 +378,7 @@ def get_image_from_key_controller(key: int, fields: list) -> str:
     :rtype: str
     """
 
+
 def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
     """For extracting images that lie within a GeoJSON and merges the results of the found
     GeoJSON(s) into a single object - by merging all the features into one feature list.
@@ -384,6 +388,9 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
 
     :param **filters: Different filters that may be applied to the output, defaults to {}
     :type filters: dict (kwargs)
+
+    :param filters.zoom: The zoom level to obtain vector tiles for, defaults to 14
+    :type filters.zoom: int
 
     :param filters.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
     :type filters.max_date: str
@@ -416,16 +423,46 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
 
     # TODO: Requirement# 9.1
 
+    # Filter checking
     image_bbox_check(filters)
 
-    coordinates = []
-
-    for feature in geojson["features"]:
-        coordinates.append(feature["geometry"]["coordinates"])
-
-    return VectorTilesAdapter().fetch_layers(
-        coordinates=coordinates, layer="image", zoom=14
+    # Get a GeoJSON with features from tiles originating from coordinates
+    # at specified zoom level
+    layers: GeoJSON = VectorTilesAdapter().fetch_layers(
+        # Sending coordinates for all the points within input geojson
+        coordinates=[
+            feature["geometry"]["coordinates"] for feature in geojson["features"]
+        ],
+        # Fetching image layers for the geojson
+        layer="image",
+        # Specifying zoom level, defaults to zoom if zoom not specified
+        zoom=filters['zoom'] if 'zoom' in filters else 14,
     )
+
+    # Extracting polygon from geojson, converting to dict
+    polygon = geojson_to_polgyon(geojson).to_dict()
+
+    # Getting the boundary paramters from polygon
+    boundary = shape(polygon["features"][0]["geometry"])
+
+    # Generating output format
+    output = {"type": "FeatureCollection", "features": []}
+
+    # Iterating over features
+    for feature in layers.features:
+
+        # Extracting point from geometry feature
+        point = shape(feature["geometry"])
+
+        # Checking if point falls within the boundary using shapely.geometry.point.point
+        if boundary.contains(point):
+
+            # If true, append to output features
+            output["features"].append(feature)
+
+    # Return as GeoJSON output
+    return GeoJSON(geojson=output)
+
 
 def images_in_shape_controller(shape, filters: dict = None) -> dict:
     """For extracting images that lie within a shape, merging the results of the found features

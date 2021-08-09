@@ -548,7 +548,12 @@ def images_in_geojson(geojson: dict, **filters: dict):
     :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> from models.geojson import GeoJSON
+        >>> import json
+        >>> mly.set_access_token('MLY|YYY')
+        >>> data = mly.images_in_geojson(json.load(open('fetch_map_feature_point.json', mode='r')))
+        >>> open('testing_geojson.json', mode='w').write(data.encode())
     """
 
     return image.images_in_geojson_controller(geojson=geojson, filters=filters)
@@ -630,7 +635,7 @@ def feature_from_key(key: int, fields: list = []) -> str:
     :param key: The map feature ID to which will be used to get the feature
     :type key: int
 
-    :param fields: The fields to include. The field 'geometry' will always be included 
+    :param fields: The fields to include. The field 'geometry' will always be included
     so you do not need to specify it, or if you leave it off, it will still be returned.
 
     Fields::
@@ -667,7 +672,7 @@ def image_from_key(key: int, fields: list = []) -> str:
     :param key: The image unique key which will be used for image retrieval
     :type key: int
 
-    :param fields: The fields to include. The field 'geometry' will always be included 
+    :param fields: The fields to include. The field 'geometry' will always be included
     so you do not need to specify it, or if you leave it off, it will still be returned.
 
     Fields::
