@@ -20,19 +20,24 @@ from config.api.vector_tiles import VectorTiles
 # Client
 from models.client import Client
 
-# Exception Handling
-from utils.verify import points_traffic_signs_check
-
 # Utils
+from utils.verify import valid_id, points_traffic_signs_check
 from utils.filter import pipeline
-from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
+from utils.format import (
+    geojson_to_features_list,
+    merged_features_list_to_geojson,
+    feature_to_geojson,
+)
+
+# Adapters
+from models.api.entities import EntityAdapter
 
 # Package imports
 import mercantile
 from vt2geojson.tools import vt_bytes_to_geojson
 
 
-def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
+def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> str:
     """For extracting all map features within a shape
 
     :param geojson: The initial data
@@ -52,46 +57,27 @@ def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> dict:
     return {"Message": "Hello, World!"}
 
 
-def get_feature_map_key_controller(key: str, fields: list) -> dict:
-    """Extracting features from the map features endpoint with specified key
+def get_feature_from_key_controller(key: int, fields: list) -> str:
+    """A controller for getting properties of a certain image given the image key and
+    the list of fields/properties to be returned
 
     :param key: The image key
-    :type key: str
+    :type key: int
 
     :param fields: List of possible fields
     :type fields: list
 
-    :return: GeoJSON
-    :rtype: dict
+    :return: The requested feature properties in GeoJSON format
+    :rtype: str
     """
 
-    # TODO: Requirement# 11A
+    valid_id(id=key, image=False)
 
-    # ? The checking of the fields can be done within the /config/api/, right?
-
-    return {"Message": "Hello, World!"}
-
-
-def get_feature_image_key_controller(key: str, fields: list) -> dict:
-    """Extracting features from the image endpoint with specified key
-
-    :param key: The image key
-    :type key: str
-
-    :param fields: List of possible fields
-    :type fields: list
-
-    :return: GeoJSON
-    :rtype: dict
-    """
-
-    # TODO: Requirement# 11B
-
-    # ? The checking of the fields for this endpoint are already
-    # ? done within the Entity class
-    # ? We should leave the checking of the fields to the /config/api/, right?
-
-    return {"Message": "Hello, World!"}
+    return merged_features_list_to_geojson(
+        feature_to_geojson(
+            EntityAdapter().fetch_map_feature(map_feature_id=key, fields=fields)
+        )
+    )
 
 
 def get_map_features_in_bbox_controller(
@@ -153,7 +139,7 @@ def get_map_features_in_bbox_controller(
         data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
 
         # Separating feature objects from the decoded data
-        unfiltered_features = geojson_to_feature_object(data)
+        unfiltered_features = geojson_to_features_list(data)
 
         filtered_features.extend(
             pipeline(

@@ -106,69 +106,123 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
 
 @auth()
 def get_image_looking_at(
-    coordinates_looker: tuple,
-    coordinates_at: tuple,
-    kwargs: dict,
+    looker: dict,
+    at: dict,
+    **filters: dict,
 ) -> dict:
-    """Function that takes two sets of latitude and
-    longitude, where the 2nd set is the "looking at"
-    location from 1st set's perspective
-    argument and outputs the near images. This
-    makes an API call with the token set in
-    set_access_token and returns a JSON object.
+    """Function that takes two sets of latitude and longitude, where the 2nd set is the
+    "looking at" location from 1st set's perspective argument and outputs the near images. This
+    makes an API call with the token set in set_access_token and returns a JSON object.
 
-    :param coordinates_looker: The coordinate sets from
-    where a certain point is being looked at, it has
-    length 2, index@0 is lat, index@1 is long
-    :type coordinates_looker: list
+    :param looker: The coordinate sets from where a certain point is being looked at in the format,
+        >>> looker = {
+        >>>     'lng': <longitudinal parameter>
+        >>>     'lat': <latitude parameters>
+        >>> }
+    :type looker: dict
 
-    :param coordinates_at: The coordinate sets to
-    where a certain point is being looked at, it has
-    length 2, index@0 is lat, index@1 is long
-    :type coordinates_at: list
+    :param at: The coordinate sets to where a certain point is being looked at in the format
+        >>> at = {
+        >>>     'lng': <longitudinal parameter>
+        >>>     'lat': <latitude parameters>
+        >>> }
+    :type at: dict
 
-    :param fields: A list of options, either as 'all',
-    or individually accounted lists of fields. For more
-    details about the fields themselves, please take a
-    look at
-    https://www.mapillary.com/developer/api-documentation/,
-    under 'Fields'. Geometry must always be included in
-    the fields, even in indvidual
-    :type fields: list
+    :param filters.min_date: The minimum date to filter till
+    :type filters.min_date: str
 
-    :param radius: The radius of the images obtained
-    from a center center
-    :type radius: float or int or double
+    :param filters.max_date: The maximum date to filter upto
+    :type filters.max_date: str
 
-    :param coverge: The tile image_type to be obtained,
-    either as 'flat', 'pano' (panoramic), or 'both'.
-    For more information, please take a look at
-    https://www.mapillary.com/developer/api-documentation/
-    under 'image_type Tiles'
-    :type image_type: str
+    :param filters.radius: The radius that the geometry points will lie in
+    :type filters.radius: float
 
-    :param date: The date to filter to, if needed.
-    The date format currently is 'YYYY-MM-DD', or '%Y-%m-%d'
-    :type date: datetime
+    :param filters.image_type: Either 'pano', 'flat' or 'all'
+    :type filters.image_type: str
 
-    :param org_id: The organization id, ID of the
-    organization this image (or sets of images) belong
-    to. It can be absent. Thus, default is -1 (None)
-    :type org_id: int
+    :param filters.organization_id: The organization to retrieve the data for
+    :type filters.organization_id: str
 
-    :return: None
-    :rtype: None
+    :return: The GeoJSON response containing relevant features
+    :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> data = mly.get_image_looking_at(
+                    looker={
+                        'lng': 12.954940544167,
+                        'lat': 48.0537894275,
+                    },
+                    at={
+                        'lng': 12.955075073889,
+                        'lat': 48.053805939722,
+                    },
+                    radius = 5000,
+                )
+        >>> data
+        ... {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type':
+        'Point', 'coordinates': [12.954479455947876, 48.05091893670834]}, 'properties':
+        {'captured_at': 1612606959408, 'compass_angle': 21.201110839844, 'id': 1199705400459580,
+        'is_pano': False, 'sequence_id': 'qrrqtke4a6vtygyc7w8rzc'}}, ... }
+
+    Testing::
+        >>> import mapillary as mly
+        >>> mly.set_access_token('CLIENT_TOKEN_HERE')
+        >>> data_1 = mly.get_image_looking_at(
+                    looker={
+                        'lng': 12.954940544167,
+                        'lat': 48.0537894275,
+                    },
+                    at={
+                        'lng': 12.955075073889,
+                        'lat': 48.053805939722,
+                    },
+                    radius = 2000,
+                )
+        >>> data_1 = json.loads(data_1)
+        >>> data_2 = mly.get_image_looking_at(
+                    looker={
+                        'lng': 12.954940544167,
+                        'lat': 48.0537894275,
+                    },
+                    at={
+                        'lng': 12.955075073889,
+                        'lat': 48.053805939722,
+                    },
+                    radius = 5000,
+                )
+        >>> data_2 = json.loads(data_2)
+        >>> len(data_1['features']) == len(data_2['features'])
+        ... True
+        >>> # The total features did not change on increasing the radius
+        >>> data_3 = mly.get_image_close_to(
+                    longitude=12.954940544167,
+                    latitude=48.0537894275,
+                    radius = 5,
+                )
+        >>> len(data_3['features'])
+        ... 32
+        >>> data_4 = mly.get_image_looking_at(
+                    looker={
+                        'lng': 12.954940544167,
+                        'lat': 48.0537894275,
+                    },
+                    at={
+                        'lng': 12.955075073889,
+                        'lat': 48.053805939722,
+                    },
+                    radius = 5,
+                )
+        >>> len(data_4['features'])
+        ... 11
+        >>> # Only selected features are actually looking at the location
     """
 
-    # TODO: This functions needs implementation
-
-    return image.get_image_close_to_controller(
-        coordinates_looker=coordinates_looker,
-        coordinates_at=coordinates_at,
-        kwargs=kwargs,
+    return image.get_image_looking_at_controller(
+        looker=looker,
+        at=at,
+        filters=filters,
     )
 
 
@@ -570,53 +624,96 @@ def get_map_features_in_shape(geoJSON, **filters):
 
 
 @auth()
-def get_feature_from_map_feature_key(map_feature_key, fields):
-    """Gets features for the given map_key argument
+def feature_from_key(key: int, fields: list = []) -> str:
+    """Gets a map feature for the given key argument
 
-    :param map_feature_key: The map feature key to
-    extract features
-    :type map_feature_key: int
+    :param key: The map feature ID to which will be used to get the feature
+    :type key: int
 
-    :param fields: The fields to include. Geometry is
-    always included in the request
+    :param fields: The fields to include. The field 'geometry' will always be included 
+    so you do not need to specify it, or if you leave it off, it will still be returned.
+
+    Fields::
+            1. first_seen_at - timestamp, timestamp of the least recent
+            detection contributing to this feature
+            2. last_seen_at - timestamp, timestamp of the most recent
+            detection contributing to this feature
+            3. object_value - string, what kind of map feature it is
+            4. object_type - string, either a traffic_sign or point
+            5. geometry - GeoJSON Point geometry
+            6. images - list of IDs, which images this map feature was derived
+            from
+    refer to https://www.mapillary.com/developer/api-documentation/#map-feature for more details
     :type fields: list
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: A GeoJSON string that represents the queried feature
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.feature_from_key(
+        ...     key=VALID_MAP_FEATURE_KEY,
+        ...     fields=['object_value']
+        ... )
     """
-
-    # TODO: This functions needs implementation
-
-    return None
+    return feature.get_feature_from_key_controller(key=int(key), fields=fields)
 
 
 @auth()
-def get_feature_from_image_feature_key(image_feature_key):
-    """Gets features for the given map_key argument
+def image_from_key(key: int, fields: list = []) -> str:
+    """Gets an image for the given key argument
 
-    :param image_feature_key: The image feature key to
-    extract features
-    :type image_feature_key: int
+    :param key: The image unique key which will be used for image retrieval
+    :type key: int
 
-    :param fields: The fields to include. Geometry is
-    always included in the request
+    :param fields: The fields to include. The field 'geometry' will always be included 
+    so you do not need to specify it, or if you leave it off, it will still be returned.
+
+    Fields::
+            1. altitude - float, original altitude from Exif
+            2. atomic_scale - FIXME, FIXME
+            3. camera_parameters - FIXME, FIXME
+            4. camera_type - enum, type of camera used for taking the phone.
+            VALUES: FIXME
+            5. captured_at - timestamp, capture time
+            6. compass_angle - float, original compass angle of the image
+            7. computed_altitude - float, altitude after running image
+            processing
+            8. computed_compass_angle - float, compass angle after running
+            image processing
+            9. computed_geometry - GeoJSON Point, location after running image
+            processing
+            10. computed_rotation - enum, corrected orientation of the image
+            11. exif_orientation - enum, original orientation of the image.
+            VALUES: FIXME
+            12. geometry - GeoJSON Point geometry
+            13. height - int, height of the original image uploaded
+            14. thumb_256_url - string, URL to the 256px wide thumbnail
+            15. thumb_1024_url - string, URL to the 1024px wide thumbnail
+            16. thumb_2048_url - string, URL to the 2048px wide thumbnail
+            17. merge_cc
+            18. mesh - { id: string, url: string } - URL to the mesh
+            19. quality_score - float, how good the image is (experimental)
+            20. sequence - string, ID of the sequence
+            21. sfm_cluster - { id: string, url: string } - URL to the point
+            cloud
+            22. width - int, width of the original image uploaded
+    refer to https://www.mapillary.com/developer/api-documentation/#image for more details
     :type fields: list
 
-    :return: JSON
-    :rtype: <class 'dict'>
+    :return: A GeoJSON string that represents the queried image
+    :rtype: <class 'str'>
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.image_from_key(
+        ...     key=VALID_IMAGE_KEY,
+        ...     fields=['captured_at']
+        ... )
     """
-
-    # TODO: This functions needs implementation
-
-    return None
+    return image.get_image_from_key_controller(key=int(key), fields=fields)
 
 
 @auth()

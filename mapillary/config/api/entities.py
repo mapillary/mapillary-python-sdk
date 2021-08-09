@@ -301,6 +301,10 @@ class Entities:
         # Converting the given_fields into lowercase
         given_fields = [field.lower() for field in given_fields]
 
+        # Enforce the existence of 'geometry' in the given_fields
+        if "geometry" not in given_fields:
+            given_fields.append("geometry")
+
         # Going through all the given fields
         for field in given_fields:
 

@@ -52,6 +52,7 @@ haversine = "*"
 python-dotenv = "*"
 osmnx = "*"
 shapely = "*"
+turfpy = "*"
 
 [dev-packages]
 pip = "==19.0.3"

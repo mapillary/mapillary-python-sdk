@@ -25,6 +25,7 @@ from utils.verify import (
     image_bbox_check,
     sequence_bbox_check,
     resolution_check,
+    valid_id
 )
 
 # Client
@@ -32,10 +33,15 @@ from models.client import Client
 
 # # Adapters
 from models.api.vector_tiles import VectorTilesAdapter
+from models.api.entities import EntityAdapter
 
 # # Utilities
 from utils.filter import pipeline
-from utils.format import geojson_to_feature_object, merged_features_list_to_geojson
+from utils.format import (
+    geojson_to_features_list,
+    merged_features_list_to_geojson,
+    feature_to_geojson
+)
 
 # Library imports
 import json
@@ -80,7 +86,7 @@ def get_image_close_to_controller(
     # exception
     image_check(kwargs=kwargs)
 
-    filtered_data = []
+    filtered_data = {}
 
     unfiltered_data = VectorTilesAdapter().fetch_layer(
         layer="image",
@@ -130,53 +136,88 @@ def get_image_close_to_controller(
 
 
 def get_image_looking_at_controller(
-    coordinates_looker: tuple,
-    coordinates_at: tuple,
-    kwargs: dict,
+    looker: dict,
+    at: dict,
+    filters: dict,
 ) -> dict:
     """Extracting the GeoJSON for the image data from a 'looker' and 'at' coordinate view
 
-    :param coordinates_looker: The tuple of coordinates of the position of the looking from
-    coordinates, in the format (long, lat)
-    :type longitude: tuple
+    :param looker: The dictionary of coordinates of the position of the looking from
+    coordinates, in the format,
+        >>> looker = {
+        >>>     'lng': <longitudinal parameter>
+        >>>     'lat': <latitude parameters>
+        >>> }
+    :type looker: dict
 
-    :param coordinates_at: The tuple of coordinates of the position of the looking at
-    coordinates, in the format (long, lat)
-    :type latitude: tuple
+    :param at: The dict of coordinates of the position of the looking at
+    coordinates, in the format,
+        >>> at = {
+        >>>     'lng': <longitudinal parameter>
+        >>>     'lat': <latitude parameters>
+        >>> }
+    :type at: dict
 
-    :param kwargs.min_date: The minimum date to filter till
-    :type kwargs.min_date: str
+    :param filters.min_date: The minimum date to filter till
+    :type filters.min_date: str
 
-    :param kwargs.max_date: The maximum date to filter upto
-    :type kwargs.max_date: str
+    :param filters.max_date: The maximum date to filter upto
+    :type filters.max_date: str
 
-    :param kwargs.daterange: A list of a range to filter by
-    :type kwargs.daterange: list
+    :param filters.radius: The radius that the geometry points will lie in
+    :type filters.radius: float
 
-    :param kwargs.radius: The radius that the geometry points will lie in
-    :type kwargs.radius: float
+    :param filters.image_type: Either 'pano', 'flat' or 'all'
+    :type filters.image_type: str
 
-    :param kwargs.image_type: Either 'pano', 'flat' or 'all'
-    :type kwargs.image_type: str
-
-    :param kwargs.organization_id: The organization to retrieve the data for
-    :type kwargs.organization_id: str
-
-    :param kwargs.fields: Fields to pass to the endpoint
-    :type kwargs.fields: list[str]
+    :param filters.organization_id: The organization to retrieve the data for
+    :type filters.organization_id: str
 
     :return: GeoJSON
     :rtype: dict
     """
 
-    # TODO: Requirement# 3
-
     # Checking if a non valid key
     # has been passed to  the function
     # If that is the case, throw an exception
-    image_check(kwargs=kwargs)
+    image_check(kwargs=filters)
 
-    return {"Message": "Hello, World!"}
+    looker = json.loads(
+        get_image_close_to_controller(
+            longitude=looker["lng"], latitude=looker["lat"], kwargs=filters
+        )
+    )
+
+    # Filter the unfiltered rsults by the given filters
+    if looker["features"] != [] and looker["features"][0]["properties"] != {}:
+        return merged_features_list_to_geojson(
+            pipeline(
+                data=looker,
+                components=[
+                    # Filter by `max_date`
+                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
+                    if "max_date" in filters
+                    else {},
+                    # Filter by `min_date`
+                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
+                    if "min_date" in filters
+                    else {},
+                    # Filter by `image_type`
+                    {"filter": "image_type", "type": filters.get("image_type")}
+                    if "image_type" in filters and filters["image_type"] != "all"
+                    else {},
+                    # Filter by `organization_id`
+                    {
+                        "filter": "organization_id",
+                        "organization_ids": filters.get("organization_id"),
+                    }
+                    if "organization_id" in filters
+                    else {},
+                    # Filter by `hits_by_look_at`
+                    {"filter": "hits_by_look_at", "at": at},
+                ],
+            )
+        )
 
 
 def get_image_thumbnail_controller(image_id, resolution: int) -> str:
@@ -288,7 +329,7 @@ def get_images_in_bbox_controller(
         )
 
         # Separating feature objects from the decoded data
-        unfiltered_results = geojson_to_feature_object(geojson)
+        unfiltered_results = geojson_to_features_list(geojson)
 
         # Filter the unfiltered results by the given filters
         filtered_results.extend(
@@ -326,6 +367,19 @@ def get_images_in_bbox_controller(
 
     return merged_features_list_to_geojson(filtered_results)
 
+def get_image_from_key_controller(key: int, fields: list) -> str:
+    """
+    A controller for getting properties of a certain image given the image key and
+    the list of fields/properties to be returned
+    :param key: The image key
+    :type key: int
+
+    :param fields: The list of fields to be returned
+    :type fields: list
+
+    :return: The requested image properties in GeoJSON format
+    :rtype: str
+    """
 
 def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
     """For extracting images that lie within a GeoJSON and merges the results of the found
