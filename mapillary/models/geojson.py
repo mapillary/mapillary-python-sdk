@@ -14,6 +14,10 @@ https://www.mapillary.com/developer/api-documentation/.
 :license: MIT LICENSE
 """
 
+# Package
+import functools
+import json
+
 # Local
 
 # # Exceptions
@@ -56,19 +60,38 @@ class Properties:
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
+    @property
+    @functools.lru_cache()
+    def to_dict(self):
+        """Return the dictionary representation of the Properties"""
+
+        attr_representation = [
+            key for key in dir(self) if not key.startswith("__") and key != "to_dict"
+        ]
+
+        return {key: getattr(self, key) for key in attr_representation}
+
+    @property
+    @functools.lru_cache()
     def __str__(self):
         """Return the informal string representation of the Properties"""
 
-        attr_representation = [key for key in dir(self) if not key.startswith("__")]
+        attr_representation = [
+            key for key in dir(self) if not key.startswith("__") and key != "to_dict"
+        ]
 
         attr_key_value_pair = {key: getattr(self, key) for key in attr_representation}
 
         return f"{attr_key_value_pair}"
 
+    @property
+    @functools.lru_cache()
     def __repr__(self):
         """Return the formal string representation of the Properties"""
 
-        attr_representation = [key for key in dir(self) if not key.startswith("__")]
+        attr_representation = [
+            key for key in dir(self) if not key.startswith("__") and key != "to_dict"
+        ]
 
         attr_key_value_pair = {key: getattr(self, key) for key in attr_representation}
 
@@ -111,11 +134,22 @@ class Geometry:
         # Setting the coordinates of the geometry
         self.coordinates: list = geometry["coordinates"]
 
+    @property
+    @functools.lru_cache()
+    def to_dict(self):
+        """Return dictionary representation of the geometry"""
+
+        return {"type": self.type, "coordinates": self.coordinates}
+
+    @property
+    @functools.lru_cache()
     def __str__(self):
         """Return the informal string representation of the Geometry"""
 
         return f"{{'type': {self.type}, 'coordinates': {self.coordinates}}}"
 
+    @property
+    @functools.lru_cache()
     def __repr__(self):
         """Return the formal string representation of the Geometry"""
 
@@ -161,6 +195,19 @@ class Feature:
         # Setting the `properties` property
         self.properties = Properties(feature["properties"])
 
+    @property
+    @functools.lru_cache()
+    def to_dict(self) -> dict:
+        """Return the dictionary representation of the Feature"""
+
+        return {
+            "type": self.type,
+            "geometry": self.geometry.to_dict(),
+            "properties": self.properties.to_dict(),
+        }
+
+    @property
+    @functools.lru_cache()
     def __str__(self) -> str:
         """Return the informal string representation of the Feature"""
 
@@ -172,6 +219,8 @@ class Feature:
             f"}}"
         )
 
+    @property
+    @functools.lru_cache()
     def __repr__(self) -> str:
         """Return the formal string representation of the Feature"""
 
@@ -233,7 +282,8 @@ class GeoJSON:
         # Validate that the geojson passed is indeed a dictionary
         if isinstance(geojson, dict):
 
-            # The GeoJSON should only contain the keys of `type`, `features`, if not empty, raise exception
+            # The GeoJSON should only contain the keys of `type`, `features`, if not empty,
+            # raise exception
             if [key for key in geojson.keys() if key not in ["type", "features"]] != []:
 
                 # Raise InvalidOptionError
@@ -280,11 +330,41 @@ class GeoJSON:
             Feature(feature=feature) for feature in geojson["features"]
         ]
 
+    def append_features(self, features: list) -> None:
+
+        for feature in features:
+            self.append_feature(feature)
+
+    def append_feature(self, feature: dict) -> None:
+
+        if feature not in self.features:
+            self.features.append(feature)
+
+    @property
+    @functools.lru_cache()
+    def encode(self):
+
+        return json.dumps(self.__dict__)
+
+    @property
+    @functools.lru_cache()
+    def to_dict(self):
+        """Return the dict format representation of the GeoJSON"""
+
+        return {
+            "type": self.type,
+            "features": [feature.to_dict() for feature in self.features],
+        }
+
+    @property
+    @functools.lru_cache()
     def __str__(self):
         """Return the informal string representation of the GeoJSON"""
 
         return f"{{'type': '{self.type}', 'features': {self.features}}}"
 
+    @property
+    @functools.lru_cache()
     def __repr__(self):
         """Return the formal string representation of the GeoJSON"""
 
