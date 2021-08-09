@@ -34,7 +34,7 @@ class Properties:
     :rtype: <class 'mapillary.models.geojson.Properties'>
     """
 
-    def __init__(self, properties: dict) -> None:
+    def __init__(self, *properties, **kwargs) -> None:
         """Initializing Properties constructor"""
 
         # Validate that the geojson passed is indeed a dictionary
@@ -50,18 +50,29 @@ class Properties:
                 options=["dict"],
             )
 
-        # Setting the properties dictionary
-        self.properties: dict = properties
+        for item in properties:
+            for key in item:
+                setattr(self, key, item[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
 
     def __str__(self):
         """Return the informal string representation of the Properties"""
 
-        return f"{self.properties}"
+        attr_representation = [key for key in dir(self) if not key.startswith("__")]
+
+        attr_key_value_pair = {key: getattr(self, key) for key in attr_representation}
+
+        return f"{attr_key_value_pair}"
 
     def __repr__(self):
         """Return the formal string representation of the Properties"""
 
-        return f"{self.properties}"
+        attr_representation = [key for key in dir(self) if not key.startswith("__")]
+
+        attr_key_value_pair = {key: getattr(self, key) for key in attr_representation}
+
+        return f"{attr_key_value_pair}"
 
 
 class Geometry:
@@ -103,12 +114,12 @@ class Geometry:
     def __str__(self):
         """Return the informal string representation of the Geometry"""
 
-        return f"{{ 'type': {self.type}, 'coordinates': {self.coordinates} }}"
+        return f"{{'type': {self.type}, 'coordinates': {self.coordinates}}}"
 
     def __repr__(self):
         """Return the formal string representation of the Geometry"""
 
-        return f"{{ 'type': {self.type}, 'coordinates': {self.coordinates} }}"
+        return f"{{'type': {self.type}, 'coordinates': {self.coordinates}}}"
 
 
 class Feature:
@@ -155,9 +166,9 @@ class Feature:
 
         return (
             f"{{"
-            f"  'type': {self.type},"
-            f"  'geometry,: {self.geometry},"
-            f"  'properties': {self.properties},"
+            f"'type': '{self.type}', "
+            f"'geometry': {self.geometry}, "
+            f"'properties': {self.properties}"
             f"}}"
         )
 
@@ -166,55 +177,11 @@ class Feature:
 
         return (
             f"{{"
-            f"  'type': {self.type},"
-            f"  'geometry,: {self.geometry},"
-            f"  'properties': {self.properties},"
+            f"'type': {self.type}, "
+            f"'geometry': {self.geometry}, "
+            f"'properties': {self.properties}"
             f"}}"
         )
-
-
-class FeatureList:
-    """Representation for features in a GeoJSON
-
-    :param features: The features as the input
-    :type features: list
-
-    '''
-    :raise InvalidOptionError: Raised when the feature list passed is the invalid type - not a list
-    '''
-
-    :return: A class representation of the model
-    :rtype: <class 'mapillary.models.geojson.FeatureList'>
-    """
-
-    def __init__(self, features: list) -> None:
-        """Initializing FeatureList constructor"""
-
-        # Validate that the geojson passed is indeed a dictionary
-        if not isinstance(features, list):
-
-            # If not, raise InvalidOptionError
-            InvalidOptionError(
-                # The parameter that caused the exception
-                param="FeatureList.__init__.features",
-                # The invalid value passed
-                value=features,
-                # The type of the value that should be passed
-                options=["list"],
-            )
-
-        # Setting the list of features
-        self.features: list = [Feature(feature=feature) for feature in features]
-
-    def __str__(self) -> str:
-        """Return the informal string representation of the FeatureList"""
-
-        return f"{self.features}"
-
-    def __repr__(self) -> str:
-        """Return the formal string representation of the FeatureList"""
-
-        return f"{self.features}"
 
 
 class GeoJSON:
@@ -241,22 +208,23 @@ class GeoJSON:
         >>> type(geojson.type)
         ... <class 'str'>
         >>> type(geojson.features)
-        ... <class 'mapillary.models.geojson.FeatureList'>
-        >>> type(geojson.features.features[0])
-        ... <class 'mapillary.models.geojson.Feature'>
-        >>> type(geojson.features.features[0].type)
-        ... <class 'str'>
-        >>> type(geojson.features.features[0].geometry)
-        ... <class 'mapillary.models.geojson.Geometry'>
-        >>> type(geojson.features.features[0].geometry.type)
-        ... <class 'str'>
-        >>> type(geojson.features.features[0].geometry.coordinates)
         ... <class 'list'>
-        >>> type(geojson.features.features[0].properties)
+        >>> type(geojson.features[0])
+        ... <class 'mapillary.models.geojson.Feature'>
+        >>> type(geojson.features[0].type)
+        ... <class 'str'>
+        >>> type(geojson.features[0].geometry)
+        ... <class 'mapillary.models.geojson.Geometry'>
+        >>> type(geojson.features[0].geometry.type)
+        ... <class 'str'>
+        >>> type(geojson.features[0].geometry.coordinates)
+        ... <class 'list'>
+        >>> type(geojson.features[0].properties)
         ... <class 'mapillary.models.geojson.Properties'>
-        >>> type(geojson.features.features[0].properties.properties)
-        ... <class 'dict'>
-
+        >>> type(geojson.features[0].properties.captured_at)
+        ... <class 'int'>
+        >>> type(geojson.features[0].properties.is_pano)
+        ... <class 'str'>
     """
 
     def __init__(self, geojson: dict) -> None:
@@ -291,18 +259,33 @@ class GeoJSON:
                 options=["type", "features"],
             )
 
+        # Validate that the geojson passed is indeed a dictionary
+        if not isinstance(geojson["features"], list):
+
+            # If not, raise InvalidOptionError
+            InvalidOptionError(
+                # The parameter that caused the exception
+                param="FeatureList.__init__.geojson['features']",
+                # The invalid value passed
+                value=geojson["features"],
+                # The type of the value that should be passed
+                options=["list"],
+            )
+
         # Setting the type parameter
         self.type: str = geojson["type"]
 
         # Setting the list of features
-        self.features: FeatureList = FeatureList(features=geojson["features"])
+        self.features: list = [
+            Feature(feature=feature) for feature in geojson["features"]
+        ]
 
     def __str__(self):
         """Return the informal string representation of the GeoJSON"""
 
-        return f"{{" f"  'type': {self.type}, 'features': {self.features}" f"}}"
+        return f"{{'type': '{self.type}', 'features': {self.features}}}"
 
     def __repr__(self):
         """Return the formal string representation of the GeoJSON"""
 
-        return f"{{" f"  'type': {self.type}, 'features': {self.features}" f"}}"
+        return f"{{'type': '{self.type}', 'features': {self.features}}}"

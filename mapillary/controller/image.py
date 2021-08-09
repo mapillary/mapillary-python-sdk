@@ -25,7 +25,6 @@ from utils.verify import (
     image_bbox_check,
     sequence_bbox_check,
     resolution_check,
-    valid_id
 )
 
 # Client
@@ -40,7 +39,6 @@ from utils.filter import pipeline
 from utils.format import (
     geojson_to_features_list,
     merged_features_list_to_geojson,
-    feature_to_geojson
 )
 
 # Library imports
@@ -86,8 +84,6 @@ def get_image_close_to_controller(
     # exception
     image_check(kwargs=kwargs)
 
-    filtered_data = {}
-
     unfiltered_data = VectorTilesAdapter().fetch_layer(
         layer="image",
         zoom=kwargs["zoom"] if "zoom" in kwargs else 14,
@@ -100,7 +96,7 @@ def get_image_close_to_controller(
         unfiltered_data["features"] != {}
         and unfiltered_data["features"][0]["properties"] != {}
     ):
-        filtered_data.extend(
+        return (
             pipeline(
                 data=unfiltered_data,
                 components=[
@@ -131,8 +127,6 @@ def get_image_close_to_controller(
                 ],
             )
         )
-
-    return merged_features_list_to_geojson(filtered_data)
 
 
 def get_image_looking_at_controller(
