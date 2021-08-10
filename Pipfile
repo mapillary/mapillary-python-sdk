@@ -52,6 +52,7 @@ haversine = "*"
 python-dotenv = "*"
 osmnx = "*"
 turfpy = "*"
+geojson = "*"
 
 [dev-packages]
 pip = "==19.0.3"
