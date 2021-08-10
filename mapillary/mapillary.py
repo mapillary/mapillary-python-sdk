@@ -12,6 +12,8 @@ https://www.mapillary.com/developer/api-documentation/
 :copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
+# Package level imports
+import os
 
 # Local
 from models.client import Client
@@ -21,6 +23,7 @@ from models.auth import auth
 import controller.image as image
 import controller.feature as feature
 import controller.detection as detection
+import controller.save as save
 
 
 def set_access_token(token: str):
@@ -566,7 +569,7 @@ def feature_from_key(key: int, fields: list = []) -> str:
     :param key: The map feature ID to which will be used to get the feature
     :type key: int
 
-    :param fields: The fields to include. The field 'geometry' will always be included 
+    :param fields: The fields to include. The field 'geometry' will always be included
     so you do not need to specify it, or if you leave it off, it will still be returned.
 
     Fields::
@@ -603,7 +606,7 @@ def image_from_key(key: int, fields: list = []) -> str:
     :param key: The image unique key which will be used for image retrieval
     :type key: int
 
-    :param fields: The fields to include. The field 'geometry' will always be included 
+    :param fields: The fields to include. The field 'geometry' will always be included
     so you do not need to specify it, or if you leave it off, it will still be returned.
 
     Fields::
@@ -680,13 +683,13 @@ def save_to_csv(
 
 @auth()
 def save_as_geojson(
-    geojson_data,
-    file_path,
-):
+    geojson_data: str,
+    file_path=os.path.dirname(os.path.realpath(__file__)),
+) -> None:
     """This function saves the geojson data locally with the extension .geojson
 
     :param geojson_data: The GeoJSON data to be stored
-    :type geojson_data: GeoJSON Object
+    :type geojson_data: str
 
     :param file_path: The path to save the data to
     :type file_path: str
@@ -695,10 +698,11 @@ def save_as_geojson(
     :rtype: None
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.save_as_geojson(
+        ...     geojson_data=geojson_data,
+        ...     file_path=os.path.dirname(os.path.realpath(__file__))
+        ... )
     """
-
-    # TODO: This functions needs implementation
-
-    return None
+    return save.save_as_geojson_controller(data=geojson_data, path=file_path)

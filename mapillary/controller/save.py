@@ -12,6 +12,8 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
+import json
+import os
 
 
 def save_as_csv_controller(data: dict, path: str) -> bool:
@@ -32,7 +34,7 @@ def save_as_csv_controller(data: dict, path: str) -> bool:
     return {"Message": "Hello, World!"}
 
 
-def save_as_geojson_controller(data: str, path: str) -> bool:
+def save_as_geojson_controller(data: str, path: str) -> None:
     """Save data as GeoJSON to given file path
 
     :param data: The data to save as GeoJSON
@@ -44,7 +46,10 @@ def save_as_geojson_controller(data: str, path: str) -> bool:
     :return: Confirmation of whether the object was saved properly
     :rtype: bool
     """
+    try:
+        with open(os.path.join(path, "geojson.geojson"), "w") as file_path:
+            json.dump(json.loads(data), file_path, indent=4)
+    except Exception as e:
+        print(e)
 
-    # TODO: Requirement# 12B
-
-    return {"Message": "Hello, World!"}
+    return None
