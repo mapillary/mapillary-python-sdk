@@ -308,9 +308,11 @@ class GeoJSON:
         self.type: str = geojson["type"]
 
         # Setting the list of features
-        self.features: list = [
-            Feature(feature=feature) for feature in geojson["features"]
-        ]
+        self.features: list = (
+            [Feature(feature=feature) for feature in geojson["features"]]
+            if (geojson["features"] != []) or (geojson["features"] is not None)
+            else []
+        )
 
     def append_features(self, features: list) -> None:
 

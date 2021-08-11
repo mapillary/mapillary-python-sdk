@@ -19,6 +19,9 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 # # Adapter Imports
 from models.api.entities import EntityAdapter
 
+# # Models
+from models.geojson import GeoJSON
+
 # # Rules
 from utils.verify import valid_id
 
@@ -41,10 +44,12 @@ def get_image_detections_controller(image_id: int, filters: dict) -> dict:
     valid_id(id=image_id, image=True)
 
     # Return results from the Adapter
-    return EntityAdapter().fetch_detections(
-        id=image_id,
-        id_type=True,
-        fields=filters["fields"] if "fields" in filters else [],
+    return GeoJSON(
+        geojson=EntityAdapter().fetch_detections(
+            id=image_id,
+            id_type=True,
+            fields=filters["fields"] if "fields" in filters else [],
+        )
     )
 
 
@@ -66,8 +71,10 @@ def get_map_feature_detections_controller(map_feature_id: str, filters: dict) ->
     valid_id(id=map_feature_id, image=False)
 
     # Return results from the Adapter
-    return EntityAdapter().fetch_detections(
-        id=map_feature_id,
-        id_type=False,
-        fields=filters["fields"] if "fields" in filters else [],
+    return GeoJSON(
+        geojson=EntityAdapter().fetch_detections(
+            id=map_feature_id,
+            id_type=False,
+            fields=filters["fields"] if "fields" in filters else [],
+        )
     )
