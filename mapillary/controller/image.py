@@ -97,39 +97,51 @@ def get_image_close_to_controller(
         latitude=latitude,
     )
 
+    if kwargs == {}:
+        return GeoJSON(geojson=unfiltered_data)
+
     # Filtering for the attributes obtained above
     if (
         unfiltered_data["features"] != {}
         and unfiltered_data["features"][0]["properties"] != {}
     ):
-        return pipeline(
-            data=unfiltered_data,
-            components=[
-                # Filter using kwargs.min_date
-                {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
-                if "min_date" in kwargs
-                else {},
-                # Filter using kwargs.max_date
-                {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
-                if "max_date" in kwargs
-                else {},
-                # Filter using kwargs.image_type
-                {"filter": "image_type", "tile": kwargs["image_type"]}
-                if "image_type" in kwargs
-                else {},
-                # Filter using kwargs.organization_id
-                {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-                if "org_id" in kwargs
-                else {},
-                # Filter using kwargs.radius
-                {
-                    "filter": "haversine_dist",
-                    "radius": kwargs["radius"],
-                    "coords": [longitude, latitude],
-                }
-                if "radius" in kwargs
-                else {},
-            ],
+        return GeoJSON(
+            geojson=json.loads(
+                merged_features_list_to_geojson(
+                    pipeline(
+                        data=unfiltered_data,
+                        components=[
+                            # Filter using kwargs.min_date
+                            {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
+                            if "min_date" in kwargs
+                            else {},
+                            # Filter using kwargs.max_date
+                            {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
+                            if "max_date" in kwargs
+                            else {},
+                            # Filter using kwargs.image_type
+                            {"filter": "image_type", "tile": kwargs["image_type"]}
+                            if "image_type" in kwargs
+                            else {},
+                            # Filter using kwargs.organization_id
+                            {
+                                "filter": "organization_id",
+                                "organization_ids": kwargs["org_id"],
+                            }
+                            if "org_id" in kwargs
+                            else {},
+                            # Filter using kwargs.radius
+                            {
+                                "filter": "haversine_dist",
+                                "radius": kwargs["radius"],
+                                "coords": [longitude, latitude],
+                            }
+                            if "radius" in kwargs
+                            else {},
+                        ],
+                    )
+                )
+            )
         )
 
 
@@ -180,42 +192,52 @@ def get_image_looking_at_controller(
     # If that is the case, throw an exception
     image_check(kwargs=filters)
 
-    looker = json.loads(
-        get_image_close_to_controller(
-            longitude=looker["lng"], latitude=looker["lat"], kwargs=filters
-        )
-    )
+    looker = get_image_close_to_controller(
+        longitude=looker["lng"], latitude=looker["lat"], kwargs=filters
+    ).to_dict()
 
-    # Filter the unfiltered rsults by the given filters
-    if looker["features"] != [] and looker["features"][0]["properties"] != {}:
-        return merged_features_list_to_geojson(
-            pipeline(
-                data=looker,
-                components=[
-                    # Filter by `max_date`
-                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
-                    if "max_date" in filters
-                    else {},
-                    # Filter by `min_date`
-                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
-                    if "min_date" in filters
-                    else {},
-                    # Filter by `image_type`
-                    {"filter": "image_type", "type": filters.get("image_type")}
-                    if "image_type" in filters and filters["image_type"] != "all"
-                    else {},
-                    # Filter by `organization_id`
-                    {
-                        "filter": "organization_id",
-                        "organization_ids": filters.get("organization_id"),
-                    }
-                    if "organization_id" in filters
-                    else {},
-                    # Filter by `hits_by_look_at`
-                    {"filter": "hits_by_look_at", "at": at},
-                ],
+    if looker["features"] == []:
+        return GeoJSON(geojson=looker)
+
+    # Filter the unfiltered results by the given filters
+    return GeoJSON(
+        geojson=json.loads(
+            merged_features_list_to_geojson(
+                pipeline(
+                    data=looker,
+                    components=[
+                        # Filter by `max_date`
+                        {
+                            "filter": "max_date",
+                            "max_timestamp": filters.get("max_date"),
+                        }
+                        if "max_date" in filters
+                        else {},
+                        # Filter by `min_date`
+                        {
+                            "filter": "min_date",
+                            "min_timestamp": filters.get("min_date"),
+                        }
+                        if "min_date" in filters
+                        else {},
+                        # Filter by `image_type`
+                        {"filter": "image_type", "type": filters.get("image_type")}
+                        if "image_type" in filters and filters["image_type"] != "all"
+                        else {},
+                        # Filter by `organization_id`
+                        {
+                            "filter": "organization_id",
+                            "organization_ids": filters.get("organization_id"),
+                        }
+                        if "organization_id" in filters
+                        else {},
+                        # Filter by `hits_by_look_at`
+                        {"filter": "hits_by_look_at", "at": at},
+                    ],
+                )
             )
         )
+    )
 
 
 def get_image_thumbnail_controller(image_id, resolution: int) -> str:
@@ -326,13 +348,10 @@ def get_images_in_bbox_controller(
             b_content=res.content, layer=layer, z=tile.z, x=tile.x, y=tile.y
         )
 
-        # Separating feature objects from the decoded data
-        unfiltered_results = geojson_to_features_list(geojson)
-
         # Filter the unfiltered results by the given filters
         filtered_results.extend(
             pipeline(
-                data=unfiltered_results,
+                data=geojson,
                 components=[
                     {"filter": "features_in_bounding_box", "bbox": bbox}
                     if layer == "image"

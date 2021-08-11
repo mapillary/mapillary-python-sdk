@@ -34,7 +34,7 @@ def pipeline_component(func, data, exception_message, args):
     try:
         return func(data, *args)
     except TypeError as exception:
-        logger.warning(f"{exception_message}, {exception}")
+        logger.warning(f"{exception_message}, {exception}. Arguments passed, {args}")
 
 
 def pipeline(data: list, components: list):
@@ -77,7 +77,7 @@ def pipeline(data: list, components: list):
 
     # Python treats dict objects as passed reference, thus
     # in order to not modify the previous state, we make a local copy
-    __data = data.copy()
+    __data = data.copy()['features']
 
     # A mapping of different filters possible
     function_mappings = {
@@ -112,7 +112,7 @@ def pipeline(data: list, components: list):
             # Send over the data
             data=__data,
             # Specify the message on the exception thrown
-            exception_message=f'[pipeline - {component["filter"]}] Filter not applied,'
+            exception_message=f'[pipeline - {component["filter"]}] Filter not applied, '
             "exception thrown",
             # Except the filter name, select the rest as args
             args=tuple(list(component.values())[1:]),
@@ -240,7 +240,7 @@ def existed_before(data: list, existed_before: str) -> list:
 
 def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> dict:
     """Returns features that are only in the radius specified
-    using the Haversine distance, from the haversince package
+    using the Haversine distance, from the haversine package
 
     :param data: The data to be filtered
     :type data: dict
@@ -262,7 +262,7 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
     output = []
 
     # Go through the features
-    for feature in data["features"]:
+    for feature in data:
 
         # If the calculated haversince distance is less than the radius ...
         if (
@@ -277,15 +277,15 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
     return output
 
 
-def image_type(data: list, type: str) -> list:
+def image_type(data: list, image_type: str) -> list:
     """The parameter might be 'all' (both is_pano == true and false), 'pano'
     (is_pano == true only), or 'flat' (is_pano == false only)
 
     :param data: The data to be filtered
     :type data: list
 
-    :param type: Either 'pano' (True), 'flat' (False), or 'all' (None)
-    :type type: str
+    :param image_type: Either 'pano' (True), 'flat' (False), or 'all' (None)
+    :type image_type: str
 
     :return: A feature list
     :rtype: list
@@ -295,8 +295,8 @@ def image_type(data: list, type: str) -> list:
     bool_for_pano_filtering = (
         # Return true if type == 'pano'
         True
-        if type == "pano"
-        # Else false if type == 'falt'
+        if image_type == "pano"
+        # Else false if type == 'flat'
         else False
     )
 
@@ -459,5 +459,5 @@ def hits_by_look_at(data: list, at: dict) -> list:
     at_feature = Feature(geometry=Point((at["lng"], at["lat"])))
 
     return list(
-        filter(lambda image: by_look_at_feature(image, at_feature), data["features"])
+        filter(lambda image: by_look_at_feature(image, at_feature), data)
     )
