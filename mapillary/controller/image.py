@@ -47,9 +47,11 @@ from utils.format import (
 # Library imports
 import json
 import mercantile
+from geojson import Polygon
 from requests import HTTPError
 from shapely.geometry import shape
 from vt2geojson.tools import vt_bytes_to_geojson
+from turfpy.measurement import bbox_polygon, bbox
 
 
 def get_image_close_to_controller(
@@ -436,7 +438,7 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
         # Fetching image layers for the geojson
         layer="image",
         # Specifying zoom level, defaults to zoom if zoom not specified
-        zoom=filters['zoom'] if 'zoom' in filters else 14,
+        zoom=filters["zoom"] if "zoom" in filters else 14,
     )
 
     # Extracting polygon from geojson, converting to dict
@@ -468,8 +470,31 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
     """For extracting images that lie within a shape, merging the results of the found features
     into a single object - by merging all the features into one list in a feature collection.
 
-    :param shape: ??? # ! Fill in documentation
-    :type shape: ??? # ! Fill in documentation
+    The shape format is as follows,
+    'shape = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                7.2564697265625,
+                                43.69716905314008
+                            ],
+                            ...
+                        ]
+                    ]
+                }
+            }
+        ]
+    }'
+
+    :param shape: A shape that describes features, formatted as a geojson
+    :type shape: dict
 
     :param **filters: Different filters that may be applied to the output, defaults to {}
     :type filters: dict (kwargs)
@@ -507,4 +532,18 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
 
     image_bbox_check(filters)
 
-    return {"Message": "Hello, World!"}
+    coordinates_list = []
+
+    for feature in shape["features"]:
+        for coordinates in feature["geometry"]["coordinates"][0]:
+            coordinates_list.append((coordinates[0], coordinates[1]))
+
+    polygon = Polygon([coordinates_list])
+    
+    bb = bbox(polygon)
+
+    boundary = bbox_polygon(bb)['geometry']['coordinates'][0]
+
+    # return polygon, boundary, bb, VectorTilesAdapter().fetch_map_features(coordinates=boundary)
+
+    return VectorTilesAdapter().fetch_map_features(coordinates=boundary)

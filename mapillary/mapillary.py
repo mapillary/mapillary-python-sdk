@@ -561,7 +561,29 @@ def images_in_geojson(geojson: dict, **filters: dict):
 
 @auth()
 def images_in_shape(shape, **filters: dict):
-    """Extracts all images within a shape
+    """Extracts all images within a shape or polygon with the format,
+
+    'shape = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                7.2564697265625,
+                                43.69716905314008
+                            ],
+                            ...
+                        ]
+                    ]
+                }
+            }
+        ]
+    }'
 
     :param shape: A shape that describes features, formatted as a geojson
     :type shape: dict
@@ -597,7 +619,11 @@ def images_in_shape(shape, **filters: dict):
     :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how the function works
+        >>> import mapillary as mly
+        >>> import json
+        >>> mly.set_access_token('MLY|XXX')
+        >>> data = mly.images_in_shape(json.load(open('polygon.json', mode='r')))
+        >>> open('testing_geojson.json', mode='w').write(data.encode())
     """
 
     return image.images_in_shape_controller(shape=shape, filters=filters)

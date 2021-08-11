@@ -60,8 +60,6 @@ class Properties:
         for key in kwargs:
             setattr(self, key, kwargs[key])
 
-    @property
-    @functools.lru_cache()
     def to_dict(self):
         """Return the dictionary representation of the Properties"""
 
@@ -71,8 +69,6 @@ class Properties:
 
         return {key: getattr(self, key) for key in attr_representation}
 
-    @property
-    @functools.lru_cache()
     def __str__(self):
         """Return the informal string representation of the Properties"""
 
@@ -84,8 +80,6 @@ class Properties:
 
         return f"{attr_key_value_pair}"
 
-    @property
-    @functools.lru_cache()
     def __repr__(self):
         """Return the formal string representation of the Properties"""
 
@@ -134,22 +128,16 @@ class Geometry:
         # Setting the coordinates of the geometry
         self.coordinates: list = geometry["coordinates"]
 
-    @property
-    @functools.lru_cache()
     def to_dict(self):
         """Return dictionary representation of the geometry"""
 
         return {"type": self.type, "coordinates": self.coordinates}
 
-    @property
-    @functools.lru_cache()
     def __str__(self):
         """Return the informal string representation of the Geometry"""
 
         return f"{{'type': {self.type}, 'coordinates': {self.coordinates}}}"
 
-    @property
-    @functools.lru_cache()
     def __repr__(self):
         """Return the formal string representation of the Geometry"""
 
@@ -195,8 +183,6 @@ class Feature:
         # Setting the `properties` property
         self.properties = Properties(feature["properties"])
 
-    @property
-    @functools.lru_cache()
     def to_dict(self) -> dict:
         """Return the dictionary representation of the Feature"""
 
@@ -206,8 +192,6 @@ class Feature:
             "properties": self.properties.to_dict(),
         }
 
-    @property
-    @functools.lru_cache()
     def __str__(self) -> str:
         """Return the informal string representation of the Feature"""
 
@@ -219,8 +203,6 @@ class Feature:
             f"}}"
         )
 
-    @property
-    @functools.lru_cache()
     def __repr__(self) -> str:
         """Return the formal string representation of the Feature"""
 
@@ -337,34 +319,30 @@ class GeoJSON:
 
     def append_feature(self, feature: dict) -> None:
 
+        # feature = Feature(feature=feature_input)
+
         if feature not in self.features:
             self.features.append(feature)
 
-    @property
-    @functools.lru_cache()
     def encode(self):
 
         return json.dumps(self.__dict__)
 
-    @property
-    @functools.lru_cache()
     def to_dict(self):
         """Return the dict format representation of the GeoJSON"""
 
         return {
             "type": self.type,
-            "features": [feature.to_dict() for feature in self.features],
+            "features": [feature.to_dict() for feature in self.features]
+            if self.features != []
+            else [],
         }
 
-    @property
-    @functools.lru_cache()
     def __str__(self):
         """Return the informal string representation of the GeoJSON"""
 
         return f"{{'type': '{self.type}', 'features': {self.features}}}"
 
-    @property
-    @functools.lru_cache()
     def __repr__(self):
         """Return the formal string representation of the GeoJSON"""
 
