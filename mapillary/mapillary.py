@@ -656,35 +656,10 @@ def image_from_key(key: int, fields: list = []) -> str:
 
 
 @auth()
-def save_to_csv(
-    csv_data,
-    file_path,
-):
-    """This function saves the csv data locally with the extension .csv
-
-    :param csv_data: The CSV data to be stored
-    :type csv_data: CSV Object
-
-    :param file_path: The path to save the data to
-    :type file_path: str
-
-    :return: None
-    :rtype: None
-
-    Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
-    """
-
-    # TODO: This functions needs implementation
-
-    return None
-
-
-@auth()
 def save_as_geojson(
     geojson_data: str,
     file_path=os.path.dirname(os.path.realpath(__file__)),
+    format="geojson",
 ) -> None:
     """This function saves the geojson data locally with the extension .geojson
 
@@ -705,4 +680,8 @@ def save_as_geojson(
         ...     file_path=os.path.dirname(os.path.realpath(__file__))
         ... )
     """
-    return save.save_as_geojson_controller(data=geojson_data, path=file_path)
+    return (
+        save.save_as_geojson_controller(data=geojson_data, path=file_path)
+        if format == "geojson"
+        else save.save_as_csv_controller(data=geojson_data, path=file_path)
+    )
