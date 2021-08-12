@@ -39,7 +39,6 @@ from models.geojson import GeoJSON
 # # Utilities
 from utils.filter import pipeline
 from utils.format import (
-    geojson_to_features_list,
     merged_features_list_to_geojson,
     geojson_to_polgyon,
 )
@@ -51,7 +50,7 @@ import mercantile
 from geojson import Polygon
 from requests import HTTPError
 from vt2geojson.tools import vt_bytes_to_geojson
-from turfpy.measurement import bbox_polygon, bbox
+from turfpy.measurement import bbox
 
 
 def get_image_close_to_controller(
@@ -450,12 +449,19 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
     # Extracting polygon from geojson, converting to dict
     polygon = geojson_to_polgyon(geojson).to_dict()
 
+    # Generating a coordinates list to extract from polygon
     coordinates_list = []
 
+    # Going through each feature
     for feature in polygon["features"]:
+
+        # Going through the coordinate's nested list
         for coordinates in feature["geometry"]["coordinates"][0]:
+
+            # Appending a tuple of coordinates
             coordinates_list.append((coordinates[0], coordinates[1]))
 
+    # Sending coordinates_list a input to form a Polygon
     polygon = Polygon([coordinates_list])
 
     # Getting the boundary paramters from polygon
@@ -463,21 +469,30 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
 
     # Get a GeoJSON with features from tiles originating from coordinates
     # at specified zoom level
-    layers: GeoJSON = VectorTilesAdapter().fetch_layers(
-        # Sending coordinates for all the points within input geojson
-        coordinates=bbox(polygon),
-        # Fetching image layers for the geojson
-        layer="image",
-        # Specifying zoom level, defaults to zoom if zoom not specified
-        zoom=filters["zoom"] if "zoom" in filters else 14,
-    ).to_dict()
+    layers: GeoJSON = (
+        VectorTilesAdapter()
+        .fetch_layers(
+            # Sending coordinates for all the points within input geojson
+            coordinates=bbox(polygon),
+            # Fetching image layers for the geojson
+            layer="image",
+            # Specifying zoom level, defaults to zoom if zoom not specified
+            zoom=filters["zoom"] if "zoom" in filters else 14,
+        )
+        .to_dict()
+    )
 
     # Return as GeoJSON output
     return GeoJSON(
+        # Load the geojson to convert to GeoJSON object
         geojson=json.loads(
+            # Convert feature list to GeoJSON
             merged_features_list_to_geojson(
+                # Execture pipeline for filters
                 pipeline(
+                    # Sending layers as input
                     data=layers,
+                    # Specifying components for the filter
                     components=[
                         {"filter": "in_shape", "boundary": boundary},
                         # Filter using kwargs.min_date
@@ -583,33 +598,49 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
 
     image_bbox_check(filters)
 
+    # Generating a coordinates list to extract from polygon
     coordinates_list = []
 
+    # Going through each feature
     for feature in shape["features"]:
+
+        # Going through the coordinate's nested list
         for coordinates in feature["geometry"]["coordinates"][0]:
+
+            # Appending a tuple of coordinates
             coordinates_list.append((coordinates[0], coordinates[1]))
 
+    # Sending coordinates_list a input to form a Polygon
     polygon = Polygon([coordinates_list])
 
     # Getting the boundary paramters from polygon
     boundary = shapely.geometry.shape(polygon)
 
     # Get all the map features within the boundary box for the polygon
-    output = VectorTilesAdapter().fetch_layers(
-        # Sending coordinates for all the points within input geojson
-        coordinates=bbox(polygon),
-        # Fetching image layers for the geojson
-        layer="image",
-        # Specifying zoom level, defaults to zoom if zoom not specified
-        zoom=filters["zoom"] if "zoom" in filters else 14,
-        ).to_dict()
+    output = (
+        VectorTilesAdapter()
+        .fetch_layers(
+            # Sending coordinates for all the points within input geojson
+            coordinates=bbox(polygon),
+            # Fetching image layers for the geojson
+            layer="image",
+            # Specifying zoom level, defaults to zoom if zoom not specified
+            zoom=filters["zoom"] if "zoom" in filters else 14,
+        )
+        .to_dict()
+    )
 
     # Return as GeoJSON output
     return GeoJSON(
+        # Load the geojson to convert to GeoJSON object        
         geojson=json.loads(
+            # Convert feature list to GeoJSON
             merged_features_list_to_geojson(
+                # Execture pipeline for filters                
                 pipeline(
+                    # Sending layers as input                    
                     data=output,
+                    # Specifying components for the filter
                     components=[
                         # Get only features within the given boundary
                         {"filter": "in_shape", "boundary": boundary},

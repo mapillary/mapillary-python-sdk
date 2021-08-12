@@ -15,7 +15,6 @@ https://www.mapillary.com/developer/api-documentation/.
 """
 
 # Package
-import functools
 import json
 
 # Local

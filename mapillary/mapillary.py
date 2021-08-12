@@ -552,8 +552,8 @@ def images_in_geojson(geojson: dict, **filters: dict):
         >>> from models.geojson import GeoJSON
         >>> import json
         >>> mly.set_access_token('MLY|YYY')
-        >>> data = mly.images_in_geojson(json.load(open('fetch_map_feature_point.json', mode='r')))
-        >>> open('testing_geojson.json', mode='w').write(data.encode())
+        >>> data = mly.images_in_geojson(json.load(open('my_geojson.geojson', mode='r')))
+        >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
     return image.images_in_geojson_controller(geojson=geojson, filters=filters)
@@ -623,7 +623,7 @@ def images_in_shape(shape, **filters: dict):
         >>> import json
         >>> mly.set_access_token('MLY|XXX')
         >>> data = mly.images_in_shape(json.load(open('polygon.json', mode='r')))
-        >>> open('testing_geojson.json', mode='w').write(data.encode())
+        >>> open('output_geojson.json', mode='w').write(data.encode())
     """
 
     return image.images_in_shape_controller(shape=shape, filters=filters)

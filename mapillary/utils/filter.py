@@ -78,7 +78,7 @@ def pipeline(data: list, components: list):
 
     # Python treats dict objects as passed reference, thus
     # in order to not modify the previous state, we make a local copy
-    __data = data.copy()['features']
+    __data = data.copy()["features"]
 
     # A mapping of different filters possible
     function_mappings = {
@@ -460,9 +460,7 @@ def hits_by_look_at(data: list, at: dict) -> list:
     # Converting the `at` into a Feature object from TurfPy
     at_feature = Feature(geometry=Point((at["lng"], at["lat"])))
 
-    return list(
-        filter(lambda image: by_look_at_feature(image, at_feature), data)
-    )
+    return list(filter(lambda image: by_look_at_feature(image, at_feature), data))
 
 
 def in_shape(data: list, boundary) -> list:

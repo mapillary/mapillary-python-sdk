@@ -24,7 +24,6 @@ from models.client import Client
 from utils.verify import valid_id, points_traffic_signs_check
 from utils.filter import pipeline
 from utils.format import (
-    geojson_to_features_list,
     merged_features_list_to_geojson,
     feature_to_geojson,
 )
