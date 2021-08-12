@@ -319,9 +319,9 @@ class GeoJSON:
         for feature in features:
             self.append_feature(feature)
 
-    def append_feature(self, feature: dict) -> None:
+    def append_feature(self, feature_inputs: dict) -> None:
 
-        # feature = Feature(feature=feature_input)
+        feature = Feature(feature=feature_inputs)
 
         if feature not in self.features:
             self.features.append(feature)

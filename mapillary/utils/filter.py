@@ -17,6 +17,7 @@ from utils.time import date_to_unix_timestamp
 # Package imports
 from turfpy.measurement import bearing
 from geojson import Point, Feature
+from shapely.geometry import shape
 import haversine
 import logging
 
@@ -93,6 +94,7 @@ def pipeline(data: list, components: list):
         "sequence_id": sequence_id,
         "compass_angle": compass_angle,
         "hits_by_look_at": hits_by_look_at,
+        "in_shape": in_shape,
         # Simply add the mapping of a new function,
         # nothing else will really need to changed
     }
@@ -461,3 +463,24 @@ def hits_by_look_at(data: list, at: dict) -> list:
     return list(
         filter(lambda image: by_look_at_feature(image, at_feature), data)
     )
+
+
+def in_shape(data: list, boundary) -> list:
+
+    # Generating output format
+    output = []
+
+    # Iterating over features
+    for feature in data:
+
+        # Extracting point from geometry feature
+        point = shape(feature["geometry"])
+
+        # Checking if point falls within the boundary using shapely.geometry.point.point
+        if boundary.contains(point):
+
+            # If true, append to output features
+            output.append(feature)
+
+    # Return output
+    return output
