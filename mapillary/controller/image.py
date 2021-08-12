@@ -46,10 +46,10 @@ from utils.format import (
 
 # Library imports
 import json
+import shapely
 import mercantile
 from geojson import Polygon
 from requests import HTTPError
-from shapely.geometry import shape
 from vt2geojson.tools import vt_bytes_to_geojson
 from turfpy.measurement import bbox_polygon, bbox
 
@@ -447,42 +447,74 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
     # Filter checking
     image_bbox_check(filters)
 
+    # Extracting polygon from geojson, converting to dict
+    polygon = geojson_to_polgyon(geojson).to_dict()
+
+    coordinates_list = []
+
+    for feature in polygon["features"]:
+        for coordinates in feature["geometry"]["coordinates"][0]:
+            coordinates_list.append((coordinates[0], coordinates[1]))
+
+    polygon = Polygon([coordinates_list])
+
+    # Getting the boundary paramters from polygon
+    boundary = shapely.geometry.shape(polygon)
+
     # Get a GeoJSON with features from tiles originating from coordinates
     # at specified zoom level
     layers: GeoJSON = VectorTilesAdapter().fetch_layers(
         # Sending coordinates for all the points within input geojson
-        coordinates=[
-            feature["geometry"]["coordinates"] for feature in geojson["features"]
-        ],
+        coordinates=bbox(polygon),
         # Fetching image layers for the geojson
         layer="image",
         # Specifying zoom level, defaults to zoom if zoom not specified
         zoom=filters["zoom"] if "zoom" in filters else 14,
-    )
-
-    # Extracting polygon from geojson, converting to dict
-    polygon = geojson_to_polgyon(geojson).to_dict()
-
-    # Getting the boundary paramters from polygon
-    boundary = shape(polygon["features"][0]["geometry"])
-
-    # Generating output format
-    output = {"type": "FeatureCollection", "features": []}
-
-    # Iterating over features
-    for feature in layers.features:
-
-        # Extracting point from geometry feature
-        point = shape(feature["geometry"])
-
-        # Checking if point falls within the boundary using shapely.geometry.point.point
-        if boundary.contains(point):
-
-            # If true, append to output features
-            output["features"].append(feature)
+    ).to_dict()
 
     # Return as GeoJSON output
-    return GeoJSON(geojson=output)
+    return GeoJSON(
+        geojson=json.loads(
+            merged_features_list_to_geojson(
+                pipeline(
+                    data=layers,
+                    components=[
+                        {"filter": "in_shape", "boundary": boundary},
+                        # Filter using kwargs.min_date
+                        {"filter": "min_date", "min_timestamp": filters["min_date"]}
+                        if "min_date" in filters
+                        else {},
+                        # Filter using filters.max_date
+                        {"filter": "max_date", "min_timestamp": filters["max_date"]}
+                        if "max_date" in filters
+                        else {},
+                        # Filter using filters.image_type
+                        {"filter": "image_type", "tile": filters["image_type"]}
+                        if "image_type" in filters
+                        else {},
+                        # Filter using filters.organization_id
+                        {
+                            "filter": "organization_id",
+                            "organization_ids": filters["org_id"],
+                        }
+                        if "organization_id" in filters
+                        else {},
+                        # Filter using filters.sequence_id
+                        {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                        if "sequence_id" in filters
+                        else {},
+                        # Filter using filters.compass_angle
+                        {
+                            "filter": "compass_angle",
+                            "angles": filters.get("compass_angle"),
+                        }
+                        if "compass_angle" in filters
+                        else {},
+                    ],
+                )
+            )
+        )
+    )
 
 
 def images_in_shape_controller(shape, filters: dict = None) -> dict:
@@ -558,11 +590,61 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
             coordinates_list.append((coordinates[0], coordinates[1]))
 
     polygon = Polygon([coordinates_list])
-    
-    bb = bbox(polygon)
 
-    boundary = bbox_polygon(bb)['geometry']['coordinates'][0]
+    # Getting the boundary paramters from polygon
+    boundary = shapely.geometry.shape(polygon)
 
-    # return polygon, boundary, bb, VectorTilesAdapter().fetch_map_features(coordinates=boundary)
+    # Get all the map features within the boundary box for the polygon
+    output = VectorTilesAdapter().fetch_layers(
+        # Sending coordinates for all the points within input geojson
+        coordinates=bbox(polygon),
+        # Fetching image layers for the geojson
+        layer="image",
+        # Specifying zoom level, defaults to zoom if zoom not specified
+        zoom=filters["zoom"] if "zoom" in filters else 14,
+        ).to_dict()
 
-    return VectorTilesAdapter().fetch_map_features(coordinates=boundary)
+    # Return as GeoJSON output
+    return GeoJSON(
+        geojson=json.loads(
+            merged_features_list_to_geojson(
+                pipeline(
+                    data=output,
+                    components=[
+                        # Get only features within the given boundary
+                        {"filter": "in_shape", "boundary": boundary},
+                        # Filter using kwargs.min_date
+                        {"filter": "min_date", "min_timestamp": filters["min_date"]}
+                        if "min_date" in filters
+                        else {},
+                        # Filter using filters.max_date
+                        {"filter": "max_date", "min_timestamp": filters["max_date"]}
+                        if "max_date" in filters
+                        else {},
+                        # Filter using filters.image_type
+                        {"filter": "image_type", "tile": filters["image_type"]}
+                        if "image_type" in filters
+                        else {},
+                        # Filter using filters.organization_id
+                        {
+                            "filter": "organization_id",
+                            "organization_ids": filters["org_id"],
+                        }
+                        if "organization_id" in filters
+                        else {},
+                        # Filter using filters.sequence_id
+                        {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                        if "sequence_id" in filters
+                        else {},
+                        # Filter using filters.compass_angle
+                        {
+                            "filter": "compass_angle",
+                            "angles": filters.get("compass_angle"),
+                        }
+                        if "compass_angle" in filters
+                        else {},
+                    ],
+                )
+            )
+        )
+    )

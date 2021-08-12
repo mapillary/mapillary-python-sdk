@@ -232,15 +232,20 @@ class VectorTilesAdapter(object):
             geojson={"type": "FeatureCollection", "features": []}
         )
 
-        # Extracing longitude, latitude from coordinates
-        for longitude, latitude in coordinates:
+        # A list of tiles that are either confined within or intersect with the bbox
+        tiles = list(
+            mercantile.tiles(
+                west=coordinates[0],
+                south=coordinates[1],
+                east=coordinates[2],
+                north=coordinates[3],
+                zooms=zoom,
+            )
+        )
 
-            # Checking if the correct parameters are passed
-            self.__check_parameters(longitude=longitude, latitude=latitude)
-
-            # `Tiles` is a set, which means it will only add another tile in it
-            # if that is unique and not already inserted in the `tiles` set
-            tiles.add(mercantile.tile(lng=longitude, lat=latitude, zoom=zoom))
+        print(
+            f'[Vector Tiles API] Fetching {len(tiles)} {"tiles" if len(tiles) > 1 else "tile"} ...'
+        )
 
         for tile in tiles:
 
