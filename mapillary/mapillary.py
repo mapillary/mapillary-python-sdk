@@ -611,10 +611,10 @@ def image_from_key(key: int, fields: list = []) -> str:
 
     Fields::
             1. altitude - float, original altitude from Exif
-            2. atomic_scale - FIXME, FIXME
-            3. camera_parameters - FIXME, FIXME
+            2. atomic_scale -  ,
+            3. camera_parameters -  ,
             4. camera_type - enum, type of camera used for taking the phone.
-            VALUES: FIXME
+            VALUES:
             5. captured_at - timestamp, capture time
             6. compass_angle - float, original compass angle of the image
             7. computed_altitude - float, altitude after running image
@@ -625,7 +625,7 @@ def image_from_key(key: int, fields: list = []) -> str:
             processing
             10. computed_rotation - enum, corrected orientation of the image
             11. exif_orientation - enum, original orientation of the image.
-            VALUES: FIXME
+            VALUES:
             12. geometry - GeoJSON Point geometry
             13. height - int, height of the original image uploaded
             14. thumb_256_url - string, URL to the 256px wide thumbnail
@@ -656,18 +656,26 @@ def image_from_key(key: int, fields: list = []) -> str:
 
 
 @auth()
-def save_as_geojson(
+def save(
     geojson_data: str,
     file_path=os.path.dirname(os.path.realpath(__file__)),
-    format="geojson",
+    file_name=None,
+    format: str = "geojson",
 ) -> None:
-    """This function saves the geojson data locally with the extension .geojson
+    """This function saves the geojson data locally as a file
+    with the given file name, path, and format.
 
     :param geojson_data: The GeoJSON data to be stored
     :type geojson_data: str
 
-    :param file_path: The path to save the data to
+    :param file_path: The path to save the data to. Defaults to the current directory path
     :type file_path: str
+
+    :param file_name: The name of the file to be saved. Defaults to 'geojson'
+    :type file_name: str
+
+    :param format: The format to save the data as. Defaults to 'geojson'
+    :type format: str
 
     :return: None
     :rtype: None
@@ -675,13 +683,22 @@ def save_as_geojson(
     Usage::
         >>> import mapillary as mly
         >>> mly.set_access_token('MLY|XXX')
-        >>> mly.save_as_geojson(
+        >>> mly.save(
         ...     geojson_data=geojson_data,
-        ...     file_path=os.path.dirname(os.path.realpath(__file__))
+        ...     file_path=os.path.dirname(os.path.realpath(__file__)),
+        ...     file_name='test_geojson',
+        ...     format='geojson'
+        ... )
+
+        >>> mly.save(
+        ...     geojson_data=geojson_data,
+        ...     file_path=os.path.dirname(os.path.realpath(__file__)),
+        ...     file_name='local_geometries',
+        ...     format='csv'
         ... )
     """
     return (
-        save.save_as_geojson_controller(data=geojson_data, path=file_path)
+        save.save_as_geojson_controller(data=geojson_data, path=file_path, file_name=file_name)
         if format == "geojson"
-        else save.save_as_csv_controller(data=geojson_data, path=file_path)
+        else save.save_as_csv_controller(data=geojson_data, path=file_path, file_name=file_name)
     )

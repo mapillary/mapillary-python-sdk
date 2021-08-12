@@ -24,7 +24,7 @@ from shapely.geometry import shape
 from utils.format import geojson_to_features_list
 
 
-def save_as_csv_controller(data: str, path: str) -> None:
+def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
     """Save data as CSV to given file path
 
     :param data: The data to save as CSV
@@ -32,6 +32,9 @@ def save_as_csv_controller(data: str, path: str) -> None:
 
     :param path: The path to save to
     :type path: str
+
+    :param file_name: The file name to save as
+    :type file_name: str
 
     :return: None
     :rtype: None
@@ -45,7 +48,8 @@ def save_as_csv_controller(data: str, path: str) -> None:
     
     try:
         # Write the CSV file
-        with open(os.path.join(path, "geojson.csv"), "w", newline='') as file_path:
+        file_name = file_name if file_name is not None else "geojson.csv"
+        with open(os.path.join(path, file_name), "w", newline='') as file_path:
             field_names = ['Type', 'Geometry']
             writer = csv.DictWriter(file_path, fieldnames=field_names)
             
@@ -57,7 +61,7 @@ def save_as_csv_controller(data: str, path: str) -> None:
     return None
 
 
-def save_as_geojson_controller(data: str, path: str) -> None:
+def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
     """Save data as GeoJSON to given file path
 
     :param data: The data to save as GeoJSON
@@ -66,11 +70,15 @@ def save_as_geojson_controller(data: str, path: str) -> None:
     :param path: The path to save to
     :type path: str
 
+    :param file_name: The file name to save as
+    :type file_name: str
+
     :return: Npne
     :rtype: None
     """
     try:
-        with open(os.path.join(path, "geojson.geojson"), "w") as file_path:
+        file_name = file_name if file_name is not None else "geojson.geojson"
+        with open(os.path.join(path, file_name), "w") as file_path:
             json.dump(json.loads(data), file_path, indent=4)
     except Exception as e:
         print(e)
