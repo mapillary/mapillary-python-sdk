@@ -622,8 +622,8 @@ def images_in_shape(shape, **filters: dict):
         >>> import mapillary as mly
         >>> import json
         >>> mly.set_access_token('MLY|XXX')
-        >>> data = mly.images_in_shape(json.load(open('polygon.json', mode='r')))
-        >>> open('output_geojson.json', mode='w').write(data.encode())
+        >>> data = mly.images_in_shape(json.load(open('polygon.geojson', mode='r')))
+        >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
     return image.images_in_shape_controller(shape=shape, filters=filters)

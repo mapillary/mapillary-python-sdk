@@ -452,9 +452,7 @@ class VectorTilesAdapter(object):
                 options=[
                     "overview",
                     "sequence",
-                    "image",
-                    "map_feature",
-                    "traffic_signs",
+                    "image"
                 ],
             )
 
