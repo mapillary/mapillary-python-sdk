@@ -227,11 +227,15 @@ def get_image_looking_at(
 
 
 @auth()
-def get_detections_with_image_id(image_id: int, **filters):
+def get_detections_with_image_id(image_id: int, fields: list = []):
     """Extracting all the detections within an image using an image key
 
     :param image_id: The image key as the argument
     :type image_id: int
+
+    :param fields: The fields possible for the detection endpoint. Please see
+    https://www.mapillary.com/developer/api-documentation for more information
+    :type fields: list
 
     :return: The GeoJSON in response
     :rtype: dict
@@ -253,16 +257,20 @@ def get_detections_with_image_id(image_id: int, **filters):
 
     return detection.get_image_detections_controller(
         image_id=image_id,
-        filters=filters,
+        fields=fields,
     )
 
 
 @auth()
-def get_detections_with_map_feature_id(map_feature_id: int, **filters) -> dict:
+def get_detections_with_map_feature_id(map_feature_id: int, fields: list = []) -> dict:
     """Extracting all detections made for a map feature key
 
     :param map_feature_id: A map feature key as the argument
     :type map_feature_id: int
+
+    :param fields: The fields possible for the detection endpoint. Please see
+    https://www.mapillary.com/developer/api-documentation for more information
+    :type fields: list
 
     :return: The GeoJSON in response
     :rtype: dict
@@ -281,7 +289,7 @@ def get_detections_with_map_feature_id(map_feature_id: int, **filters) -> dict:
 
     return detection.get_map_feature_detections_controller(
         map_feature_id=map_feature_id,
-        filters=filters,
+        fields=fields,
     )
 
 

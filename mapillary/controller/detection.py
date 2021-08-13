@@ -23,15 +23,15 @@ from models.api.entities import EntityAdapter
 from utils.verify import valid_id
 
 
-def get_image_detections_controller(image_id: int, filters: dict) -> dict:
+def get_image_detections_controller(image_id: int, fields: list = []) -> dict:
     """Get image detections with given (image) key
 
     :param image_id: The image id
     :type image_id: str
 
-    # TODO: To list out possible kwarg arguments
-    :param filters: Possible key word arguments
-    :type filters: dict
+    :param fields: The fields possible for the detection endpoint. Please see
+    https://www.mapillary.com/developer/api-documentation for more information
+    :type fields: list
 
     :return: GeoJSON
     :rtype: dict
@@ -44,19 +44,19 @@ def get_image_detections_controller(image_id: int, filters: dict) -> dict:
     return EntityAdapter().fetch_detections(
         id=image_id,
         id_type=True,
-        fields=filters["fields"] if "fields" in filters else [],
+        fields=fields,
     )
 
 
-def get_map_feature_detections_controller(map_feature_id: str, filters: dict) -> dict:
+def get_map_feature_detections_controller(map_feature_id: str, fields: list = []) -> dict:
     """Get image detections with given (map feature) key
 
     :param map_feature_id: The map feature id
     :type map_feature_id: str
 
-    # TODO: To list out possible kwarg arguments
-    :param filters: Possible key word arguments
-    :type filters: dict
+    :param fields: The fields possible for the detection endpoint. Please see
+    https://www.mapillary.com/developer/api-documentation for more information
+    :type fields: list
 
     :return: GeoJSON
     :rtype: dict
@@ -69,5 +69,5 @@ def get_map_feature_detections_controller(map_feature_id: str, filters: dict) ->
     return EntityAdapter().fetch_detections(
         id=map_feature_id,
         id_type=False,
-        fields=filters["fields"] if "fields" in filters else [],
+        fields=fields,
     )
