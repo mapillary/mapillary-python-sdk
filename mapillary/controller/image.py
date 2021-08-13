@@ -63,6 +63,9 @@ def get_image_close_to_controller(
     :param latitude: The latitude
     :type latitude: float
 
+    :param kwargs.zoom: The zoom level of the tiles to obtain, defaults to 14
+    :type kwargs.zoom: int
+
     :param kwargs.min_date: The minimum date to filter till
     :type kwargs.min_date: str
 

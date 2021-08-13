@@ -65,6 +65,9 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     See https://www.mapillary.com/developer/api-documentation/, under 'Fields' for more insight.
     :type kwargs.fields: list
 
+    :param kwargs.zoom: The zoom level of the tiles to obtain, defaults to 14
+    :type kwargs.zoom: int
+
     :param kwargs.radius: The radius of the images obtained from a center center
     :type kwargs.radius: float or int or double
 
