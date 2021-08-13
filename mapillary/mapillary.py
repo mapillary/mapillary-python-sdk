@@ -76,11 +76,11 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     'image_type Tiles' for more information
     :type kwargs.image_type: str
 
-    :param kwargs.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type kwargs.min_date: str
+    :param kwargs.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.min_captured_at: str
 
-    :param kwargs.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type kwargs.max_date: str
+    :param kwargs.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.max_captured_at: str
 
     :param kwargs.org_id: The organization id, ID of the organization this image (or sets of
     images) belong to. It can be absent. Thus, default is -1 (None)
@@ -131,11 +131,11 @@ def get_image_looking_at(
         >>> }
     :type at: dict
 
-    :param filters.min_date: The minimum date to filter till
-    :type filters.min_date: str
+    :param filters.min_captured_at: The minimum date to filter till
+    :type filters.min_captured_at: str
 
-    :param filters.max_date: The maximum date to filter upto
-    :type filters.max_date: str
+    :param filters.max_captured_at: The maximum date to filter upto
+    :type filters.max_captured_at: str
 
     :param filters.radius: The radius that the geometry points will lie in
     :type filters.radius: float
@@ -333,8 +333,8 @@ def images_in_bbox(bbox: dict, **filters) -> str:
 
     :param **filters: Different filters that may be applied to the output.
     example filters:
-    - max_date
-    - min_date
+    - max_captured_at
+    - min_captured_at
     - image_type: pano, flat, or all
     - compass_angle
     - sequence_id
@@ -355,8 +355,8 @@ def images_in_bbox(bbox: dict, **filters) -> str:
         ...         'east': 'BOUNDARY_FROM_EAST',
         ...         'north': 'BOUNDARY_FROM_NORTH'
         ...     },
-        ...     max_date='YYYY-MM-DD HH:MM:SS',
-        ...     min_date='YYYY-MM-DD HH:MM:SS',
+        ...     max_captured_at='YYYY-MM-DD HH:MM:SS',
+        ...     min_captured_at='YYYY-MM-DD HH:MM:SS',
         ...     image_type='pano',
         ...     compass_angle=(0, 360),
         ...     sequence_id='SEQUENCE_ID',
@@ -385,8 +385,8 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
 
     :param **filters: Different filters that may be applied to the output.
     example filters:
-    - max_date
-    - min_date
+    - max_captured_at
+    - min_captured_at
     - image_type: pano, flat, or all
     - org_id
     :type **filters: dict
@@ -406,8 +406,8 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
         ...         'east': 'BOUNDARY_FROM_EAST',
         ...         'north': 'BOUNDARY_FROM_NORTH'
         ...     },
-        ...     max_date='YYYY-MM-DD HH:MM:SS',
-        ...     min_date='YYYY-MM-DD HH:MM:SS',
+        ...     max_captured_at='YYYY-MM-DD HH:MM:SS',
+        ...     min_captured_at='YYYY-MM-DD HH:MM:SS',
         ...     image_type='pano',
         ...     org_id='ORG_ID'
         ... )
