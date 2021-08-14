@@ -82,8 +82,8 @@ def pipeline(data: list, components: list):
     # A mapping of different filters possible
     function_mappings = {
         "filter_values": filter_values,
-        "max_captured_at": max_captured_at,
-        "min_captured_at": min_captured_at,
+        "max_date": max_date,
+        "min_date": min_date,
         "haversine_dist": haversine_dist,
         "image_type": image_type,
         "organization_id": organization_id,
@@ -122,12 +122,12 @@ def pipeline(data: list, components: list):
     return __data
 
 
-def max_captured_at(data: list, max_timestamp: str) -> list:
+def max_date(data: list, max_timestamp: str) -> list:
     """Selects only the feature items that are less
     than the max_timestamp
 
     Usage::
-        >>> max_captured_at([{'type': 'Feature', 'geometry':
+        >>> max_date([{'type': 'Feature', 'geometry':
         {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
         { ... }, ...}], '2020-05-23')
     """
@@ -139,12 +139,12 @@ def max_captured_at(data: list, max_timestamp: str) -> list:
     ]
 
 
-def min_captured_at(data: list, min_timestamp: str) -> list:
+def min_date(data: list, min_timestamp: str) -> list:
     """Selects only the feature items that are less
     than the min_timestamp
 
     Usage::
-        >>> max_captured_at([{'type': 'Feature', 'geometry':
+        >>> max_date([{'type': 'Feature', 'geometry':
         {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
         { ... }, ...}], '2020-05-23')
     """
