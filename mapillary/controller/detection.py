@@ -53,7 +53,9 @@ def get_image_detections_controller(image_id: int, fields: list = []) -> dict:
     )
 
 
-def get_map_feature_detections_controller(map_feature_id: str, fields: list = []) -> dict:
+def get_map_feature_detections_controller(
+    map_feature_id: str, fields: list = []
+) -> dict:
     """Get image detections with given (map feature) key
 
     :param map_feature_id: The map feature id

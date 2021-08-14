@@ -25,6 +25,7 @@ from utils.verify import (
     image_bbox_check,
     sequence_bbox_check,
     resolution_check,
+    valid_id,
 )
 
 # Client
@@ -32,6 +33,7 @@ from models.client import Client
 
 # # Adapters
 from models.api.vector_tiles import VectorTilesAdapter
+from models.api.entities import EntityAdapter
 
 # # Class Representation
 from models.geojson import GeoJSON
@@ -39,6 +41,7 @@ from models.geojson import GeoJSON
 # # Utilities
 from utils.filter import pipeline
 from utils.format import (
+    feature_to_geojson,
     merged_features_list_to_geojson,
     geojson_to_polgyon,
 )
@@ -68,7 +71,7 @@ def get_image_close_to_controller(
 
     :param kwargs.zoom: The zoom level of the tiles to obtain, defaults to 14
     :type kwargs.zoom: int
-0
+
     :param kwargs.min_captured_at: The minimum date to filter till
     :type kwargs.min_captured_at: str
 
@@ -114,11 +117,17 @@ def get_image_close_to_controller(
                         data=unfiltered_data,
                         components=[
                             # Filter using kwargs.min_captured_at
-                            {"filter": "min_captured_at", "min_timestamp": kwargs["min_captured_at"]}
+                            {
+                                "filter": "min_captured_at",
+                                "min_timestamp": kwargs["min_captured_at"],
+                            }
                             if "min_captured_at" in kwargs
                             else {},
                             # Filter using kwargs.max_captured_at
-                            {"filter": "max_captured_at", "min_timestamp": kwargs["max_captured_at"]}
+                            {
+                                "filter": "max_captured_at",
+                                "min_timestamp": kwargs["max_captured_at"],
+                            }
                             if "max_captured_at" in kwargs
                             else {},
                             # Filter using kwargs.image_type
@@ -358,10 +367,16 @@ def get_images_in_bbox_controller(
                     {"filter": "features_in_bounding_box", "bbox": bbox}
                     if layer == "image"
                     else {},
-                    {"filter": "max_captured_at", "max_timestamp": filters.get("max_captured_at")}
+                    {
+                        "filter": "max_captured_at",
+                        "max_timestamp": filters.get("max_captured_at"),
+                    }
                     if filters["max_captured_at"] is not None
                     else {},
-                    {"filter": "min_captured_at", "min_timestamp": filters.get("min_captured_at")}
+                    {
+                        "filter": "min_captured_at",
+                        "min_timestamp": filters.get("min_captured_at"),
+                    }
                     if filters["min_captured_at"] is not None
                     else {},
                     {"filter": "image_type", "type": filters.get("image_type")}
@@ -400,6 +415,11 @@ def get_image_from_key_controller(key: int, fields: list) -> str:
     :return: The requested image properties in GeoJSON format
     :rtype: str
     """
+
+    valid_id(id=key, image=True)
+    return merged_features_list_to_geojson(
+        feature_to_geojson(EntityAdapter().fetch_image(image_id=key, fields=fields))
+    )
 
 
 def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
@@ -443,8 +463,6 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
     :return: A feature collection as a GeoJSON
     :rtype: dict
     """
-
-    # TODO: Requirement# 9.1
 
     # Filter checking
     image_bbox_check(filters)
@@ -499,11 +517,17 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
                     components=[
                         {"filter": "in_shape", "boundary": boundary},
                         # Filter using kwargs.min_captured_at
-                        {"filter": "min_captured_at", "min_timestamp": filters["min_captured_at"]}
+                        {
+                            "filter": "min_captured_at",
+                            "min_timestamp": filters["min_captured_at"],
+                        }
                         if "min_captured_at" in filters
                         else {},
                         # Filter using filters.max_captured_at
-                        {"filter": "max_captured_at", "min_timestamp": filters["max_captured_at"]}
+                        {
+                            "filter": "max_captured_at",
+                            "min_timestamp": filters["max_captured_at"],
+                        }
                         if "max_captured_at" in filters
                         else {},
                         # Filter using filters.image_type
@@ -597,8 +621,6 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
     :rtype: dict
     """
 
-    # TODO: Requirement# 9.2
-
     image_bbox_check(filters)
 
     # Generating a coordinates list to extract from polygon
@@ -635,24 +657,30 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
 
     # Return as GeoJSON output
     return GeoJSON(
-        # Load the geojson to convert to GeoJSON object        
+        # Load the geojson to convert to GeoJSON object
         geojson=json.loads(
             # Convert feature list to GeoJSON
             merged_features_list_to_geojson(
-                # Execture pipeline for filters                
+                # Execture pipeline for filters
                 pipeline(
-                    # Sending layers as input                    
+                    # Sending layers as input
                     data=output,
                     # Specifying components for the filter
                     components=[
                         # Get only features within the given boundary
                         {"filter": "in_shape", "boundary": boundary},
                         # Filter using kwargs.min_captured_at
-                        {"filter": "min_captured_at", "min_timestamp": filters["min_captured_at"]}
+                        {
+                            "filter": "min_captured_at",
+                            "min_timestamp": filters["min_captured_at"],
+                        }
                         if "min_captured_at" in filters
                         else {},
                         # Filter using filters.max_captured_at
-                        {"filter": "max_captured_at", "min_timestamp": filters["max_captured_at"]}
+                        {
+                            "filter": "max_captured_at",
+                            "min_timestamp": filters["max_captured_at"],
+                        }
                         if "max_captured_at" in filters
                         else {},
                         # Filter using filters.image_type

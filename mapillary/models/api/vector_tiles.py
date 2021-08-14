@@ -449,11 +449,7 @@ class VectorTilesAdapter(object):
                 # Parameters accordingly
                 param="layer",
                 value=layer,
-                options=[
-                    "overview",
-                    "sequence",
-                    "image"
-                ],
+                options=["overview", "sequence", "image"],
             )
 
     def __preprocess_layer(self, layer: str, tile: mercantile.Tile, zoom: int):

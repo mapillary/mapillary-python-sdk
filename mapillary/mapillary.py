@@ -641,28 +641,122 @@ def images_in_shape(shape, **filters: dict):
 
 
 @auth()
-def get_map_features_in_shape(geoJSON, **filters):
+def get_map_features_in_geojson(geojson: dict, **filters: dict):
     """Extracts all images within a shape
 
-    :param geoJSON: Bbox coordinates as the argument
-    :type geoJSON: list
+    :param geojson: A geojson as the shape acting as the query extent
+    :type geojson: dict
 
-    :param **filters: Contains filter arguments
-    for date, pano/flat. Such is 'date', 'is_pano',
-    'is_flat', 'is_both'
-    :type **filters: dict
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
 
-    :return: # ? Not sure, need to ask Chris
-    :rtype: # ? Not sure, need to ask Chris
+    :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_captured_at: str
+
+    :param filters.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_captured_at: str
+
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
+
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
+
+    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
+    filters.
+    :rtype: dict
+
+    :return: A feature collection as a GeoJSON
+    :rtype: dict
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> from models.geojson import GeoJSON
+        >>> import json
+        >>> mly.set_access_token('MLY|YYY')
+        >>> data = mly.images_in_geojson(json.load(open('my_geojson.geojson', mode='r')))
+        >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
-    # TODO: This functions needs implementation
+    return image.images_in_geojson_controller(geojson=geojson, filters=filters)
 
-    return None
+
+@auth()
+def get_map_features_in_shape(shape: dict, **filters: dict):
+    """Extracts all images within a shape or polygon with the format,
+
+    'shape = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                7.2564697265625,
+                                43.69716905314008
+                            ],
+                            ...
+                        ]
+                    ]
+                }
+            }
+        ]
+    }'
+
+    :param shape: A shape that describes features, formatted as a geojson
+    :type shape: dict
+
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
+
+    :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_captured_at: str
+
+    :param filters.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_captured_at: str
+
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
+
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
+
+    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
+    filters.
+    :rtype: dict
+
+    :return: A feature collection as a GeoJSON
+    :rtype: dict
+
+    Usage::
+        >>> import mapillary as mly
+        >>> import json
+        >>> mly.set_access_token('MLY|XXX')
+        >>> data = mly.images_in_shape(json.load(open('polygon.geojson', mode='r')))
+        >>> open('output_geojson.geojson', mode='w').write(data.encode())
+    """
+
+    return image.images_in_shape_controller(shape=shape, filters=filters)
 
 
 @auth()
