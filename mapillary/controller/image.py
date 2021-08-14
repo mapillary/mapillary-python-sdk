@@ -63,11 +63,14 @@ def get_image_close_to_controller(
     :param latitude: The latitude
     :type latitude: float
 
-    :param kwargs.min_date: The minimum date to filter till
-    :type kwargs.min_date: str
+    :param kwargs.zoom: The zoom level of the tiles to obtain, defaults to 14
+    :type kwargs.zoom: int
 
-    :param kwargs.max_date: The maximum date to filter upto
-    :type kwargs.max_date: str
+    :param kwargs.min_captured_at: The minimum date to filter till
+    :type kwargs.min_captured_at: str
+
+    :param kwargs.max_captured_at: The maximum date to filter upto
+    :type kwargs.max_captured_at: str
 
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
@@ -104,13 +107,13 @@ def get_image_close_to_controller(
             pipeline(
                 data=unfiltered_data,
                 components=[
-                    # Filter using kwargs.min_date
-                    {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
-                    if "min_date" in kwargs
+                    # Filter using kwargs.min_captured_at
+                    {"filter": "min_captured_at", "min_timestamp": kwargs["min_captured_at"]}
+                    if "min_captured_at" in kwargs
                     else {},
-                    # Filter using kwargs.max_date
-                    {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
-                    if "max_date" in kwargs
+                    # Filter using kwargs.max_captured_at
+                    {"filter": "max_captured_at", "min_timestamp": kwargs["max_captured_at"]}
+                    if "max_captured_at" in kwargs
                     else {},
                     # Filter using kwargs.image_type
                     {"filter": "image_type", "tile": kwargs["image_type"]}
@@ -158,11 +161,11 @@ def get_image_looking_at_controller(
         >>> }
     :type at: dict
 
-    :param filters.min_date: The minimum date to filter till
-    :type filters.min_date: str
+    :param filters.min_captured_at: The minimum date to filter till
+    :type filters.min_captured_at: str
 
-    :param filters.max_date: The maximum date to filter upto
-    :type filters.max_date: str
+    :param filters.max_captured_at: The maximum date to filter upto
+    :type filters.max_captured_at: str
 
     :param filters.radius: The radius that the geometry points will lie in
     :type filters.radius: float
@@ -194,13 +197,13 @@ def get_image_looking_at_controller(
             pipeline(
                 data=looker,
                 components=[
-                    # Filter by `max_date`
-                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
-                    if "max_date" in filters
+                    # Filter by `max_captured_at`
+                    {"filter": "max_captured_at", "max_timestamp": filters.get("max_captured_at")}
+                    if "max_captured_at" in filters
                     else {},
-                    # Filter by `min_date`
-                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
-                    if "min_date" in filters
+                    # Filter by `min_captured_at`
+                    {"filter": "min_captured_at", "min_timestamp": filters.get("min_captured_at")}
+                    if "min_captured_at" in filters
                     else {},
                     # Filter by `image_type`
                     {"filter": "image_type", "type": filters.get("image_type")}
@@ -261,11 +264,11 @@ def get_images_in_bbox_controller(
     }
     :type bbox: dict
 
-    :param filters.max_date: The max date that can be filtered upto
-    :type filters.max_date: str
+    :param filters.max_captured_at: The max date that can be filtered upto
+    :type filters.max_captured_at: str
 
-    :param filters.min_date: The min date that can be filtered from
-    :type filters.min_date: str
+    :param filters.min_captured_at: The min date that can be filtered from
+    :type filters.min_captured_at: str
 
     :param filters.image_type: Either 'pano', 'flat' or 'all'
     :type filters.image_type: str
@@ -339,11 +342,11 @@ def get_images_in_bbox_controller(
                     {"filter": "features_in_bounding_box", "bbox": bbox}
                     if layer == "image"
                     else {},
-                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
-                    if filters["max_date"] is not None
+                    {"filter": "max_captured_at", "max_timestamp": filters.get("max_captured_at")}
+                    if filters["max_captured_at"] is not None
                     else {},
-                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
-                    if filters["min_date"] is not None
+                    {"filter": "min_captured_at", "min_timestamp": filters.get("min_captured_at")}
+                    if filters["min_captured_at"] is not None
                     else {},
                     {"filter": "image_type", "type": filters.get("image_type")}
                     if filters["image_type"] is not None
@@ -404,11 +407,11 @@ def get_images_in_shape_controller(
     :param is_geojson: True if GeoJSON object will be passed, else False if Bbox, defaults to True
     :type is_geojson: bool
 
-    :param kwargs.max_date: The max date that can be filtered upto
-    :type kwargs.max_date: str
+    :param kwargs.max_captured_at: The max date that can be filtered upto
+    :type kwargs.max_captured_at: str
 
-    :param kwargs.min_date: The min date that can be filtered from
-    :type kwargs.min_date: str
+    :param kwargs.min_captured_at: The min date that can be filtered from
+    :type kwargs.min_captured_at: str
 
     :param kwargs.is_pano: Either 'pano', 'flat' or 'all'
     :type kwargs.is_pano: str
