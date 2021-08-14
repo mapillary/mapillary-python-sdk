@@ -65,6 +65,9 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     See https://www.mapillary.com/developer/api-documentation/, under 'Fields' for more insight.
     :type kwargs.fields: list
 
+    :param kwargs.zoom: The zoom level of the tiles to obtain, defaults to 14
+    :type kwargs.zoom: int
+
     :param kwargs.radius: The radius of the images obtained from a center center
     :type kwargs.radius: float or int or double
 
@@ -73,11 +76,11 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     'image_type Tiles' for more information
     :type kwargs.image_type: str
 
-    :param kwargs.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type kwargs.min_date: str
+    :param kwargs.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.min_captured_at: str
 
-    :param kwargs.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type kwargs.max_date: str
+    :param kwargs.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type kwargs.max_captured_at: str
 
     :param kwargs.org_id: The organization id, ID of the organization this image (or sets of
     images) belong to. It can be absent. Thus, default is -1 (None)
@@ -128,11 +131,11 @@ def get_image_looking_at(
         >>> }
     :type at: dict
 
-    :param filters.min_date: The minimum date to filter till
-    :type filters.min_date: str
+    :param filters.min_captured_at: The minimum date to filter till
+    :type filters.min_captured_at: str
 
-    :param filters.max_date: The maximum date to filter upto
-    :type filters.max_date: str
+    :param filters.max_captured_at: The maximum date to filter upto
+    :type filters.max_captured_at: str
 
     :param filters.radius: The radius that the geometry points will lie in
     :type filters.radius: float
@@ -227,11 +230,15 @@ def get_image_looking_at(
 
 
 @auth()
-def get_detections_with_image_id(image_id: int, **filters):
+def get_detections_with_image_id(image_id: int, fields: list = []):
     """Extracting all the detections within an image using an image key
 
     :param image_id: The image key as the argument
     :type image_id: int
+
+    :param fields: The fields possible for the detection endpoint. Please see
+    https://www.mapillary.com/developer/api-documentation for more information
+    :type fields: list
 
     :return: The GeoJSON in response
     :rtype: dict
@@ -253,16 +260,20 @@ def get_detections_with_image_id(image_id: int, **filters):
 
     return detection.get_image_detections_controller(
         image_id=image_id,
-        filters=filters,
+        fields=fields,
     )
 
 
 @auth()
-def get_detections_with_map_feature_id(map_feature_id: int, **filters) -> dict:
+def get_detections_with_map_feature_id(map_feature_id: int, fields: list = []) -> dict:
     """Extracting all detections made for a map feature key
 
     :param map_feature_id: A map feature key as the argument
     :type map_feature_id: int
+
+    :param fields: The fields possible for the detection endpoint. Please see
+    https://www.mapillary.com/developer/api-documentation for more information
+    :type fields: list
 
     :return: The GeoJSON in response
     :rtype: dict
@@ -281,7 +292,7 @@ def get_detections_with_map_feature_id(map_feature_id: int, **filters) -> dict:
 
     return detection.get_map_feature_detections_controller(
         map_feature_id=map_feature_id,
-        filters=filters,
+        fields=fields,
     )
 
 
@@ -322,8 +333,8 @@ def images_in_bbox(bbox: dict, **filters) -> str:
 
     :param **filters: Different filters that may be applied to the output.
     example filters:
-    - max_date
-    - min_date
+    - max_captured_at
+    - min_captured_at
     - image_type: pano, flat, or all
     - compass_angle
     - sequence_id
@@ -344,8 +355,8 @@ def images_in_bbox(bbox: dict, **filters) -> str:
         ...         'east': 'BOUNDARY_FROM_EAST',
         ...         'north': 'BOUNDARY_FROM_NORTH'
         ...     },
-        ...     max_date='YYYY-MM-DD HH:MM:SS',
-        ...     min_date='YYYY-MM-DD HH:MM:SS',
+        ...     max_captured_at='YYYY-MM-DD HH:MM:SS',
+        ...     min_captured_at='YYYY-MM-DD HH:MM:SS',
         ...     image_type='pano',
         ...     compass_angle=(0, 360),
         ...     sequence_id='SEQUENCE_ID',
@@ -374,8 +385,8 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
 
     :param **filters: Different filters that may be applied to the output.
     example filters:
-    - max_date
-    - min_date
+    - max_captured_at
+    - min_captured_at
     - image_type: pano, flat, or all
     - org_id
     :type **filters: dict
@@ -395,8 +406,8 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
         ...         'east': 'BOUNDARY_FROM_EAST',
         ...         'north': 'BOUNDARY_FROM_NORTH'
         ...     },
-        ...     max_date='YYYY-MM-DD HH:MM:SS',
-        ...     min_date='YYYY-MM-DD HH:MM:SS',
+        ...     max_captured_at='YYYY-MM-DD HH:MM:SS',
+        ...     min_captured_at='YYYY-MM-DD HH:MM:SS',
         ...     image_type='pano',
         ...     org_id='ORG_ID'
         ... )
@@ -520,11 +531,11 @@ def images_in_geojson(geojson: dict, **filters: dict):
     :param **filters: Different filters that may be applied to the output, defaults to {}
     :type filters: dict (kwargs)
 
-    :param filters.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type filters.max_date: str
+    :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_captured_at: str
 
-    :param filters.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type filters.min_date: str
+    :param filters.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
     (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
@@ -591,11 +602,11 @@ def images_in_shape(shape, **filters: dict):
     :param **filters: Different filters that may be applied to the output, defaults to {}
     :type filters: dict (kwargs)
 
-    :param filters.max_date: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type filters.max_date: str
+    :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_captured_at: str
 
-    :param filters.min_date: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
-    :type filters.min_date: str
+    :param filters.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
     (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
