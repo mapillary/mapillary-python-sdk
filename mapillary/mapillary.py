@@ -551,12 +551,8 @@ def images_in_geojson(geojson: dict, **filters: dict):
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
 
-    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
-    filters.
-    :rtype: dict
-
-    :return: A feature collection as a GeoJSON
-    :rtype: dict
+    :return: A GeoJSON object
+    :rtype: mapillary.models.geojson.GeoJSON
 
     Usage::
         >>> import mapillary as mly
@@ -567,7 +563,9 @@ def images_in_geojson(geojson: dict, **filters: dict):
         >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
-    return image.images_in_geojson_controller(geojson=geojson, filters=filters)
+    return image.geojson_features_controller(
+        geojson=geojson, is_image=True, filters=filters
+    )
 
 
 @auth()
@@ -622,12 +620,8 @@ def images_in_shape(shape, **filters: dict):
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
 
-    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
-    filters.
-    :rtype: dict
-
-    :return: A feature collection as a GeoJSON
-    :rtype: dict
+    :return: A GeoJSON object
+    :rtype: mapillary.models.geojson.GeoJSON
 
     Usage::
         >>> import mapillary as mly
@@ -637,18 +631,21 @@ def images_in_shape(shape, **filters: dict):
         >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
-    return image.images_in_shape_controller(shape=shape, filters=filters)
+    return image.shape_features_controller(shape=shape, is_image=True, filters=filters)
 
 
 @auth()
-def get_map_features_in_geojson(geojson: dict, **filters: dict):
-    """Extracts all images within a shape
+def map_features_in_geojson(geojson: dict, **filters: dict):
+    """Extracts all map features within a geojson's boundaries
 
     :param geojson: A geojson as the shape acting as the query extent
     :type geojson: dict
 
     :param **filters: Different filters that may be applied to the output, defaults to {}
     :type filters: dict (kwargs)
+
+    :param filters.zoom: The zoom level of the tiles to obtain, defaults to 14
+    :type filters.zoom: int
 
     :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
     :type filters.max_captured_at: str
@@ -670,28 +667,25 @@ def get_map_features_in_geojson(geojson: dict, **filters: dict):
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
 
-    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
-    filters.
-    :rtype: dict
-
-    :return: A feature collection as a GeoJSON
-    :rtype: dict
+    :return: A GeoJSON object
+    :rtype: mapillary.models.geojson.GeoJSON
 
     Usage::
         >>> import mapillary as mly
-        >>> from models.geojson import GeoJSON
         >>> import json
         >>> mly.set_access_token('MLY|YYY')
-        >>> data = mly.images_in_geojson(json.load(open('my_geojson.geojson', mode='r')))
+        >>> data = mly.map_features_in_geojson(json.load(open('my_geojson.geojson', mode='r')))
         >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
-    return image.images_in_geojson_controller(geojson=geojson, filters=filters)
+    return image.geojson_features_controller(
+        geojson=geojson, is_image=False, filters=filters
+    )
 
 
 @auth()
-def get_map_features_in_shape(shape: dict, **filters: dict):
-    """Extracts all images within a shape or polygon with the format,
+def map_features_in_shape(shape: dict, **filters: dict):
+    """Extracts all map features within a shape/polygon with the format,
 
     'shape = {
         "type": "FeatureCollection",
@@ -721,6 +715,9 @@ def get_map_features_in_shape(shape: dict, **filters: dict):
     :param **filters: Different filters that may be applied to the output, defaults to {}
     :type filters: dict (kwargs)
 
+    :param filters.zoom: The zoom level of the tiles to obtain, defaults to 14
+    :type filters.zoom: int
+
     :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
     :type filters.max_captured_at: str
 
@@ -741,22 +738,18 @@ def get_map_features_in_shape(shape: dict, **filters: dict):
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
 
-    :return: Output is a GeoJSON string that represents all the within a bbox after passing given
-    filters.
-    :rtype: dict
-
-    :return: A feature collection as a GeoJSON
-    :rtype: dict
+    :return: A GeoJSON object
+    :rtype: mapillary.models.geojson.GeoJSON
 
     Usage::
         >>> import mapillary as mly
         >>> import json
         >>> mly.set_access_token('MLY|XXX')
-        >>> data = mly.images_in_shape(json.load(open('polygon.geojson', mode='r')))
+        >>> data = mly.map_features_in_shape(json.load(open('polygon.geojson', mode='r')))
         >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
-    return image.images_in_shape_controller(shape=shape, filters=filters)
+    return image.shape_features_controller(shape=shape, is_image=False, filters=filters)
 
 
 @auth()
