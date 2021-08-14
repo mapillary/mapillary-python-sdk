@@ -253,13 +253,11 @@ def is_image_id(id: int, fields: list = []) -> bool:
         res = requests.get(
             Entities.get_image(
                 image_id=id,
-                fields=fields
-                if fields != []
-                else Entities.get_image_fields()
+                fields=fields if fields != [] else Entities.get_image_fields(),
             ),
-            headers={"Authorization": f"OAuth {Client.get_token()}"}
+            headers={"Authorization": f"OAuth {Client.get_token()}"},
         )
         return res.status_code == 200
-        
+
     except requests.HTTPError:
         return False
