@@ -656,7 +656,7 @@ def image_from_key(key: int, fields: list = []) -> str:
 
 
 @auth()
-def save(
+def save_locally(
     geojson_data: str,
     file_path=os.path.dirname(os.path.realpath(__file__)),
     file_name=None,
