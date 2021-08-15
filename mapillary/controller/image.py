@@ -25,7 +25,7 @@ from utils.verify import (
     image_bbox_check,
     sequence_bbox_check,
     resolution_check,
-    valid_id
+    valid_id,
 )
 
 # Client
@@ -35,19 +35,25 @@ from models.client import Client
 from models.api.vector_tiles import VectorTilesAdapter
 from models.api.entities import EntityAdapter
 
+# # Class Representation
+from models.geojson import GeoJSON
+
 # # Utilities
 from utils.filter import pipeline
 from utils.format import (
-    geojson_to_features_list,
+    feature_to_geojson,
     merged_features_list_to_geojson,
-    feature_to_geojson
+    geojson_to_polgyon,
 )
 
 # Library imports
 import json
+import shapely
 import mercantile
+from geojson import Polygon
 from requests import HTTPError
 from vt2geojson.tools import vt_bytes_to_geojson
+from turfpy.measurement import bbox
 
 
 def get_image_close_to_controller(
@@ -63,11 +69,14 @@ def get_image_close_to_controller(
     :param latitude: The latitude
     :type latitude: float
 
-    :param kwargs.min_date: The minimum date to filter till
-    :type kwargs.min_date: str
+    :param kwargs.zoom: The zoom level of the tiles to obtain, defaults to 14
+    :type kwargs.zoom: int
 
-    :param kwargs.max_date: The maximum date to filter upto
-    :type kwargs.max_date: str
+    :param kwargs.min_captured_at: The minimum date to filter till
+    :type kwargs.min_captured_at: str
+
+    :param kwargs.max_captured_at: The maximum date to filter upto
+    :type kwargs.max_captured_at: str
 
     :param kwargs.image_type: Either 'pano', 'flat' or 'all'
     :type kwargs.image_type: str
@@ -86,8 +95,6 @@ def get_image_close_to_controller(
     # exception
     image_check(kwargs=kwargs)
 
-    filtered_data = {}
-
     unfiltered_data = VectorTilesAdapter().fetch_layer(
         layer="image",
         zoom=kwargs["zoom"] if "zoom" in kwargs else 14,
@@ -95,44 +102,58 @@ def get_image_close_to_controller(
         latitude=latitude,
     )
 
+    if kwargs == {}:
+        return GeoJSON(geojson=unfiltered_data)
+
     # Filtering for the attributes obtained above
     if (
         unfiltered_data["features"] != {}
         and unfiltered_data["features"][0]["properties"] != {}
     ):
-        filtered_data.extend(
-            pipeline(
-                data=unfiltered_data,
-                components=[
-                    # Filter using kwargs.min_date
-                    {"filter": "min_date", "min_timestamp": kwargs["min_date"]}
-                    if "min_date" in kwargs
-                    else {},
-                    # Filter using kwargs.max_date
-                    {"filter": "max_date", "min_timestamp": kwargs["max_date"]}
-                    if "max_date" in kwargs
-                    else {},
-                    # Filter using kwargs.image_type
-                    {"filter": "image_type", "tile": kwargs["image_type"]}
-                    if "image_type" in kwargs
-                    else {},
-                    # Filter using kwargs.organization_id
-                    {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-                    if "org_id" in kwargs
-                    else {},
-                    # Filter using kwargs.radius
-                    {
-                        "filter": "haversine_dist",
-                        "radius": kwargs["radius"],
-                        "coords": [longitude, latitude],
-                    }
-                    if "radius" in kwargs
-                    else {},
-                ],
+        return GeoJSON(
+            geojson=json.loads(
+                merged_features_list_to_geojson(
+                    pipeline(
+                        data=unfiltered_data,
+                        components=[
+                            # Filter using kwargs.min_captured_at
+                            {
+                                "filter": "min_captured_at",
+                                "min_timestamp": kwargs["min_captured_at"],
+                            }
+                            if "min_captured_at" in kwargs
+                            else {},
+                            # Filter using kwargs.max_captured_at
+                            {
+                                "filter": "max_captured_at",
+                                "min_timestamp": kwargs["max_captured_at"],
+                            }
+                            if "max_captured_at" in kwargs
+                            else {},
+                            # Filter using kwargs.image_type
+                            {"filter": "image_type", "tile": kwargs["image_type"]}
+                            if "image_type" in kwargs
+                            else {},
+                            # Filter using kwargs.organization_id
+                            {
+                                "filter": "organization_id",
+                                "organization_ids": kwargs["org_id"],
+                            }
+                            if "org_id" in kwargs
+                            else {},
+                            # Filter using kwargs.radius
+                            {
+                                "filter": "haversine_dist",
+                                "radius": kwargs["radius"],
+                                "coords": [longitude, latitude],
+                            }
+                            if "radius" in kwargs
+                            else {},
+                        ],
+                    )
+                )
             )
         )
-
-    return merged_features_list_to_geojson(filtered_data)
 
 
 def get_image_looking_at_controller(
@@ -158,11 +179,11 @@ def get_image_looking_at_controller(
         >>> }
     :type at: dict
 
-    :param filters.min_date: The minimum date to filter till
-    :type filters.min_date: str
+    :param filters.min_captured_at: The minimum date to filter till
+    :type filters.min_captured_at: str
 
-    :param filters.max_date: The maximum date to filter upto
-    :type filters.max_date: str
+    :param filters.max_captured_at: The maximum date to filter upto
+    :type filters.max_captured_at: str
 
     :param filters.radius: The radius that the geometry points will lie in
     :type filters.radius: float
@@ -182,42 +203,52 @@ def get_image_looking_at_controller(
     # If that is the case, throw an exception
     image_check(kwargs=filters)
 
-    looker = json.loads(
-        get_image_close_to_controller(
-            longitude=looker["lng"], latitude=looker["lat"], kwargs=filters
-        )
-    )
+    looker = get_image_close_to_controller(
+        longitude=looker["lng"], latitude=looker["lat"], kwargs=filters
+    ).to_dict()
 
-    # Filter the unfiltered rsults by the given filters
-    if looker["features"] != [] and looker["features"][0]["properties"] != {}:
-        return merged_features_list_to_geojson(
-            pipeline(
-                data=looker,
-                components=[
-                    # Filter by `max_date`
-                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
-                    if "max_date" in filters
-                    else {},
-                    # Filter by `min_date`
-                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
-                    if "min_date" in filters
-                    else {},
-                    # Filter by `image_type`
-                    {"filter": "image_type", "type": filters.get("image_type")}
-                    if "image_type" in filters and filters["image_type"] != "all"
-                    else {},
-                    # Filter by `organization_id`
-                    {
-                        "filter": "organization_id",
-                        "organization_ids": filters.get("organization_id"),
-                    }
-                    if "organization_id" in filters
-                    else {},
-                    # Filter by `hits_by_look_at`
-                    {"filter": "hits_by_look_at", "at": at},
-                ],
+    if looker["features"] == []:
+        return GeoJSON(geojson=looker)
+
+    # Filter the unfiltered results by the given filters
+    return GeoJSON(
+        geojson=json.loads(
+            merged_features_list_to_geojson(
+                pipeline(
+                    data=looker,
+                    components=[
+                        # Filter by `max_captured_at`
+                        {
+                            "filter": "max_captured_at",
+                            "max_timestamp": filters.get("max_captured_at"),
+                        }
+                        if "max_captured_at" in filters
+                        else {},
+                        # Filter by `min_captured_at`
+                        {
+                            "filter": "min_captured_at",
+                            "min_timestamp": filters.get("min_captured_at"),
+                        }
+                        if "min_captured_at" in filters
+                        else {},
+                        # Filter by `image_type`
+                        {"filter": "image_type", "type": filters.get("image_type")}
+                        if "image_type" in filters and filters["image_type"] != "all"
+                        else {},
+                        # Filter by `organization_id`
+                        {
+                            "filter": "organization_id",
+                            "organization_ids": filters.get("organization_id"),
+                        }
+                        if "organization_id" in filters
+                        else {},
+                        # Filter by `hits_by_look_at`
+                        {"filter": "hits_by_look_at", "at": at},
+                    ],
+                )
             )
         )
+    )
 
 
 def get_image_thumbnail_controller(image_id, resolution: int) -> str:
@@ -261,11 +292,11 @@ def get_images_in_bbox_controller(
     }
     :type bbox: dict
 
-    :param filters.max_date: The max date that can be filtered upto
-    :type filters.max_date: str
+    :param filters.max_captured_at: The max date that can be filtered upto
+    :type filters.max_captured_at: str
 
-    :param filters.min_date: The min date that can be filtered from
-    :type filters.min_date: str
+    :param filters.min_captured_at: The min date that can be filtered from
+    :type filters.min_captured_at: str
 
     :param filters.image_type: Either 'pano', 'flat' or 'all'
     :type filters.image_type: str
@@ -328,22 +359,25 @@ def get_images_in_bbox_controller(
             b_content=res.content, layer=layer, z=tile.z, x=tile.x, y=tile.y
         )
 
-        # Separating feature objects from the decoded data
-        unfiltered_results = geojson_to_features_list(geojson)
-
         # Filter the unfiltered results by the given filters
         filtered_results.extend(
             pipeline(
-                data=unfiltered_results,
+                data=geojson,
                 components=[
                     {"filter": "features_in_bounding_box", "bbox": bbox}
                     if layer == "image"
                     else {},
-                    {"filter": "max_date", "max_timestamp": filters.get("max_date")}
-                    if filters["max_date"] is not None
+                    {
+                        "filter": "max_captured_at",
+                        "max_timestamp": filters.get("max_captured_at"),
+                    }
+                    if filters["max_captured_at"] is not None
                     else {},
-                    {"filter": "min_date", "min_timestamp": filters.get("min_date")}
-                    if filters["min_date"] is not None
+                    {
+                        "filter": "min_captured_at",
+                        "min_timestamp": filters.get("min_captured_at"),
+                    }
+                    if filters["min_captured_at"] is not None
                     else {},
                     {"filter": "image_type", "type": filters.get("image_type")}
                     if filters["image_type"] is not None
@@ -367,6 +401,7 @@ def get_images_in_bbox_controller(
 
     return merged_features_list_to_geojson(filtered_results)
 
+
 def get_image_from_key_controller(key: int, fields: list) -> str:
     """
     A controller for getting properties of a certain image given the image key and
@@ -383,47 +418,295 @@ def get_image_from_key_controller(key: int, fields: list) -> str:
 
     valid_id(id=key, image=True)
     return merged_features_list_to_geojson(
-        feature_to_geojson(
-            EntityAdapter().fetch_image(image_id=key, fields=fields)
-        )
+        feature_to_geojson(EntityAdapter().fetch_image(image_id=key, fields=fields))
     )
-    
-    
-def get_images_in_shape_controller(
-    data: dict, is_geojson: bool = True, kwargs: dict = None
-) -> dict:
-    """For extracting images that lie within a shape, either GeoJSON or a Bounding Box, and merges
-    the results of the found GeoJSON(s) into a single object - by merging all the features into
-    one list in a feature collection.
 
-    A bounding box is in the list order of ([east, south, west, north])
 
-    :param data: GeoJSON | Bounding Box (Bbox)
-    :type data: dict | list
+def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
+    """For extracting images that lie within a GeoJSON and merges the results of the found
+    GeoJSON(s) into a single object - by merging all the features into one feature list.
 
-    :param is_geojson: True if GeoJSON object will be passed, else False if Bbox, defaults to True
-    :type is_geojson: bool
+    :param geojson: The geojson to act as the query extent
+    :type geojson: dict
 
-    :param kwargs.max_date: The max date that can be filtered upto
-    :type kwargs.max_date: str
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
 
-    :param kwargs.min_date: The min date that can be filtered from
-    :type kwargs.min_date: str
+    :param filters.zoom: The zoom level to obtain vector tiles for, defaults to 14
+    :type filters.zoom: int
 
-    :param kwargs.is_pano: Either 'pano', 'flat' or 'all'
-    :type kwargs.is_pano: str
+    :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_captured_at: str
+
+    :param filters.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_captured_at: str
+
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
+
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
 
     '''
     :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
     that do not belong to the requested API end call
     '''
 
-    :return: GeoJSON
+    :return: A feature collection as a GeoJSON
     :rtype: dict
     """
 
-    # TODO: Requirement# 9
+    # Filter checking
+    image_bbox_check(filters)
 
-    image_bbox_check(kwargs)
+    # Extracting polygon from geojson, converting to dict
+    polygon = geojson_to_polgyon(geojson).to_dict()
 
-    return {"Message": "Hello, World!"}
+    # Generating a coordinates list to extract from polygon
+    coordinates_list = []
+
+    # Going through each feature
+    for feature in polygon["features"]:
+
+        # Going through the coordinate's nested list
+        for coordinates in feature["geometry"]["coordinates"][0]:
+
+            # Appending a tuple of coordinates
+            coordinates_list.append((coordinates[0], coordinates[1]))
+
+    # Sending coordinates_list a input to form a Polygon
+    polygon = Polygon([coordinates_list])
+
+    # Getting the boundary paramters from polygon
+    boundary = shapely.geometry.shape(polygon)
+
+    # Get a GeoJSON with features from tiles originating from coordinates
+    # at specified zoom level
+    layers: GeoJSON = (
+        VectorTilesAdapter()
+        .fetch_layers(
+            # Sending coordinates for all the points within input geojson
+            coordinates=bbox(polygon),
+            # Fetching image layers for the geojson
+            layer="image",
+            # Specifying zoom level, defaults to zoom if zoom not specified
+            zoom=filters["zoom"] if "zoom" in filters else 14,
+        )
+        .to_dict()
+    )
+
+    # Return as GeoJSON output
+    return GeoJSON(
+        # Load the geojson to convert to GeoJSON object
+        geojson=json.loads(
+            # Convert feature list to GeoJSON
+            merged_features_list_to_geojson(
+                # Execture pipeline for filters
+                pipeline(
+                    # Sending layers as input
+                    data=layers,
+                    # Specifying components for the filter
+                    components=[
+                        {"filter": "in_shape", "boundary": boundary},
+                        # Filter using kwargs.min_captured_at
+                        {
+                            "filter": "min_captured_at",
+                            "min_timestamp": filters["min_captured_at"],
+                        }
+                        if "min_captured_at" in filters
+                        else {},
+                        # Filter using filters.max_captured_at
+                        {
+                            "filter": "max_captured_at",
+                            "min_timestamp": filters["max_captured_at"],
+                        }
+                        if "max_captured_at" in filters
+                        else {},
+                        # Filter using filters.image_type
+                        {"filter": "image_type", "tile": filters["image_type"]}
+                        if "image_type" in filters
+                        else {},
+                        # Filter using filters.organization_id
+                        {
+                            "filter": "organization_id",
+                            "organization_ids": filters["org_id"],
+                        }
+                        if "organization_id" in filters
+                        else {},
+                        # Filter using filters.sequence_id
+                        {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                        if "sequence_id" in filters
+                        else {},
+                        # Filter using filters.compass_angle
+                        {
+                            "filter": "compass_angle",
+                            "angles": filters.get("compass_angle"),
+                        }
+                        if "compass_angle" in filters
+                        else {},
+                    ],
+                )
+            )
+        )
+    )
+
+
+def images_in_shape_controller(shape, filters: dict = None) -> dict:
+    """For extracting images that lie within a shape, merging the results of the found features
+    into a single object - by merging all the features into one list in a feature collection.
+
+    The shape format is as follows,
+    'shape = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                7.2564697265625,
+                                43.69716905314008
+                            ],
+                            ...
+                        ]
+                    ]
+                }
+            }
+        ]
+    }'
+
+    :param shape: A shape that describes features, formatted as a geojson
+    :type shape: dict
+
+    :param **filters: Different filters that may be applied to the output, defaults to {}
+    :type filters: dict (kwargs)
+
+    :param filters.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.max_captured_at: str
+
+    :param filters.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
+    :type filters.min_captured_at: str
+
+    :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
+    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+    'image_type Tiles' for more information
+    :type filters.image_type: str
+
+    :param filters.compass_angle: The compass angle of the image
+    :type filters.compass_angle: int
+
+    :param filters.sequence_id: ID of the sequence this image belongs to
+    :type filters.sequence_id: str
+
+    :param filters.organization_id: ID of the organization this image belongs to. It can be absent
+    :type filters.organization_id: str
+
+    '''
+    :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
+    that do not belong to the requested API end call
+    '''
+
+    :return: A feature collection as a GeoJSON
+    :rtype: dict
+    """
+
+    image_bbox_check(filters)
+
+    # Generating a coordinates list to extract from polygon
+    coordinates_list = []
+
+    # Going through each feature
+    for feature in shape["features"]:
+
+        # Going through the coordinate's nested list
+        for coordinates in feature["geometry"]["coordinates"][0]:
+
+            # Appending a tuple of coordinates
+            coordinates_list.append((coordinates[0], coordinates[1]))
+
+    # Sending coordinates_list a input to form a Polygon
+    polygon = Polygon([coordinates_list])
+
+    # Getting the boundary paramters from polygon
+    boundary = shapely.geometry.shape(polygon)
+
+    # Get all the map features within the boundary box for the polygon
+    output = (
+        VectorTilesAdapter()
+        .fetch_layers(
+            # Sending coordinates for all the points within input geojson
+            coordinates=bbox(polygon),
+            # Fetching image layers for the geojson
+            layer="image",
+            # Specifying zoom level, defaults to zoom if zoom not specified
+            zoom=filters["zoom"] if "zoom" in filters else 14,
+        )
+        .to_dict()
+    )
+
+    # Return as GeoJSON output
+    return GeoJSON(
+        # Load the geojson to convert to GeoJSON object
+        geojson=json.loads(
+            # Convert feature list to GeoJSON
+            merged_features_list_to_geojson(
+                # Execture pipeline for filters
+                pipeline(
+                    # Sending layers as input
+                    data=output,
+                    # Specifying components for the filter
+                    components=[
+                        # Get only features within the given boundary
+                        {"filter": "in_shape", "boundary": boundary},
+                        # Filter using kwargs.min_captured_at
+                        {
+                            "filter": "min_captured_at",
+                            "min_timestamp": filters["min_captured_at"],
+                        }
+                        if "min_captured_at" in filters
+                        else {},
+                        # Filter using filters.max_captured_at
+                        {
+                            "filter": "max_captured_at",
+                            "min_timestamp": filters["max_captured_at"],
+                        }
+                        if "max_captured_at" in filters
+                        else {},
+                        # Filter using filters.image_type
+                        {"filter": "image_type", "tile": filters["image_type"]}
+                        if "image_type" in filters
+                        else {},
+                        # Filter using filters.organization_id
+                        {
+                            "filter": "organization_id",
+                            "organization_ids": filters["org_id"],
+                        }
+                        if "organization_id" in filters
+                        else {},
+                        # Filter using filters.sequence_id
+                        {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                        if "sequence_id" in filters
+                        else {},
+                        # Filter using filters.compass_angle
+                        {
+                            "filter": "compass_angle",
+                            "angles": filters.get("compass_angle"),
+                        }
+                        if "compass_angle" in filters
+                        else {},
+                    ],
+                )
+            )
+        )
+    )

@@ -30,6 +30,9 @@ from models.client import Client
 # # Config
 from config.api.vector_tiles import VectorTiles
 
+# # Models
+from models.geojson import GeoJSON
+
 
 class VectorTilesAdapter(object):
     """Adapter model for dealing with the VectorTiles API, through the DRY principle. The
@@ -102,18 +105,17 @@ class VectorTilesAdapter(object):
         """
 
         # Checking if the correct parameters are passed
-        self.__check_parameters(
-            longitude=longitude, latitude=latitude, layer=layer, zoom=zoom
-        )
+        self.__check_parameters(longitude=longitude, latitude=latitude)
+
+        # Check for the correct zoom values against the layer specified
+        self.__zoom_range_check(layer=layer, zoom=zoom)
 
         # Return the results of the layer after preprocessing steps
         return self.__preprocess_layer(
             # The layer to retrieve from
             layer=layer,
-            # The longitude
-            longitude=longitude,
-            # The latitude
-            latitude=latitude,
+            # Turn coordinates into a tile
+            tile=mercantile.tile(lng=longitude, lat=latitude, zoom=zoom),
             # The zoom level
             zoom=zoom,
         )
@@ -141,18 +143,17 @@ class VectorTilesAdapter(object):
         """
 
         # Checking if the correct parameters are passed
-        self.__check_parameters(
-            longitude=longitude, latitude=latitude, layer=layer, zoom=zoom
-        )
+        self.__check_parameters(longitude=longitude, latitude=latitude)
+
+        # Check for the correct zoom values against the layer specified
+        self.__zoom_range_check(layer=layer, zoom=zoom)
 
         # Return the results of the layer after preprocessing steps
         return self.__preprocess_computed_layer(
             # The layer to retrieve from
             layer=layer,
-            # The longitude
-            longitude=longitude,
-            # The latitude
-            latitude=latitude,
+            # Turn coordinates into a tile
+            tile=mercantile.tile(lng=longitude, lat=latitude, zoom=zoom),
             # The zoom level
             zoom=zoom,
         )
@@ -179,16 +180,164 @@ class VectorTilesAdapter(object):
         """
 
         # Checking if the correct parameters are passed
-        self.__check_parameters(
-            longitude=longitude, latitude=latitude, layer="map", zoom=zoom
+        self.__check_parameters(longitude=longitude, latitude=latitude)
+
+        # Check for the correct zoom values against the layer specified
+        self.__zoom_range_check(layer="map", zoom=zoom)
+
+        # Return the results of the layer after preprocessing steps
+        return self.__preprocess_features(
+            # The feature type to retrieve for
+            feature_type=feature_type,
+            # Turn coordinates into a tile
+            tile=mercantile.tile(lng=longitude, lat=latitude, zoom=zoom),
+            # The zoom level
+            zoom=zoom,
         )
 
-        return self.__preprocess_features(
-            feature_type=feature_type, longitude=longitude, latitude=latitude, zoom=zoom
+    def fetch_layers(
+        self,
+        coordinates: "list[list]",
+        layer: str = "image",
+        zoom: int = 14,
+        is_computed: bool = False,
+    ) -> GeoJSON:
+        """Fetches multiple vector tiles based on a list of multiple coordinates in a listed format
+
+        :param coordinates: A list of lists of coordinates to get the vector tiles for
+        :type coordinates: "list[list]"
+
+        :param layer: Either "overview", "sequence", "image", "traffic_sign", or "map_feature",
+        defaults to "image"
+        :type layer: str
+
+        :param zoom: the zoom level [0, 14], inclusive. Defaults to 14
+        :type zoom: int
+
+        :param is_computed: Will to be fetched layers be computed? Defaults to False
+        :type is_computed: bool
+
+        :return: A geojson with merged featurs from all unique vector tiles
+        :rtype: dict
+        """
+
+        # Check for the correct zoom values against the layer specified
+        self.__zoom_range_check(layer=layer, zoom=zoom)
+
+        # Let `tiles` be a unique tile set
+        tiles = set()
+
+        # The output resultant geojson
+        geojson: GeoJSON = GeoJSON(
+            geojson={"type": "FeatureCollection", "features": []}
         )
+
+        # A list of tiles that are either confined within or intersect with the bbox
+        tiles = list(
+            mercantile.tiles(
+                west=coordinates[0],
+                south=coordinates[1],
+                east=coordinates[2],
+                north=coordinates[3],
+                zooms=zoom,
+            )
+        )
+
+        print(
+            f'[Vector Tiles API] Fetching {len(tiles)} {"tiles" if len(tiles) > 1 else "tile"} ...'
+        )
+
+        for tile in tiles:
+
+            result = []
+
+            if is_computed:
+                result = (
+                    self.__preprocess_computed_layer(
+                        # The layer to retrieve from
+                        layer=layer,
+                        # Turn coordinates into a tile
+                        tile=tile,
+                        # The zoom level
+                        zoom=zoom,
+                    )
+                )["features"]
+            else:
+                result = (
+                    self.__preprocess_layer(
+                        # The layer to retrieve from
+                        layer=layer,
+                        # Turn coordinates into a tile
+                        tile=tile,
+                        # The zoom level
+                        zoom=zoom,
+                    )
+                )["features"]
+
+            geojson.append_features(result)
+
+        return geojson
+
+    def fetch_map_features(
+        self,
+        coordinates: "list[list]",
+        zoom: int = 14,
+    ) -> GeoJSON:
+        """Fetches map features based on a list Polygon object
+
+        :param coordinates: A list of lists of coordinates to get the map features for
+        :type coordinates: "list[list]"
+
+        :param layer: Either "point", "traffic_signs", defaults to "point"
+        :type layer: str
+
+        :param zoom: the zoom level [0, 14], inclusive. Defaults to 14
+        :type zoom: int
+
+        :return: A geojson with merged featurs from all unique vector tiles
+        :rtype: dict
+        """
+
+        # Check for the correct zoom values against the layer specified
+        self.__zoom_range_check(layer="map_feature", zoom=zoom)
+
+        # Let `tiles` be a unique tile set
+        tiles = set()
+
+        # The output resultant geojson
+        geojson: GeoJSON = GeoJSON(
+            geojson={"type": "FeatureCollection", "features": []}
+        )
+
+        # Extracing longitude, latitude from coordinates
+        for longitude, latitude in coordinates:
+
+            # Checking if the correct parameters are passed
+            self.__check_parameters(longitude=longitude, latitude=latitude)
+
+            # `Tiles` is a set, which means it will only add another tile in it
+            # if that is unique and not already inserted in the `tiles` set
+            tiles.add(mercantile.tile(lng=longitude, lat=latitude, zoom=zoom))
+
+        for tile in tiles:
+
+            geojson.append_features(
+                self.__preprocess_features(
+                    # The layer to retrieve from
+                    feature_type="point",
+                    # Turn coordinates into a tile
+                    tile=tile,
+                    # The zoom level
+                    zoom=zoom,
+                )["features"]
+            )
+
+        return geojson
 
     def __check_parameters(
-        self, longitude: float, latitude: float, layer: str, zoom: int
+        self,
+        longitude: float,
+        latitude: float,
     ):
         """Range checking for the paramters of longitude, latitude, layer, zoom
 
@@ -225,9 +374,6 @@ class VectorTilesAdapter(object):
             raise InvalidOptionError(
                 param="latitude", value=latitude, options=[-180, 180]
             )
-
-        # Check for the correct zoom values against the layer specified
-        self.__zoom_range_check(layer=layer, zoom=zoom)
 
     def __zoom_range_check(self, layer: str, zoom: int):
 
@@ -306,9 +452,7 @@ class VectorTilesAdapter(object):
                 options=["overview", "sequence", "image"],
             )
 
-    def __preprocess_layer(
-        self, layer: str, longitude: float, latitude: float, zoom: int
-    ):
+    def __preprocess_layer(self, layer: str, tile: mercantile.Tile, zoom: int):
         """Preprocessing uncomputed layers
 
         :param layer: Either 'overview', 'sequence', 'image'
@@ -328,9 +472,6 @@ class VectorTilesAdapter(object):
         """
 
         # * See "FOR DEVELOPERS (3, 3.1)"
-
-        # Turn coordinates into a tile
-        tile = mercantile.tile(lng=longitude, lat=latitude, zoom=zoom)
 
         # Extract the url depending upon the layer
 
@@ -358,9 +499,7 @@ class VectorTilesAdapter(object):
             layer=layer,
         )
 
-    def __preprocess_computed_layer(
-        self, layer: str, longitude: float, latitude: float, zoom: int
-    ):
+    def __preprocess_computed_layer(self, layer: str, tile: mercantile.Tile, zoom: int):
         """Preprocessing computed layers
 
         :param layer: Either 'overview', 'sequence', 'image'
@@ -381,8 +520,7 @@ class VectorTilesAdapter(object):
 
         # * See "FOR DEVELOPERS (3, 3.1)"
 
-        # Turn coordinates into a tile
-        tile = mercantile.tile(lng=longitude, lat=latitude, zoom=zoom)
+        # Extracing url from specified VectorTiles endpoint
 
         # For overview
         if layer == "overview":
@@ -401,7 +539,7 @@ class VectorTilesAdapter(object):
         # Convert bytes to geojson
         return vt_bytes_to_geojson(
             # Parameters appropriately
-            b_content=self.client.get(url),
+            b_content=self.client.get(url).content,
             x=tile.x,
             y=tile.y,
             z=tile.z,
@@ -409,7 +547,7 @@ class VectorTilesAdapter(object):
         )
 
     def __preprocess_features(
-        self, feature_type: str, longitude: float, latitude: float, zoom: int
+        self, feature_type: str, tile: mercantile.Tile, zoom: int
     ) -> dict:
         """Preprocess features
 
@@ -430,9 +568,6 @@ class VectorTilesAdapter(object):
         """
 
         # * See "FOR DEVELOPERS (3, 3.1)"
-
-        # Turn coordinates into a tile
-        tile = mercantile.tile(lng=longitude, lat=latitude, zoom=zoom)
 
         # Extracing url from specified VectorTiles endpoint
 
@@ -458,8 +593,9 @@ class VectorTilesAdapter(object):
         # Convert bytes to GeoJSON, and return
         return vt_bytes_to_geojson(
             # Parameters appropriately
-            b_content=self.client.get(url),
+            b_content=self.client.get(url).content,
             x=tile.x,
             y=tile.y,
             z=tile.z,
+            layer=None,
         )
