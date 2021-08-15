@@ -17,7 +17,6 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 import os
 import json
 import csv
-from shapely import geometry
 from shapely.geometry import shape
 
 # Local Imports
