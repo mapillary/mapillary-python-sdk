@@ -21,7 +21,7 @@ from shapely import geometry
 from shapely.geometry import shape
 
 # Local Imports
-from utils.format import geojson_to_features_list
+from utils.format import flatten_geojson
 
 
 def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
@@ -41,23 +41,45 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
     """
 
     # Get the features list from the GeoJSON
-    features = geojson_to_features_list(json.loads(data))
-    
-    # Extract the geomtry field from each feature in well-knonwn format (WKT)
-    geometries = [shape(feature["geometry"]).wkt for feature in features]
-    
+    if isinstance(data, str):
+        data = json.loads(data)
+    features = flatten_geojson(data)
+    print(max([len(feature.keys()) for feature in features]))
+
     try:
         # Write the CSV file
         file_name = file_name if file_name is not None else "geojson.csv"
-        with open(os.path.join(path, file_name), "w", newline='') as file_path:
-            field_names = ['Type', 'Geometry']
+        with open(os.path.join(path, file_name), "w", newline="") as file_path:
+            field_names = (
+                ["ID", "WKT"]
+                + [
+                    key
+                    for key in features[0].keys()
+                    if key != "id" and key != "geometry"
+                ]
+                + ["organization_id"]
+            )
+
             writer = csv.DictWriter(file_path, fieldnames=field_names)
-            
+
             writer.writeheader()
-            for geometry in geometries:
-                writer.writerow({"Type": geometry.split()[0].capitalize(), "Geometry": geometry})
+            for feature in features:
+                writer.writerow(
+                    {
+                        "ID": feature["id"],
+                        "WKT": shape(feature["geometry"]).wkt,
+                        **{
+                            key: feature[key]
+                            for key in feature.keys()
+                            if key != "id" and key != "geometry"
+                        },
+                        "organization_id": feature["organization_id"]
+                        if "organization_id" in feature
+                        else "NULL",
+                    }
+                )
     except Exception as e:
-        print(e)
+        print(f"An error occured: {e}")
     return None
 
 
