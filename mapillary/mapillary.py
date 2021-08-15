@@ -19,6 +19,9 @@ import os
 from models.client import Client
 from models.auth import auth
 
+# Exception classes
+from models.exceptions import InvalidOptionError
+
 # Controllers
 import controller.image as image
 import controller.feature as feature
@@ -658,8 +661,8 @@ def image_from_key(key: int, fields: list = []) -> str:
 @auth()
 def save_locally(
     geojson_data: str,
-    file_path=os.path.dirname(os.path.realpath(__file__)),
-    file_name=None,
+    file_path: str = os.path.dirname(os.path.realpath(__file__)),
+    file_name: str = None,
     format: str = "geojson",
 ) -> None:
     """This function saves the geojson data locally as a file
@@ -676,6 +679,12 @@ def save_locally(
 
     :param format: The format to save the data as. Defaults to 'geojson'
     :type format: str
+
+    Note: Allowed file format values at the moment are:
+        - geojson
+        - CSV
+    more file format values can be added and supported in the future
+
 
     :return: None
     :rtype: None
@@ -697,8 +706,17 @@ def save_locally(
         ...     format='csv'
         ... )
     """
+    # Check if a valid file format was provided
+    if format.lower() not in ["geojson", "csv"]:
+        # If not, raise an error
+        raise InvalidOptionError(
+            param="format",
+            value=format,
+            options=["geojson", "csv"],
+        )
+
     return (
         save.save_as_geojson_controller(data=geojson_data, path=file_path, file_name=file_name)
-        if format == "geojson"
+        if format.lower() == "geojson"
         else save.save_as_csv_controller(data=geojson_data, path=file_path, file_name=file_name)
     )
