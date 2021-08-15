@@ -40,16 +40,20 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
     :rtype: None
     """
 
-    # Get the features list from the GeoJSON
+    # Ensure that the geojson is a dictionary
     if isinstance(data, str):
         data = json.loads(data)
+    
+    # Flatten the geojson
     features = flatten_geojson(data)
-    print(max([len(feature.keys()) for feature in features]))
 
     try:
-        # Write the CSV file
+        # Set the file name according to the given value. Default is "geojson.csv"
         file_name = file_name if file_name is not None else "geojson.csv"
+
+        # Context manager for writing to file
         with open(os.path.join(path, file_name), "w", newline="") as file_path:
+            # Enforce the header for field_names
             field_names = (
                 ["ID", "WKT"]
                 + [
@@ -57,28 +61,46 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
                     for key in features[0].keys()
                     if key != "id" and key != "geometry"
                 ]
+                # organization_id may or may not exist in the flattened features
+                # If it does exist, then its value will be reflected
+                # If it does not exist, then it will be set to "NULL"
                 + ["organization_id"]
             )
 
+            # Create the csv writer
             writer = csv.DictWriter(file_path, fieldnames=field_names)
 
+            # Write the header
             writer.writeheader()
+
             for feature in features:
                 writer.writerow(
                     {
+                        # ID is the id of the feature. It will always exist 
+                        # and will always be the first column
                         "ID": feature["id"],
+
+                        # WKT is the geometry of the feature in well-known text format.
+                        # It will always exist
                         "WKT": shape(feature["geometry"]).wkt,
+
+                        # The rest of the columns are the features attributes
                         **{
                             key: feature[key]
                             for key in feature.keys()
                             if key != "id" and key != "geometry"
                         },
+
+                        # organization_id is the id of the organization that the feature
+                        # If it does exist, then its value will be reflected
+                        # If it does not exist, then it will be set to "NULL"
                         "organization_id": feature["organization_id"]
                         if "organization_id" in feature
                         else "NULL",
                     }
                 )
     except Exception as e:
+        # If there is an error, log it
         print(f"An error occured: {e}")
     return None
 
@@ -98,11 +120,19 @@ def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
     :return: Npne
     :rtype: None
     """
+    # Ensure that the geojson is a dictionary
+    if isinstance(data, str):
+        data = json.loads(data)
+    
     try:
+        # Set the file name according to the given value. Default is "geojson.geojson"
         file_name = file_name if file_name is not None else "geojson.geojson"
+
+        # Context manager for writing to file
         with open(os.path.join(path, file_name), "w") as file_path:
-            json.dump(json.loads(data), file_path, indent=4)
+            json.dump(data, file_path, indent=4)
     except Exception as e:
+        # If there is an error, log it
         print(e)
 
     return None
