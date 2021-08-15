@@ -24,7 +24,6 @@ from models.client import Client
 from utils.verify import valid_id, points_traffic_signs_check
 from utils.filter import pipeline
 from utils.format import (
-    geojson_to_features_list,
     merged_features_list_to_geojson,
     feature_to_geojson,
 )
@@ -138,12 +137,9 @@ def get_map_features_in_bbox_controller(
         # Decoding byte tiles
         data = vt_bytes_to_geojson(res.content, tile.x, tile.y, tile.z)
 
-        # Separating feature objects from the decoded data
-        unfiltered_features = geojson_to_features_list(data)
-
         filtered_features.extend(
             pipeline(
-                data=unfiltered_features,
+                data=data,
                 components=[
                     # Skip filtering based on filter_values if they're not specified by the user
                     {

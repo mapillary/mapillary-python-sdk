@@ -87,8 +87,8 @@ def image_check(kwargs) -> bool:
     return kwarg_check(
         kwargs=kwargs,
         options=[
-            "min_date",
-            "max_date",
+            "min_captured_at",
+            "max_captured_at",
             "radius",
             "image_type",
             "organization_id",
@@ -132,8 +132,8 @@ def image_bbox_check(kwargs: dict) -> dict:
     if kwarg_check(
         kwargs=kwargs,
         options=[
-            "max_date",
-            "min_date",
+            "max_captured_at",
+            "min_captured_at",
             "image_type",
             "compass_angle",
             "organization_id",
@@ -143,8 +143,8 @@ def image_bbox_check(kwargs: dict) -> dict:
         callback="image_bbox_check",
     ):
         return {
-            "max_date": kwargs.get("max_date", None),
-            "min_date": kwargs.get("min_date", None),
+            "max_captured_at": kwargs.get("max_captured_at", None),
+            "min_captured_at": kwargs.get("min_captured_at", None),
             "image_type": kwargs.get("image_type", None),
             "compass_angle": kwargs.get("compass_angle", None),
             "sequence_id": kwargs.get("sequence_id", None),
@@ -165,8 +165,8 @@ def sequence_bbox_check(kwargs: dict) -> dict:
     if kwarg_check(
         kwargs=kwargs,
         options=[
-            "max_date",
-            "min_date",
+            "max_captured_at",
+            "min_captured_at",
             "image_type",
             "organization_id",
             "zoom",
@@ -174,8 +174,8 @@ def sequence_bbox_check(kwargs: dict) -> dict:
         callback="sequence_bbox_check",
     ):
         return {
-            "max_date": kwargs.get("max_date", None),
-            "min_date": kwargs.get("min_date", None),
+            "max_captured_at": kwargs.get("max_captured_at", None),
+            "min_captured_at": kwargs.get("min_captured_at", None),
             "image_type": kwargs.get("image_type", None),
             "organization_id": kwargs.get("organization_id", None),
         }
@@ -253,13 +253,11 @@ def is_image_id(id: int, fields: list = []) -> bool:
         res = requests.get(
             Entities.get_image(
                 image_id=id,
-                fields=fields
-                if fields != []
-                else Entities.get_image_fields()
+                fields=fields if fields != [] else Entities.get_image_fields(),
             ),
-            headers={"Authorization": f"OAuth {Client.get_token()}"}
+            headers={"Authorization": f"OAuth {Client.get_token()}"},
         )
         return res.status_code == 200
-        
+
     except requests.HTTPError:
         return False

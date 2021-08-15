@@ -15,6 +15,11 @@ This module deals with converting data to and from different file formats.
 import json
 from pprint import pprint
 
+# Local imports
+
+# Models
+from models.geojson import GeoJSON
+
 
 def feature_to_geojson(json_data: dict) -> dict:
 
@@ -269,3 +274,105 @@ def flatten_geojson(geojson: dict) -> dict:
         {"geometry": _feature["geometry"], **_feature["properties"]}
         for _feature in geojson["features"]
     ]
+
+
+def geojson_to_polgyon(geojson: dict) -> dict:
+    """Converts a GeoJSON into a collection of only geometry coordinates for the purpose of
+    checking whether a given coordinate point exists within a shapely polygon - see requirement #9
+    for more context
+
+    Converts from,
+    '{
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "geometry": {
+                    "coordinates": [
+                        -80.13069927692413,
+                        25.78523699486192
+                    ],
+                    "type": "Point"
+                },
+                "properties": {
+                    "first_seen_at": 1422984049000,
+                    "id": 481978503020355,
+                    "last_seen_at": 1422984049000,
+                    "value": "object--street-light"
+                },
+                "type": "Feature"
+            },
+            {
+                "geometry": {
+                    "coordinates": [
+                        -80.13210475444794,
+                        25.78362849816017
+                    ],
+                    "type": "Point"
+                },
+                "properties": {
+                    "first_seen_at": 1423228306666,
+                    "id": 252538103315239,
+                    "last_seen_at": 1423228306666,
+                    "value": "object--street-light"
+                },
+                "type": "Feature"
+            },
+            ...
+        ]
+    }'
+
+    To,
+    '{
+        "type": "FeatureCollection",
+        "features": [
+            {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                [
+                    [
+                    7.2564697265625,
+                    43.69716905314008
+                    ],
+                    [
+                    7.27020263671875,
+                    43.69419030566581
+                    ],
+                    ...
+                ]
+                ]
+            }
+            }
+        ]
+    }'
+
+    :param geojson: The input GeoJSON
+    :type geojson: dict
+
+    :return: A geojson of the format mentioned under 'To'
+    :rtype: dict
+    """
+
+    return GeoJSON(
+        geojson={
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                # Double listed on purpose. See above example under 'To'
+                                feature["geometry"]["coordinates"]
+                                for feature in geojson["features"]
+                            ]
+                        ],
+                    },
+                }
+            ],
+        }
+    )
