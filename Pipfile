@@ -53,6 +53,8 @@ python-dotenv = "*"
 osmnx = "*"
 shapely = "*"
 turfpy = "*"
+geojson = "*"
+shapely = "*"
 
 [dev-packages]
 pip = "==19.0.3"
@@ -71,3 +73,6 @@ toml = "==0.10.2"
 
 [requires]
 python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

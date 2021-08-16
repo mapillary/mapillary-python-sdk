@@ -12,15 +12,21 @@ https://www.mapillary.com/developer/api-documentation/
 :copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
+# Package level imports
+import os
 
 # Local
 from models.client import Client
 from models.auth import auth
 
+# Exception classes
+from models.exceptions import InvalidOptionError
+
 # Controllers
 import controller.image as image
 import controller.feature as feature
 import controller.detection as detection
+import controller.save as save
 
 
 def set_access_token(token: str):
@@ -850,52 +856,64 @@ def image_from_key(key: int, fields: list = []) -> str:
 
 
 @auth()
-def save_to_csv(
-    csv_data,
-    file_path,
-):
-    """This function saves the csv data locally with the extension .csv
-
-    :param csv_data: The CSV data to be stored
-    :type csv_data: CSV Object
-
-    :param file_path: The path to save the data to
-    :type file_path: str
-
-    :return: None
-    :rtype: None
-
-    Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
-    """
-
-    # TODO: This functions needs implementation
-
-    return None
-
-
-@auth()
-def save_as_geojson(
-    geojson_data,
-    file_path,
-):
-    """This function saves the geojson data locally with the extension .geojson
+def save_locally(
+    geojson_data: str,
+    file_path: str = os.path.dirname(os.path.realpath(__file__)),
+    file_name: str = None,
+    format: str = "geojson",
+) -> None:
+    """This function saves the geojson data locally as a file
+    with the given file name, path, and format.
 
     :param geojson_data: The GeoJSON data to be stored
-    :type geojson_data: GeoJSON Object
+    :type geojson_data: str
 
-    :param file_path: The path to save the data to
+    :param file_path: The path to save the data to. Defaults to the current directory path
     :type file_path: str
+
+    :param file_name: The name of the file to be saved. Defaults to 'geojson'
+    :type file_name: str
+
+    :param format: The format to save the data as. Defaults to 'geojson'
+    :type format: str
+
+    Note: Allowed file format values at the moment are:
+        - geojson
+        - CSV
+    more file format values can be added and supported in the future
+
 
     :return: None
     :rtype: None
 
     Usage::
-        # TODO: Write code here to display how
-        # TODO: the function works
+        >>> import mapillary as mly
+        >>> mly.set_access_token('MLY|XXX')
+        >>> mly.save(
+        ...     geojson_data=geojson_data,
+        ...     file_path=os.path.dirname(os.path.realpath(__file__)),
+        ...     file_name='test_geojson',
+        ...     format='geojson'
+        ... )
+
+        >>> mly.save(
+        ...     geojson_data=geojson_data,
+        ...     file_path=os.path.dirname(os.path.realpath(__file__)),
+        ...     file_name='local_geometries',
+        ...     format='csv'
+        ... )
     """
+    # Check if a valid file format was provided
+    if format.lower() not in ["geojson", "csv"]:
+        # If not, raise an error
+        raise InvalidOptionError(
+            param="format",
+            value=format,
+            options=["geojson", "csv"],
+        )
 
-    # TODO: This functions needs implementation
-
-    return None
+    return (
+        save.save_as_geojson_controller(data=geojson_data, path=file_path, file_name=file_name)
+        if format.lower() == "geojson"
+        else save.save_as_csv_controller(data=geojson_data, path=file_path, file_name=file_name)
+    )
