@@ -21,6 +21,7 @@ from models.client import Client
 
 # Package Imports
 import requests
+import re
 
 
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
@@ -261,3 +262,31 @@ def is_image_id(id: int, fields: list = []) -> bool:
 
     except requests.HTTPError:
         return False
+
+
+def check_file_name_validity(file_name: str) -> bool:
+    """Checks if the file name is valid. 
+    Valid file names are:
+        - without extensions
+        - without special characters
+        - A-Z, a-z, 0-9, _, -
+
+    :param file_name: The file name to be checked
+    :type file_name: str
+
+    :return: True if the file name is valid, else False
+    """
+    string_check = re.compile('[@.!#$%^&*()<>?/\|}{~:]')
+    if (
+        # File name characters are not all ASCII
+        not all(ord(c) < 128 for c in file_name)
+
+        # File name characters contain special characters or extensions
+        or string_check.search(file_name)
+    ):
+        print(
+            f"File name: {file_name} is not valid. Please use only letters, numbers, dashes, and underscores"
+            f"\nDefaulting to: mapillary_CURRENT_UNIX_TIMESTAMP_"
+        )
+        return False
+    return True
