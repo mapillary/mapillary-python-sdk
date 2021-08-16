@@ -21,6 +21,7 @@ from shapely.geometry import shape
 
 # Local Imports
 from utils.format import flatten_geojson
+from utils.time import date_to_unix_timestamp
 
 
 def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
@@ -47,8 +48,8 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
     features = flatten_geojson(data)
 
     try:
-        # Set the file name according to the given value. Default is "geojson.csv"
-        file_name = file_name if file_name is not None else "geojson.csv"
+        # Set the file name according to the given value. Default is "mapillary_CURRENT_UNIX_TIMESTAMP_.csv"
+        file_name = file_name if file_name is not None else f"mapillary_{date_to_unix_timestamp('*')}_.csv"
 
         # Context manager for writing to file
         with open(os.path.join(path, file_name), "w", newline="") as file_path:
@@ -124,8 +125,8 @@ def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
         data = json.loads(data)
     
     try:
-        # Set the file name according to the given value. Default is "geojson.geojson"
-        file_name = file_name if file_name is not None else "geojson.geojson"
+        # Set the file name according to the given value. Default is "mapillary_CURRENT_UNIX_TIMESTAMP_.geojson"
+        file_name = file_name if file_name is not None else f"mapillary_{date_to_unix_timestamp('*')}_.geojson"
 
         # Context manager for writing to file
         with open(os.path.join(path, file_name), "w") as file_path:
