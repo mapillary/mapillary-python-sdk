@@ -482,7 +482,7 @@ def normalize_list(coordinates: list, width: int = 4096, height: int = 4096) -> 
 
 
 def decode_pixel_geometry(
-    base64_string: str, normalized: bool = False, width: int = 4096, height: int = 4096
+    base64_string: str, normalized: bool = True, width: int = 4096, height: int = 4096
 ) -> dict:
     """Decodes the pixel geometry, and return the coordinates, which can be specified to be
     normalized
@@ -490,7 +490,7 @@ def decode_pixel_geometry(
     :param base64_string: The pixel geometry encoded as a vector tile
     :type base64_string: str
 
-    :param normalized: If normalization is required, defaults to False
+    :param normalized: If normalization is required, defaults to True
     :type normalized: bool
 
     :param width: The width of the pixel geometry, defaults to 4096
@@ -539,7 +539,7 @@ def decode_pixel_geometry(
 
 def decode_pixel_geometry_in_geojson(
     geojson: typing.Union[dict, GeoJSON],
-    normalized: bool = False,
+    normalized: bool = True,
     width: int = 4096,
     height: int = 4096,
 ) -> GeoJSON:
@@ -547,7 +547,7 @@ def decode_pixel_geometry_in_geojson(
 
     :param geojson: The GeoJSON representation to be decoded
 
-    :param normalized: If normalization is required, defaults to False
+    :param normalized: If normalization is required, defaults to True
     :type normalized: bool
 
     :param width: The width of the pixel geometry, defaults to 4096
