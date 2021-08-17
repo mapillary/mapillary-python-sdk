@@ -54,7 +54,6 @@ osmnx = "*"
 shapely = "*"
 turfpy = "*"
 geojson = "*"
-shapely = "*"
 
 [dev-packages]
 pip = "==19.0.3"
