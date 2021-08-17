@@ -457,10 +457,12 @@ def geojson_features_controller(
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
 
-    :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image' if is_image is True, defaults to 'image'
+    :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image'
+    if is_image is True, defaults to 'image'
     :type filters.layer: str
 
-    :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs' if is_image is False, defaults to 'point'
+    :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs'
+    if is_image is False, defaults to 'point'
     :type filters.feature_type: str
 
     '''
@@ -642,10 +644,12 @@ def shape_features_controller(
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
 
-    :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image' if is_image is True, defaults to 'image'
+    :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image'
+    if is_image is True, defaults to 'image'
     :type filters.layer: str
 
-    :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs' if is_image is False, defaults to 'point'
+    :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs'
+    if is_image is False, defaults to 'point'
     :type filters.feature_type: str
 
     '''

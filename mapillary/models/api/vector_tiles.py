@@ -244,7 +244,8 @@ class VectorTilesAdapter(object):
         )
 
         print(
-            f'[Vector Tiles API] Fetching {len(tiles)} {"tiles" if len(tiles) > 1 else "tile"} for images ...'
+            f'[Vector Tiles API] Fetching {len(tiles)} {"tiles" if len(tiles) > 1 else "tile"}'
+            "for images ..."
         )
 
         for tile in tiles:
@@ -322,7 +323,8 @@ class VectorTilesAdapter(object):
         )
 
         print(
-            f'[Vector Tiles API] Fetching {len(tiles)} {"tiles" if len(tiles) > 1 else "tile"} for map features ...'
+            f'[Vector Tiles API] Fetching {len(tiles)} {"tiles" if len(tiles) > 1 else "tile"}'
+            "for map features ..."
         )
 
         for tile in tiles:

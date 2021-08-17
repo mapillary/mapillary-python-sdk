@@ -265,7 +265,7 @@ def is_image_id(id: int, fields: list = []) -> bool:
 
 
 def check_file_name_validity(file_name: str) -> bool:
-    """Checks if the file name is valid. 
+    """Checks if the file name is valid.
     Valid file names are:
         - without extensions
         - without special characters
@@ -276,17 +276,16 @@ def check_file_name_validity(file_name: str) -> bool:
 
     :return: True if the file name is valid, else False
     """
-    string_check = re.compile('[@.!#$%^&*()<>?/\|}{~:]')
+    string_check = re.compile("[@.!#$%^&*()<>?/\|}{~:]")  # noqa: W605
     if (
         # File name characters are not all ASCII
         not all(ord(c) < 128 for c in file_name)
-
         # File name characters contain special characters or extensions
         or string_check.search(file_name)
     ):
         print(
-            f"File name: {file_name} is not valid. Please use only letters, numbers, dashes, and underscores"
-            f"\nDefaulting to: mapillary_CURRENT_UNIX_TIMESTAMP_"
+            f"File name: {file_name} is not valid. Please use only letters, numbers, dashes,"
+            f" and underscores. \nDefaulting to: mapillary_CURRENT_UNIX_TIMESTAMP_"
         )
         return False
     return True
