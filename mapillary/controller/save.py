@@ -49,7 +49,8 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
     features = flatten_geojson(data)
 
     # Ensure that the file name is valid
-    # Set the file name according to the given value. Default is "mapillary_CURRENT_UNIX_TIMESTAMP_.csv"
+    # Set the file name according to the given value. Default is
+    # "mapillary_CURRENT_UNIX_TIMESTAMP_.csv"
     file_name = (
         file_name
         if (file_name is not None and check_file_name_validity(file_name))
@@ -128,7 +129,8 @@ def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
         data = json.loads(data)
 
     # Ensure that the file name is valid
-    # Set the file name according to the given value. Default is "mapillary_CURRENT_UNIX_TIMESTAMP_.csv"
+    # Set the file name according to the given value. Default is
+    # "mapillary_CURRENT_UNIX_TIMESTAMP_.csv"
     file_name = (
         file_name
         if (file_name is not None and check_file_name_validity(file_name))
