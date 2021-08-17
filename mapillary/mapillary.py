@@ -13,6 +13,8 @@ https://www.mapillary.com/developer/api-documentation/
 :license: MIT LICENSE
 """
 # Package level imports
+import requests
+import json
 import os
 
 # Local
@@ -684,6 +686,10 @@ def map_features_in_geojson(geojson: dict, **filters: dict):
         >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
 
+    if isinstance(geojson, str):
+        if "http" in geojson:
+            geojson = json.loads(requests.get(geojson).content.decode("utf-8"))
+
     return image.geojson_features_controller(
         geojson=geojson, is_image=False, filters=filters
     )
@@ -754,6 +760,10 @@ def map_features_in_shape(shape: dict, **filters: dict):
         >>> data = mly.map_features_in_shape(json.load(open('polygon.geojson', mode='r')))
         >>> open('output_geojson.geojson', mode='w').write(data.encode())
     """
+
+    if isinstance(shape, str):
+        if "http" in shape:
+            shape = json.loads(requests.get(shape).content.decode("utf-8"))
 
     return image.shape_features_controller(shape=shape, is_image=False, filters=filters)
 
@@ -831,7 +841,7 @@ def image_from_key(key: int, fields: list = []) -> str:
             22. width - int, width of the original image uploaded
 
     Refer to https://www.mapillary.com/developer/api-documentation/#image for more details
-    
+
     :type fields: list
 
     :return: A GeoJSON string that represents the queried image
@@ -906,7 +916,11 @@ def save_locally(
         )
 
     return (
-        save.save_as_geojson_controller(data=geojson_data, path=file_path, file_name=file_name)
+        save.save_as_geojson_controller(
+            data=geojson_data, path=file_path, file_name=file_name
+        )
         if format.lower() == "geojson"
-        else save.save_as_csv_controller(data=geojson_data, path=file_path, file_name=file_name)
+        else save.save_as_csv_controller(
+            data=geojson_data, path=file_path, file_name=file_name
+        )
     )

@@ -593,7 +593,7 @@ class VectorTilesAdapter(object):
                 # Parameters accordingly
                 param="feature_type",
                 value=feature_type,
-                options=["point", "traffic_signs"],
+                options=["point", "traffic_sign"],
             )
 
         # Convert bytes to GeoJSON, and return
