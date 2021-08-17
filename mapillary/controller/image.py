@@ -422,7 +422,9 @@ def get_image_from_key_controller(key: int, fields: list) -> str:
     )
 
 
-def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
+def geojson_features_controller(
+    geojson: dict, is_image: bool = True, filters: dict = None
+) -> dict:
     """For extracting images that lie within a GeoJSON and merges the results of the found
     GeoJSON(s) into a single object - by merging all the features into one feature list.
 
@@ -454,6 +456,12 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
 
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
+
+    :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image' if is_image is True, defaults to 'image'
+    :type filters.layer: str
+
+    :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs' if is_image is False, defaults to 'point'
+    :type filters.feature_type: str
 
     '''
     :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
@@ -488,20 +496,40 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
     # Getting the boundary paramters from polygon
     boundary = shapely.geometry.shape(polygon)
 
-    # Get a GeoJSON with features from tiles originating from coordinates
-    # at specified zoom level
-    layers: GeoJSON = (
-        VectorTilesAdapter()
-        .fetch_layers(
-            # Sending coordinates for all the points within input geojson
-            coordinates=bbox(polygon),
-            # Fetching image layers for the geojson
-            layer="image",
-            # Specifying zoom level, defaults to zoom if zoom not specified
-            zoom=filters["zoom"] if "zoom" in filters else 14,
+    # To hold the result
+    layers = None
+
+    if is_image:
+        # Get a GeoJSON with features from tiles originating from coordinates
+        # at specified zoom level
+        layers: GeoJSON = (
+            VectorTilesAdapter()
+            .fetch_layers(
+                # Sending coordinates for all the points within input geojson
+                coordinates=bbox(polygon),
+                # Fetching image layers for the geojson
+                layer=filters["layer"] if "layer" in filters else "image",
+                # Specifying zoom level, defaults to zoom if zoom not specified
+                zoom=filters["zoom"] if "zoom" in filters else 14,
+            )
+            .to_dict()
         )
-        .to_dict()
-    )
+    else:
+        # Get all the map features within the boundary box for the polygon
+        layers: GeoJSON = (
+            VectorTilesAdapter()
+            .fetch_map_features(
+                # Sending coordinates for all the points within input geojson
+                coordinates=bbox(polygon),
+                # Fetching image layers for the geojson
+                feature_type=filters["feature_type"]
+                if "feature_type" in filters
+                else "point",
+                # Specifying zoom level, defaults to zoom if zoom not specified
+                zoom=filters["zoom"] if "zoom" in filters else 14,
+            )
+            .to_dict()
+        )
 
     # Return as GeoJSON output
     return GeoJSON(
@@ -559,7 +587,9 @@ def images_in_geojson_controller(geojson: dict, filters: dict = None) -> dict:
     )
 
 
-def images_in_shape_controller(shape, filters: dict = None) -> dict:
+def shape_features_controller(
+    shape, is_image: bool = True, filters: dict = None
+) -> dict:
     """For extracting images that lie within a shape, merging the results of the found features
     into a single object - by merging all the features into one list in a feature collection.
 
@@ -612,6 +642,12 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
     :param filters.organization_id: ID of the organization this image belongs to. It can be absent
     :type filters.organization_id: str
 
+    :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image' if is_image is True, defaults to 'image'
+    :type filters.layer: str
+
+    :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs' if is_image is False, defaults to 'point'
+    :type filters.feature_type: str
+
     '''
     :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
     that do not belong to the requested API end call
@@ -641,19 +677,39 @@ def images_in_shape_controller(shape, filters: dict = None) -> dict:
     # Getting the boundary paramters from polygon
     boundary = shapely.geometry.shape(polygon)
 
-    # Get all the map features within the boundary box for the polygon
-    output = (
-        VectorTilesAdapter()
-        .fetch_layers(
-            # Sending coordinates for all the points within input geojson
-            coordinates=bbox(polygon),
-            # Fetching image layers for the geojson
-            layer="image",
-            # Specifying zoom level, defaults to zoom if zoom not specified
-            zoom=filters["zoom"] if "zoom" in filters else 14,
+    # To store the result
+    output = None
+
+    if is_image:
+        # Get all the map features within the boundary box for the polygon
+        output: GeoJSON = (
+            VectorTilesAdapter()
+            .fetch_layers(
+                # Sending coordinates for all the points within input geojson
+                coordinates=bbox(polygon),
+                # Fetching image layers for the geojson
+                layer=filters["layer"] if "layer" in filters else "image",
+                # Specifying zoom level, defaults to zoom if zoom not specified
+                zoom=filters["zoom"] if "zoom" in filters else 14,
+            )
+            .to_dict()
         )
-        .to_dict()
-    )
+    else:
+        # Get all the map features within the boundary box for the polygon
+        output: GeoJSON = (
+            VectorTilesAdapter()
+            .fetch_map_features(
+                # Sending coordinates for all the points within input geojson
+                coordinates=bbox(polygon),
+                # Fetching image layers for the geojson
+                feature_type=filters["feature_type"]
+                if "feature_type" in filters
+                else "point",
+                # Specifying zoom level, defaults to zoom if zoom not specified
+                zoom=filters["zoom"] if "zoom" in filters else 14,
+            )
+            .to_dict()
+        )
 
     # Return as GeoJSON output
     return GeoJSON(
