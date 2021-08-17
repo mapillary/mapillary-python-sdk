@@ -13,6 +13,7 @@ This module deals with converting data to and from different file formats.
 
 # Package imports
 import json
+from pprint import pprint
 
 # Local imports
 
@@ -225,6 +226,54 @@ def detection_features_to_geojson(feature_list: list) -> dict:
 
     # Finally return the output
     return resulting_geojson
+
+
+def flatten_geojson(geojson: dict) -> dict:
+    """Flattens a GeoJSON dictionary to a dictionary with only the relevant keys.
+    This is useful for writing to a CSV file. The output is a dictionary with the following
+    structure:
+    {
+        "geometry": {
+            "type": "Point",
+            "coordinates": [x, y]
+        },
+        "first_seen_at": "UNIX_TIMESTAMP",
+        "last_seen_at": "UNIX_TIMESTAMP",
+        "value": "regulatory--no-parking--g2",
+        "id": "FEATURE_ID",
+        "image_id": "IMAGE_ID"
+    }
+    :param geojson: The GeoJSON to flatten
+    :type geojson: dict
+    :return: A flattened GeoJSON
+    :rtype: dict
+
+    Note:
+        1. The `geometry` key is always present in the output
+        2. The properties are flattened to the following keys:
+            - "first_seen_at"   (optional)
+            - "last_seen_at"    (optional)
+            - "value"           (optional)
+            - "id"              (required)
+            - "image_id"        (optional)
+            - etc.
+        3. If the 'geometry` type is `Point`, two more properties will be added:
+            - "longitude"
+            - "latitude"
+        # TODO: Further testing needed with different geometries, e.g., Polygon, etc.
+    """
+    for feature in geojson["features"]:
+        # Check if the geometry is a Point
+        if feature["geometry"]["type"] == "Point":
+            # Add longitude and latitude properties to the feature
+            feature["properties"]["longitude"] = feature["geometry"]["coordinates"][0]
+            feature["properties"]["latitude"] = feature["geometry"]["coordinates"][1]
+
+    # Return the flattened geojson
+    return [
+        {"geometry": _feature["geometry"], **_feature["properties"]}
+        for _feature in geojson["features"]
+    ]
 
 
 def geojson_to_polgyon(geojson: dict) -> dict:
