@@ -12,6 +12,10 @@ This module deals with converting data to and from different file formats.
 """
 
 # Package imports
+import mapbox_vector_tile
+import collections
+import typing
+import base64
 import json
 
 # Local imports
@@ -375,3 +379,205 @@ def geojson_to_polgyon(geojson: dict) -> dict:
             ],
         }
     )
+
+
+def flatten_dictionary(data: dict, parent_key: str = "", sep: str = "_") -> dict:
+    """Flattens dictionaries
+
+    From,
+    result = {'mpy-or': {'extent': 4096, 'version': 2, 'features': [{'geometry': {'type':
+    'Polygon', 'coordinates': [[[2402, 2776], [2408, 2776]]]}, 'properties': {}, 'id': 1,
+    'type': 3}]}}
+
+    To,
+    {'mpy-or_extent': 4096, 'mpy-or_version': 2, 'mpy-or_features': [{'geometry': {'type':
+    'Polygon', 'coordinates': [[[2402, 2776], [2408, 2776]]]}, 'properties': {}, 'id': 1,
+    'type': 3}]}
+
+    :param data: The dictionary itself
+    :type data: dict
+
+    :param parent_key: The root key to start from
+    :type parent_key: str
+
+    :param sep: The separator
+    :type sep: str
+
+    :return: A flattend dictionary
+    :rtype: dict
+    """
+
+    # Final results
+    items = []
+
+    # Traversing dictionary items
+    for key, value in data.items():
+
+        # Getting the new key
+        new_key = parent_key + sep + key if parent_key else key
+
+        # Checking value instance
+        # MutableMapping makes this Python 2.6+ compatible
+        if isinstance(value, collections.MutableMapping):
+
+            # Extending items list
+            items.extend(flatten_dictionary(value, new_key, sep=sep).items())
+
+        # If not instance
+        else:
+
+            # Append to the list
+            items.append((new_key, value))
+
+    # Cnverting to dictionary, and returning
+    return dict(items)
+
+
+def normalize_list(coordinates: list, width: int = 4096, height: int = 4096) -> list:
+    """Normalizes a list of coordinates with the respective width and the height
+
+    From::
+    >>> coordinates = [[[2402, 2776], [2408, 2776]]]
+
+    To::
+    >>> normalize_list(coordinates)
+    ... # [[[0.58642578125, 0.677734375], [0.587890625, 0.677734375]]]
+
+    :param coordinates: The coordinate list to normalize
+    :type coordinates: list
+
+    :param width: The width of the coordinates to normalize with, defaults to 4096
+    :type width: int
+
+    :param height: The height of the coordinates to normalize with, defaults to 4096
+    :type height: int
+
+    :return: The normalized list
+    :rtype: list
+    """
+
+    # Extracting the list from the coordinates
+    coordinates = coordinates[0]
+
+    # Initializing the coordinate list
+    new_coordinates = []
+
+    # Going through each coordinate pair
+    for coordinate_pair in coordinates:
+
+        # If it is already normalized ...
+        if 0 <= coordinate_pair[0] <= 1 and 0 <= coordinate_pair[1] <= 1:
+
+            # ... then append as is
+            new_coordinates.append(coordinate_pair)
+
+        # Appending the coordinates
+        new_coordinates.append(
+            # Appending a list pair of the width, height
+            [coordinate_pair[0] / width, coordinate_pair[1] / height]
+        )
+
+    # Returning the results
+    return [new_coordinates]
+
+
+def decode_pixel_geometry(
+    base64_string: str, normalized: bool = True, width: int = 4096, height: int = 4096
+) -> dict:
+    """Decodes the pixel geometry, and return the coordinates, which can be specified to be
+    normalized
+
+    :param base64_string: The pixel geometry encoded as a vector tile
+    :type base64_string: str
+
+    :param normalized: If normalization is required, defaults to True
+    :type normalized: bool
+
+    :param width: The width of the pixel geometry, defaults to 4096
+    :type width: int
+
+    :param height: The height of the pixel geometry, defaults to 4096
+    :type height: int
+
+    :return: A dictionary with coordinates as key, and value as the normalized list
+    :rtype: list
+    """
+
+    # The data retrieved after being decoded as base64
+    data = base64.decodebytes(base64_string.encode("utf-8"))
+
+    # Getting the results from mapbox_vector_tile
+    result = mapbox_vector_tile.decode(data)
+
+    # Flattening the resultant dicionary
+    flattened = flatten_dictionary(result)
+
+    # Init geometry var
+    geometry = None
+
+    # For key in the flattend keys
+    for key in flattened.keys():
+
+        # If the key contains the word "features"
+        if "features" in key:
+
+            # Get the geometry
+            geometry = flattened[key][0]
+
+    # Extract the coordinate list
+    coordinate_list = geometry["geometry"]["coordinates"]
+
+    # Return output
+    return (
+        # Return coordinates as normalized values, if normalized is true
+        {"coordinates": normalize_list(coordinate_list, width=width, height=height)}
+        if normalized
+        # Else return un-normalized coordinates
+        else {"coordinates": coordinate_list}
+    )
+
+
+def decode_pixel_geometry_in_geojson(
+    geojson: typing.Union[dict, GeoJSON],
+    normalized: bool = True,
+    width: int = 4096,
+    height: int = 4096,
+) -> GeoJSON:
+    """Decodes all the pixel_geometry
+
+    :param geojson: The GeoJSON representation to be decoded
+
+    :param normalized: If normalization is required, defaults to True
+    :type normalized: bool
+
+    :param width: The width of the pixel geometry, defaults to 4096
+    :type width: int
+
+    :param height: The height of the pixel geometry, defaults to 4096
+    :type height: int
+    """
+
+    # If geojson is of type GeoJSON, convert to dict
+    if isinstance(geojson, GeoJSON):
+        geojson: dict = geojson.to_dict()
+
+    # Remove pass by reference for idempotent principle
+    data = geojson.copy()
+
+    # Iterature through the features
+    for feature in data["features"]:
+
+        # For the pixel_geometry feature, decode it
+        feature["properties"]["pixel_geometry"] = decode_pixel_geometry(
+            # Get the base64_string
+            base64_string=feature["properties"]["pixel_geometry"],
+            # Normalization variable
+            normalized=normalized,
+            # Width param
+            width=width,
+            # Height param
+            height=height,
+        )
+
+    # Return output as GeoJSON
+    return GeoJSON(geojson=data)
