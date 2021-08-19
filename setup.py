@@ -176,4 +176,5 @@ setuptools.setup(
     cmdclass={
         "upload": UploadCommand,
     },
+    extras_require={"dev": locked_requirements("develop")},
 )
