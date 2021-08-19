@@ -14,4 +14,4 @@ from . import models
 from . import utils
 
 # The main interface
-from . import mapillary
+from . import interface
