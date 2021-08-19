@@ -11,8 +11,8 @@ This package contains all the internal utilities used within the mapilary python
 :license: MIT LICENSE
 """
 
-from . import extract as mly_extract
-from . import filter as mly_filter
-from . import format as mly_format
-from . import time as mly_time
-from . import verify as mly_verify
+from . import extract
+from . import filter
+from . import format
+from . import time
+from . import verify
