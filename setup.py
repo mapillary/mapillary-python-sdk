@@ -69,7 +69,7 @@ PROJECT_URLS = {
     "Facebook": "https://www.facebook.com/mapillary/",
     "Website": "https://www.mapillary.com/",
 }
-PACKAGE_DIR = {"": "mapillary"}
+PACKAGE_DIR = {"": "src"}
 
 # Import the README and use it as the long-description.
 # Note: this will only work if 'README.md' is present in your MANIFEST.in file!
@@ -123,7 +123,7 @@ class UploadCommand(setuptools.Command):
         os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
 
         self.status("Uploading the package to PyPI via Twine…")
-        os.system("twine upload --repository testpypi dist/*")
+        os.system("twine upload dist/*")
 
         self.status("Pushing git tags…")
         os.system(f"git tag v{VERSION}")
@@ -159,11 +159,9 @@ setuptools.setup(
     project_urls=PROJECT_URLS,
     # Codebase, Wheel, Egg Setup
     # Setuptools for finding other needed packages from Pipfile
-    packages=setuptools.find_packages(where="mapillary"),
+    packages=setuptools.find_packages(where="src"),
     # # Specifiy the package directory
     package_dir=PACKAGE_DIR,
-    # # Py Modules
-    py_modules=["mapillary"],
     # # Basic requirements
     install_requires=locked_requirements("default"),
     # # What Python version is required
