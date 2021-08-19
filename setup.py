@@ -18,15 +18,16 @@ Reference::
 import setuptools  # setup, find_packages, Command
 import os
 import sys
+import json
 import shutil
 
 # Setup variables. Change as needed
-NAME = "mapillary-python-sdk"
-VERSION = "0.0.1"
+NAME = "mapillary"
+VERSION = "0.0.3"
 AUTHOR = "Christopher Beddow, Omar Ali, Saif Ul Islam"
-AUTHOR_EMAIL = (
-    "cbed@fb.com, omarmuhammed1998.om@gmail.com, saifulislam84210@gmail.com"
-)
+AUTHOR_EMAIL = "cbed@fb.com, omarmuhammed1998.om@gmail.com, saifulislam84210@gmail.com"
+LICENSE = "MIT"
+PLATFORM = "any"
 DESCRIPTION = (
     "A Python 3 library built on the Mapillary API v4 to facilitate retrieving and "
     "working with Mapillary data"
@@ -44,14 +45,20 @@ REQUIREMENTS = [
     "turfpy",
 ]
 CLASSIFIERS = [
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
-    "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Operating System :: OS Independent",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
 ]
 PROJECT_URLS = {
     "Bug Tracker": "https://github.com/mapillary/mapillary-python-sdk/issues",
@@ -71,6 +78,21 @@ try:
         LONG_DESCRIPTION = "\n" + f.read()
 except FileNotFoundError:
     LONG_DESCRIPTION = DESCRIPTION
+
+
+def locked_requirements(section):
+    """Look through the 'Pipfile.lock' to fetch requirements by section."""
+    with open("Pipfile.lock") as pip_file:
+        pipfile_json = json.load(pip_file)
+
+    if section not in pipfile_json:
+        print("{0} section missing from Pipfile.lock".format(section))
+        return []
+
+    return [
+        package + detail.get("version", "")
+        for package, detail in pipfile_json[section].items()
+    ]
 
 
 class UploadCommand(setuptools.Command):
@@ -98,15 +120,13 @@ class UploadCommand(setuptools.Command):
             pass
 
         self.status("Building Source and Wheel (universal) distribution…")
-        os.system(
-            "{0} setup.py sdist bdist_wheel --universal".format(sys.executable)
-        )
+        os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
 
         self.status("Uploading the package to PyPI via Twine…")
-        os.system("twine upload dist/*")
+        os.system("twine upload --repository testpypi dist/*")
 
         self.status("Pushing git tags…")
-        os.system("git tag v{0}".format(VERSION))
+        os.system(f"git tag v{VERSION}")
         os.system("git push --tags")
 
         sys.exit()
@@ -121,6 +141,10 @@ setuptools.setup(
     version=VERSION,
     # # Author name(s)
     author=AUTHOR,
+    # # License
+    license=LICENSE,
+    # # Platform specification
+    platforms=PLATFORM,
     # # Author email(s)
     author_email=AUTHOR_EMAIL,
     # # Short description about the package
@@ -141,7 +165,7 @@ setuptools.setup(
     # # Py Modules
     py_modules=["mapillary"],
     # # Basic requirements
-    install_requires=REQUIREMENTS,
+    install_requires=locked_requirements("default"),
     # # What Python version is required
     python_requires=REQUIRES_PYTHON,
     # # What package data to include

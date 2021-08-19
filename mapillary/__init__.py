@@ -12,3 +12,6 @@ from . import models
 
 # Utilities for business logic
 from . import utils
+
+# The main interface
+from . import mapillary
