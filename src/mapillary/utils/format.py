@@ -21,7 +21,7 @@ import json
 # Local imports
 
 # Models
-from models.geojson import GeoJSON
+from mapillary.models.geojson import GeoJSON
 
 
 def feature_to_geojson(json_data: dict) -> dict:

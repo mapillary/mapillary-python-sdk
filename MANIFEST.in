@@ -1,1 +1,11 @@
 include README.md
+include *.env
+include *.lock
+include *.md
+include *.toml
+include Makefile
+include Pipfile
+recursive-include mapillary *.gitkeep
+recursive-include mapillary *.py
+recursive-include tests *.gitkeep
+recursive-include tests *.py

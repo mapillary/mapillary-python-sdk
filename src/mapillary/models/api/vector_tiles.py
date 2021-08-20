@@ -22,16 +22,16 @@ import mercantile
 # Local imports
 
 # # Exception handling
-from models.exceptions import InvalidOptionError
+from mapillary.models.exceptions import InvalidOptionError
 
 # # Client import
-from models.client import Client
+from mapillary.models.client import Client
 
 # # Config
-from config.api.vector_tiles import VectorTiles
+from mapillary.config.api.vector_tiles import VectorTiles
 
 # # Models
-from models.geojson import GeoJSON
+from mapillary.models.geojson import GeoJSON
 
 
 class VectorTilesAdapter(object):

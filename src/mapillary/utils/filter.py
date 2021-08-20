@@ -12,7 +12,7 @@ This module contains the filter utilies for high level filtering logic
 """
 
 # Local imports
-from utils.time import date_to_unix_timestamp
+from mapillary.utils.time import date_to_unix_timestamp
 
 # Package imports
 from turfpy.measurement import bearing

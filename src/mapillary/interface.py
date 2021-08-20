@@ -18,17 +18,17 @@ import json
 import os
 
 # Local
-from models.client import Client
-from models.auth import auth
+from mapillary.models.client import Client
+from mapillary.models.auth import auth
 
 # Exception classes
-from models.exceptions import InvalidOptionError
+from mapillary.models.exceptions import InvalidOptionError
 
 # Controllers
-import controller.image as image
-import controller.feature as feature
-import controller.detection as detection
-import controller.save as save
+import mapillary.controller.image as image
+import mapillary.controller.feature as feature
+import mapillary.controller.detection as detection
+import mapillary.controller.save as save
 
 
 def set_access_token(token: str):

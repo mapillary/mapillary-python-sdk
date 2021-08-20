@@ -32,7 +32,7 @@ import json
 from math import floor
 
 # Exception imports
-from models.exceptions import InvalidTokenError
+from mapillary.models.exceptions import InvalidTokenError
 
 # Basic logger setup
 logger = logging.getLogger("mapillary.utils.client")

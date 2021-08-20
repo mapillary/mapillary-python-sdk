@@ -15,8 +15,8 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 # Local imports
-from models.client import Client
-from models.exceptions import AuthError
+from mapillary.models.client import Client
+from mapillary.models.exceptions import AuthError
 
 from functools import wraps
 

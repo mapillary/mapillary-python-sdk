@@ -20,7 +20,7 @@ import json
 # Local
 
 # # Exceptions
-from models.exceptions import InvalidOptionError
+from mapillary.models.exceptions import InvalidOptionError
 
 
 class Properties:

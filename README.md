@@ -73,6 +73,10 @@ make style
 
 This runs the `style` policy from the `Makefile`.
 
+### Building package
+
+To build the package, run `python3 setup.py sdist bdist_wheel`. To test out a local installation, run `pip install -e .`.
+
 ## Contributing
 
 We welcome contributions! See [CONTRIBUTING](CONTRIBUTING.md) for details on how to get started, and our [code of conduct](CODE_OF_CONDUCT.md).

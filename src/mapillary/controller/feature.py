@@ -15,21 +15,21 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 # Configs
-from config.api.vector_tiles import VectorTiles
+from mapillary.config.api.vector_tiles import VectorTiles
 
 # Client
-from models.client import Client
+from mapillary.models.client import Client
 
 # Utils
-from utils.verify import valid_id, points_traffic_signs_check
-from utils.filter import pipeline
-from utils.format import (
+from mapillary.utils.verify import valid_id, points_traffic_signs_check
+from mapillary.utils.filter import pipeline
+from mapillary.utils.format import (
     merged_features_list_to_geojson,
     feature_to_geojson,
 )
 
 # Adapters
-from models.api.entities import EntityAdapter
+from mapillary.models.api.entities import EntityAdapter
 
 # Package imports
 import mercantile
