@@ -12,7 +12,7 @@ Mapilary Python SDK.
 :license: MIT LICENSE
 """
 
-from . import detection as mly_detection
-from . import feature as mly_feature
-from . import image as mly_image
-from . import save as mly_save
+from . import detection  # noqa: F401
+from . import feature  # noqa: F401
+from . import image  # noqa: F401
+from . import save  # noqa: F401

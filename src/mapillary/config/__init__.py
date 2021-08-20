@@ -26,4 +26,4 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-from . import api as mly_api
+from . import api  # noqa: F401

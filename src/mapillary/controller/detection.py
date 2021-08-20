@@ -17,13 +17,13 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 # Local imports
 
 # # Adapter Imports
-from models.api.entities import EntityAdapter
+from mapillary.models.api.entities import EntityAdapter
 
 # # Models
-from models.geojson import GeoJSON
+from mapillary.models.geojson import GeoJSON
 
 # # Rules
-from utils.verify import valid_id
+from mapillary.utils.verify import valid_id
 
 
 def get_image_detections_controller(image_id: int, fields: list = []) -> dict:

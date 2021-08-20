@@ -15,12 +15,12 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 # Configs
-from config.api.entities import Entities
-from config.api.vector_tiles import VectorTiles
+from mapillary.config.api.entities import Entities
+from mapillary.config.api.vector_tiles import VectorTiles
 
 # Exception Handling
-from models.exceptions import InvalidImageKey
-from utils.verify import (
+from mapillary.models.exceptions import InvalidImageKey
+from mapillary.utils.verify import (
     image_check,
     image_bbox_check,
     sequence_bbox_check,
@@ -29,18 +29,18 @@ from utils.verify import (
 )
 
 # Client
-from models.client import Client
+from mapillary.models.client import Client
 
 # # Adapters
-from models.api.vector_tiles import VectorTilesAdapter
-from models.api.entities import EntityAdapter
+from mapillary.models.api.vector_tiles import VectorTilesAdapter
+from mapillary.models.api.entities import EntityAdapter
 
 # # Class Representation
-from models.geojson import GeoJSON
+from mapillary.models.geojson import GeoJSON
 
 # # Utilities
-from utils.filter import pipeline
-from utils.format import (
+from mapillary.utils.filter import pipeline
+from mapillary.utils.format import (
     feature_to_geojson,
     merged_features_list_to_geojson,
     geojson_to_polgyon,

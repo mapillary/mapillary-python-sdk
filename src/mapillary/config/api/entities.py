@@ -17,7 +17,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 # Local imports
 
 # # Exception Handling
-from models.exceptions import InvalidFieldError
+from mapillary.models.exceptions import InvalidFieldError
 
 
 class Entities:

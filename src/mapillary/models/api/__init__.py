@@ -11,5 +11,5 @@ This package contains the class adaptors of the API logic within the Mapilary Py
 :license: MIT LICENSE
 """
 
-from . import entities as mly_entities
-from . import vector_tiles as mly_vector_tiles
+from . import entities  # noqa: F401
+from . import vector_tiles  # noqa: F401

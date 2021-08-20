@@ -20,16 +20,16 @@ import ast
 # Local imports
 
 # # Utilities
-from utils.format import detection_features_to_geojson
+from mapillary.utils.format import detection_features_to_geojson
 
 # # Models
-from models.client import Client
+from mapillary.models.client import Client
 
 # # Exception Handling
-from models.exceptions import InvalidImageKey
+from mapillary.models.exceptions import InvalidImageKey
 
 # # Config
-from config.api.entities import Entities
+from mapillary.config.api.entities import Entities
 
 # Library imports
 from requests import HTTPError

@@ -11,8 +11,8 @@ This package contains the class representations of logic within the Mapilary Pyt
 :license: MIT LICENSE
 """
 
-from . import auth as mly_auth
-from . import client as mly_client
-from . import exceptions as mly_exceptions
-from . import geojson as mly_geojson
-from . import api as mly_api
+from . import auth  # noqa: F401
+from . import client  # noqa: F401
+from . import exceptions  # noqa: F401
+from . import geojson  # noqa: F401
+from . import api  # noqa: F401

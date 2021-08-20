@@ -15,9 +15,9 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 # Local Imports
-from models.exceptions import InvalidKwargError, InvalidOptionError
-from config.api.entities import Entities
-from models.client import Client
+from mapillary.models.exceptions import InvalidKwargError, InvalidOptionError
+from mapillary.config.api.entities import Entities
+from mapillary.models.client import Client
 
 # Package Imports
 import requests
