@@ -23,7 +23,7 @@ import shutil
 
 # Setup variables. Change as needed
 NAME = "mapillary"
-VERSION = "0.0.3"
+VERSION = "0.0.1"
 AUTHOR = "Christopher Beddow, Omar Ali, Saif Ul Islam"
 AUTHOR_EMAIL = "cbed@fb.com, omarmuhammed1998.om@gmail.com, saifulislam84210@gmail.com"
 LICENSE = "MIT"
