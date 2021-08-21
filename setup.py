@@ -22,19 +22,19 @@ import json
 import shutil
 
 # Setup variables. Change as needed
-NAME = "mapillary"
-VERSION = "0.0.1"
-AUTHOR = "Christopher Beddow, Omar Ali, Saif Ul Islam"
-AUTHOR_EMAIL = "cbed@fb.com, omarmuhammed1998.om@gmail.com, saifulislam84210@gmail.com"
+NAME = "mapillary"  
+VERSION = "0.0.31"
+AUTHOR = "Christopher Beddow"
+AUTHOR_EMAIL = "support@mapillary.zendesk.com"
 LICENSE = "MIT"
-PLATFORM = "any"
+PLATFORM = ["POSIX", "MacOS X", "Linux", "Windows"]
 DESCRIPTION = (
     "A Python 3 library built on the Mapillary API v4 to facilitate retrieving and "
     "working with Mapillary data"
 )
 LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://github.com/mapillary/mapillary-python-sdk"
-REQUIRES_PYTHON = ">3.0"
+REQUIRES_PYTHON = ">=3.0"
 HERE = os.path.abspath(os.path.dirname(__file__))
 REQUIREMENTS = [
     "mercantile",
@@ -50,7 +50,12 @@ CLASSIFIERS = [
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
     "Topic :: Scientific/Engineering :: Information Analysis",
+    "Natural Language :: English",
     "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -61,11 +66,14 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.9",
 ]
 PROJECT_URLS = {
+    "Download": "https://pypi.org/project/mapillary/#files",
+    "Release Notes": "https://github.com/mapillary/mapillary-python-sdk/releases",
     "Bug Tracker": "https://github.com/mapillary/mapillary-python-sdk/issues",
-    # "Support Email": "support@mapillary.zendesk.com",
+    "Source": "https://github.com/mapillary/mapillary-python-sdk",
+    "Twitter": "https://twitter.com/mapillary",
+    "Developer Resources": "https://www.mapillary.com/developer",
     "Community Forum": "https://forum.mapillary.com/",
     "Blog": "https://blog.mapillary.com/",
-    "Twitter": "https://twitter.com/mapillary",
     "Facebook": "https://www.facebook.com/mapillary/",
     "Website": "https://www.mapillary.com/",
 }
@@ -162,7 +170,8 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     # # Specifiy the package directory
     package_dir=PACKAGE_DIR,
-    # # Basic requirements
+    # # A string or list of strings specifying what other distributions need to be installed
+    # # when this one is
     install_requires=locked_requirements("default"),
     # # What Python version is required
     python_requires=REQUIRES_PYTHON,
@@ -174,5 +183,9 @@ setuptools.setup(
     cmdclass={
         "upload": UploadCommand,
     },
-    extras_require={"dev": locked_requirements("develop")},
+    # # A dictionary mapping names of “extras” (optional features of your project) to strings or
+    # # lists of strings specifying what other distributions must be installed to support those
+    # # features
+    # # Right now, this fetches development dependencies which are un-needed
+    # extras_require={"dev": locked_requirements("develop")},
 )
