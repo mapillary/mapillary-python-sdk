@@ -22,8 +22,8 @@ import json
 import shutil
 
 # Setup variables. Change as needed
-NAME = "mapillary"
-VERSION = "0.0.17"
+NAME = "mapillary"  
+VERSION = "0.0.31"
 AUTHOR = "Christopher Beddow"
 AUTHOR_EMAIL = "support@mapillary.zendesk.com"
 LICENSE = "MIT"
@@ -170,7 +170,8 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     # # Specifiy the package directory
     package_dir=PACKAGE_DIR,
-    # # Basic requirements
+    # # A string or list of strings specifying what other distributions need to be installed
+    # # when this one is
     install_requires=locked_requirements("default"),
     # # What Python version is required
     python_requires=REQUIRES_PYTHON,
@@ -182,5 +183,9 @@ setuptools.setup(
     cmdclass={
         "upload": UploadCommand,
     },
-    extras_require={"dev": locked_requirements("develop")},
+    # # A dictionary mapping names of “extras” (optional features of your project) to strings or
+    # # lists of strings specifying what other distributions must be installed to support those
+    # # features
+    # # Right now, this fetches development dependencies which are un-needed
+    # extras_require={"dev": locked_requirements("develop")},
 )
