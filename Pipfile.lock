@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "8efec355dc68844e104dd2bf8af285cc0b96023995a85c35f97f025497233a61"
+            "sha256": "fc52828d6bec34ec61b973caa947aa57904ba9d36590ce9a597d80e70a8938fd"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -31,14 +31,6 @@
             ],
             "index": "pypi",
             "version": "==3.3.0"
-        },
-        "build": {
-            "hashes": [
-                "sha256:32290592c8ccf70ce84107962f6129407abf52cedaa752af28c0c95d99dfa2e7",
-                "sha256:d8d8417caff47888274d677f984de509554637dd1ea952d467b027849b06d83b"
-            ],
-            "index": "pypi",
-            "version": "==0.6.0.post1"
         },
         "certifi": {
             "hashes": [
@@ -257,13 +249,6 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==21.0"
-        },
-        "pep517": {
-            "hashes": [
-                "sha256:3fa6b85b9def7ba4de99fb7f96fe3f02e2d630df8aa2720a5cf3b183f087a738",
-                "sha256:e1ba5dffa3a131387979a68ff3e391ac7d645be409216b961bc2efe6468ab0b2"
-            ],
-            "version": "==0.11.0"
         },
         "pkginfo": {
             "hashes": [
@@ -562,14 +547,6 @@
             ],
             "markers": "python_version >= '2.6' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==0.10.2"
-        },
-        "tomli": {
-            "hashes": [
-                "sha256:8dd0e9524d6f386271a36b41dbf6c57d8e32fd96fd22b6584679dc569d20899f",
-                "sha256:a5b75cb6f3968abb47af1b40c1819dc519ea82bcc065776a866e8d74c5ca9442"
-            ],
-            "markers": "python_version >= '3.6'",
-            "version": "==1.2.1"
         },
         "tqdm": {
             "hashes": [
