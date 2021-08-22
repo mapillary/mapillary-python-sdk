@@ -8,7 +8,8 @@ mapillary.utils.client
 This module contains aims to serve as a generalization for all API requests within the Mapillary
 Python SDK.
 
-## Over Authentication
+Over Authentication
+!!!!!!!!!!!!!!!!!!!
 
 1. All requests against https://graph.mapillary.com must be authorized. They require a client or
 user access tokens. Tokens can be sent in two ways
@@ -24,13 +25,13 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
-import requests
-import logging
-import sys
-import os
 import json
+import logging
+import os
+import sys
 from math import floor
 
+import requests
 # Exception imports
 from mapillary.models.exceptions import InvalidTokenError
 
@@ -57,8 +58,11 @@ except ValueError:
 class Client:
     """
     Client setup for API communication.
+
     All requests for the Mapillary API v4 should go through this class
+
     Usage::
+
         >>> client = Client(access_token=MLY||XXX)
         >>> # for entities endpoints
         >>> client.get(endpoint='endpoint specific path', entity=True, params={
@@ -68,7 +72,8 @@ class Client:
         >>> client.get(endpoint='endpoint specific path', entity=False)
     """
 
-    # User Access token will be set once and used throughout all requests within the same session
+    # User Access token will be set once and used throughout all requests
+    # within the same session
     __access_token = ""
 
     def __init__(self) -> None:
@@ -102,15 +107,20 @@ class Client:
 
         Client.__access_token = access_token
 
-    def _initiate_request(self, url, method, params={}):
+    def _initiate_request(self, url: str, method: str, params: dict = {}):
         """
         Private method - For internal use only.
         This method is responsible for making tailored API requests to the mapillary API v4.
         It generalizes the requests and ties them to the same session.
 
-        :param url: the request endpoint - required
+        :param url: The request endpoint - required
+        :type url: str
+
         :param method: HTTP method to be used - required
-        :param params: query parameters to be attached to the requeset - optional
+        :type method: str
+
+        :param params: Query parameters to be attached to the requeset - optional
+        :type params: dict
         """
 
         request = requests.Request(method, url, params=params)
@@ -153,11 +163,15 @@ class Client:
 
         return res
 
-    def get(self, url=None, params={}):
+    def get(self, url: str = None, params: dict = {}):
         """
         Make GET requests to both mapillary main endpoints
+
         :param url: The specific path of the request URL
+        :type url: str
+
         :param params: Query paramaters to be attached to the URL (Dict)
+        :type params: dict
         """
         # Check if an endpoint is specified.
         if url is None:
@@ -174,10 +188,15 @@ class Client:
         Host: host
         header_key: header_value
         body
+
         :param prepped_req: The prepped request object
-        ref: 'https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e'
-        '24730c4631ffc30068272386669/exampleClient.py#L202'
+
+        Reference::
+
+            1. 'https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e'
+                '24730c4631ffc30068272386669/exampleClient.py#L202'
         """
+
         method = prepped_req.method
         url = prepped_req.url
 
@@ -198,10 +217,15 @@ class Client:
         HTTP/version status_code status_text
         header_key: header_value
         body
+
         :param res: Response object returned from the API request
-        ref: 'https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e'
-        '24730c4631ffc30068272386669/exampleClient.py#L230'
+
+        Reference::
+
+            1. 'https://github.com/michaeldbianchi/Python-API-Client-Boilerplate/blob/fd1c82be9e98e'
+                '24730c4631ffc30068272386669/exampleClient.py#L230'
         """
+
         httpv0, httpv1 = list(str(res.raw.version))
         httpv = f"HTTP/{httpv0}.{httpv1}"
         status_code = res.status_code

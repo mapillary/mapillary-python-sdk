@@ -25,17 +25,25 @@ class InvalidTokenError(MapillaryException):
     to access Mapillary's API, primarily used in mapillary.set_access_token
 
     :var message: The error message returned
+    :type message: str
+
     :var type: The type of error that occurred
+    :type type: str
+
     :var code: The error code returned,
     most like 190, "Access token has expired",
     see
     https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/
     for more information
-    :fbtrace_id: A unique ID to track the issue/exception
+    :type code: str
+
+    :var fbtrace_id: A unique ID to track the issue/exception
+    :type fbtrace_id: str
     """
 
     def __init__(self, message, type, code, fbtrace_id):
-        """ """
+        """Initializing InvalidTokenError constructor"""
+
         self.message = message
         self.type = type
         self.code = code
@@ -46,31 +54,34 @@ class InvalidTokenError(MapillaryException):
 
     def __repr__(self):
         return (
-            "InvalidTokenError: An exception occured."
-            + f'Message: "{self.message}", Type: "{self.type}",'
-            + f'Code: "{self.code}",'
-            + f'fbtrace_id: "{self.fbtrace_id}"'
+                "InvalidTokenError: An exception occured."
+                + f'Message: "{self.message}", Type: "{self.type}",'
+                + f'Code: "{self.code}",'
+                + f'fbtrace_id: "{self.fbtrace_id}"'
         )
 
 
 class AuthError(MapillaryException):
-    """Raised when a function is called without
-    having the access token set in
-    set_access_token to access Mapillary's API,
-    primarily used in mapillary.set_access_token
+    """Raised when a function is called without having the access token set in
+    set_access_token to access Mapillary's API, primarily used in mapillary.set_access_token
+
     :var message: The error message returned
+    :type message: str
+
     :var type: The type of error that occurred
-    :var code: The error code returned,
-    most like 190, "Access token has expired",
-    see
-    https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/
-    for more information
-    :fbtrace_id: A unique ID to track the issue/exception
+    :type type: str
+
+    :var code: The error code returned, most likely 190, "Access token has expired", see
+    https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/ for more information
+    :type code: str
+
+    :var fbtrace_id: A unique ID to track the issue/exception
+    :type fbtrace_id: str
     """
 
     def __init__(
-        self,
-        message: str,
+            self,
+            message: str,
     ):
         """Initializing AuthError constructor"""
         self.message = message
@@ -83,10 +94,13 @@ class AuthError(MapillaryException):
 
 
 class InvalidImageResolution(MapillaryException):
-    """Raised when trying to retrieve an image thumbnail with an invalid resolution/size.
+    """
+    Raised when trying to retrieve an image thumbnail with an invalid resolution/size.
+
     Primarily used with mapillary.image_thumbnail
 
     :var resolution: Image size entered by the user
+    :type resolution: int
     """
 
     def __init__(self, resolution) -> None:
@@ -105,10 +119,12 @@ Hint: Supported image sizes are: 256, 1024, and 2048
 
 
 class InvalidImageKey(MapillaryException):
-    """Raised when trying to retrieve an image thumbnail with an invalid image ID/key.
+    """
+    Raised when trying to retrieve an image thumbnail with an invalid image ID/key.
     Primarily used with mapillary.image_thumbnail
 
     :var image_id: Image ID/key entered by the user
+    :param image_id: int
     """
 
     def __init__(self, image_id) -> None:
@@ -122,22 +138,30 @@ class InvalidImageKey(MapillaryException):
 
 
 class InvalidKwargError(MapillaryException):
-    """Raised when a function is called with the invalid
+    """
+    Raised when a function is called with the invalid
     keyword argument(s) that do not belong to the
     requested API end call
+
     :var func: The function that was called
+    :type func: str
+
     :var key: The key that was passed
+    :type key: int
+
     :var code: The value along with that key
-    :var options: The list of possible keys that can be passed,
-    to help the user correct his/her mistake
+    :type code: str
+
+    :var options: List of possible keys that can be passed
+    :type options: list
     """
 
     def __init__(
-        self,
-        func: str,
-        key: str,
-        value: str,
-        options: list,
+            self,
+            func: str,
+            key: str,
+            value: str,
+            options: list,
     ):
         """Initializing InvalidKwargError constructor"""
         self.func = func
@@ -163,16 +187,21 @@ class InvalidKwargError(MapillaryException):
 
 
 class InvalidOptionError(MapillaryException):
-    """Out of bound zoom error
+    """
+    Out of bound zoom error
+
     :var zoom: The zoom value used
-    :var options: the possible list of zoom values
+    :type zoom: int
+
+    :var options: The possible list of zoom values
+    :type options: list
     """
 
     def __init__(
-        self,
-        param: str,
-        value: int,
-        options: list,
+            self,
+            param: str,
+            value: int,
+            options: list,
     ):
         """Initializing InvalidOptionError constructor"""
         self.param = param
@@ -193,16 +222,21 @@ class InvalidOptionError(MapillaryException):
 
 
 class InvalidFieldError(MapillaryException):
-    """Raised when an API endpoint is passed invalid
+    """
+    Raised when an API endpoint is passed invalid
     field elements
+
     :var endpoint: The API endpoint that was targeted
+    :type endpoint: str
+
     :var field: The invalid field that was passed
+    :type field: list
     """
 
     def __init__(
-        self,
-        endpoint: str,
-        field: str,
+            self,
+            endpoint: str,
+            field: str,
     ):
         """Initializing InvalidFieldError constructor"""
         self.endpoint = endpoint
