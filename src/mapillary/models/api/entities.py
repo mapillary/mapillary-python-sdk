@@ -36,7 +36,8 @@ from requests import HTTPError
 
 
 class EntityAdapter(object):
-    """Adapter model for dealing with the Entity API, through the DRY principle. The EntityAdapter
+    """
+    Adapter model for dealing with the Entity API, through the DRY principle. The EntityAdapter
     class can be instantiated in the controller modules, providing an abstraction layer that uses
     the Client class, endpoints provided by the APIv4 under `/config/api/entities.py`.
 
@@ -47,6 +48,7 @@ class EntityAdapter(object):
     inputs and the outputs
 
     Usage::
+
         >>> EntityAdapter().fetch_layer(image_id=image_id, fields=[
                     'altitude', 'atomic_scale', 'geometry', 'width'
                 ])
@@ -62,7 +64,8 @@ class EntityAdapter(object):
         self.client = Client()
 
     def fetch_image(self, image_id: int, fields: list = []) -> dict:
-        """Fetches images depending on the image_id and the fields provided
+        """
+        Fetches images depending on the image_id and the fields provided
 
         :param image_id: The image_id to extract for
         :type image_id: int
@@ -103,7 +106,8 @@ class EntityAdapter(object):
             raise InvalidImageKey(image_id)
 
     def fetch_map_feature(self, map_feature_id: int, fields: list = []):
-        """Fetches map feaures depending on the map_feature_id and the fields provided
+        """
+        Fetches map feaures depending on the map_feature_id and the fields provided
 
         :param map_feature_id: The map_feature_id to extract for
         :type map_feature_id: int
@@ -134,7 +138,8 @@ class EntityAdapter(object):
         )
 
     def fetch_detections(self, id: int, id_type: bool = True, fields: list = []):
-        """Fetches detections depending on the id, detections for either map_features or
+        """
+        Fetches detections depending on the id, detections for either map_features or
         images and the fields provided
 
         :param id: The id to extract for
