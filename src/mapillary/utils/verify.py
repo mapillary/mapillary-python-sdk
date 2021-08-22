@@ -3,7 +3,7 @@
 
 """
 mapillary.controller.rules.verify
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+=================================
 
 This module implements the verification of the filters or keys passed to each of the controllers
 under `./controllers` that implemeent the business logic functionalities of the Mapillary
@@ -25,7 +25,8 @@ import re
 
 
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
-    """Checks for keyword arguments amongst the kwarg argument to fall into the options list
+    """
+    Checks for keyword arguments amongst the kwarg argument to fall into the options list
 
     :param kwargs: A dictionary that contains the keyword key-value pair arguments
     :type kwargs: dict
@@ -43,6 +44,7 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
     :return: A boolean, whether the kwargs are appropriate or not
     :rtype: bool
     """
+
     if kwargs is not None:
         for key in kwargs.keys():
             if key not in options:
@@ -55,7 +57,6 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
     # If 'zoom' is in kwargs
     if ("zoom" in kwargs) and (kwargs["zoom"] < 14 or kwargs["zoom"] > 17):
-
         # Raising exception for invalid zoom value
         raise InvalidOptionError(
             param="zoom", value=kwargs["zoom"], options=[14, 15, 16, 17]
@@ -65,7 +66,6 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
     if ("image_type" in kwargs) and (
         kwargs["image_type"] not in ["pano", "flat", "all"]
     ):
-
         # Raising exception for invalid image_type value
         raise InvalidOptionError(
             param="image_type",
@@ -78,7 +78,8 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
 
 
 def image_check(kwargs) -> bool:
-    """For image entities, check if the arguments provided fall in the right category
+    """
+    For image entities, check if the arguments provided fall in the right category
 
     :param kwargs: A dictionary that contains the keyword key-value pair arguments
     :type kwargs: dict
@@ -100,7 +101,8 @@ def image_check(kwargs) -> bool:
 
 
 def resolution_check(resolution: int) -> bool:
-    """Checking for the proper thumbnail size of the argument
+    """
+    Checking for the proper thumbnail size of the argument
 
     :param resolution: The image size to fetch for
     :type resolution: int
@@ -121,7 +123,8 @@ def resolution_check(resolution: int) -> bool:
 
 
 def image_bbox_check(kwargs: dict) -> dict:
-    """Check if the right arguments have been provided for the image bounding box
+    """
+    Check if the right arguments have been provided for the image bounding box
 
     :param kwargs: The dictionary parameters
     :type kwargs: dict
@@ -154,7 +157,8 @@ def image_bbox_check(kwargs: dict) -> dict:
 
 
 def sequence_bbox_check(kwargs: dict) -> dict:
-    """Checking of the sequence bounding box
+    """
+    Checking of the sequence bounding box
 
     :param kwargs: The final dictionary with the correct keys
     :type kwargs: dict
@@ -183,7 +187,8 @@ def sequence_bbox_check(kwargs: dict) -> dict:
 
 
 def points_traffic_signs_check(kwargs: dict) -> dict:
-    """Checks for traffic sign arguments
+    """
+    Checks for traffic sign arguments
 
     :param kwargs: The parameters to be passed for filtering
     :type kwargs: dict
@@ -204,7 +209,8 @@ def points_traffic_signs_check(kwargs: dict) -> dict:
 
 
 def valid_id(id: int, image=True):
-    """Checks if a given id is valid as it is assumed. For example, is a given id expectedly an
+    """
+    Checks if a given id is valid as it is assumed. For example, is a given id expectedly an
     image_id or not? Is the id expectedly a map_feature_id or not?
 
     :param id: The ID passed
@@ -224,7 +230,6 @@ def valid_id(id: int, image=True):
     # IF image == False, and error_check == True, this becomes True
     # IF image == True, and error_check == False, this becomes True
     if image ^ is_image_id(id=id, fields=[]):
-
         # The EntityAdapter() sends a request to the server, checking
         # if the id is indeed an image_id, TRUE is so, else FALSE
 
@@ -240,7 +245,8 @@ def valid_id(id: int, image=True):
 
 
 def is_image_id(id: int, fields: list = []) -> bool:
-    """Checks if the id is an image_id
+    """
+    Checks if the id is an image_id
 
     :param id: The id to be checked
     :type id: int
@@ -249,7 +255,9 @@ def is_image_id(id: int, fields: list = []) -> bool:
     :type fields: list
 
     :return: True if the id is an image_id, else False
+    :rtype: bool
     """
+
     try:
         res = requests.get(
             Entities.get_image(
@@ -265,7 +273,9 @@ def is_image_id(id: int, fields: list = []) -> bool:
 
 
 def check_file_name_validity(file_name: str) -> bool:
-    """Checks if the file name is valid.
+    """
+    Checks if the file name is valid.
+
     Valid file names are:
         - without extensions
         - without special characters
@@ -276,6 +286,7 @@ def check_file_name_validity(file_name: str) -> bool:
 
     :return: True if the file name is valid, else False
     """
+
     string_check = re.compile("[@.!#$%^&*()<>?/\|}{~:]")  # noqa: W605
     if (
         # File name characters are not all ASCII

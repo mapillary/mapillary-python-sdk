@@ -3,7 +3,7 @@
 
 """
 mapillary.utils.extract
-~~~~~~~~~~~~~~~~~~~~~~~
+=======================
 
 This module deals with extracting multiple fields nested within a GeoJSON packet.
 
@@ -13,7 +13,8 @@ This module deals with extracting multiple fields nested within a GeoJSON packet
 
 
 def extract_properties(geojson: dict, properties: list) -> dict:
-    """Extracts specific properties from a complete GeoJSON
+    """
+    Extracts specific properties from a complete GeoJSON
 
     :param geojson: GeoJSON object
     :type geojson: dict
@@ -25,17 +26,9 @@ def extract_properties(geojson: dict, properties: list) -> dict:
     :rtype: dict
 
     Usage::
+
         >>> from utils.extract import extract_properties
         >>> extract_properties(data, ['id']) # id most likely exists
-
-    Import::
-        >>> cd ${MAPILLARY_PROJECT_ROOT}
-        >>> from tests.utils.test_extract import test_extract_properties
-        >>> test_extract_properties(['id'])
-        {"Test": "Success"}
-
-    Test::
-        >>> pytest -m tests/
     """
 
     extracted_fields = {}

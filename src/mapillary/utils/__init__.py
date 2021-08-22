@@ -3,7 +3,7 @@
 
 """
 mapillary.utils.__init__
-~~~~~~~~~~~~~~~~~~~~~~~~
+========================
 
 This package contains all the internal utilities used within the mapilary python SDK.
 
