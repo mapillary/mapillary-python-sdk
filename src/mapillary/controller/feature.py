@@ -36,28 +36,9 @@ import mercantile
 from vt2geojson.tools import vt_bytes_to_geojson
 
 
-def get_map_features_in_shape_controller(geojson: dict, kwargs: dict) -> str:
-    """For extracting all map features within a shape
-
-    :param geojson: The initial data
-    :type geojson: dict
-
-    :param kwargs: Kwargs to filter with
-    :type kwargs: dict
-
-    :return: GeoJSON
-    :rtpe: dict
-    """
-
-    # TODO: Requirement# 10
-
-    points_traffic_signs_check(kwargs=kwargs)
-
-    return {"Message": "Hello, World!"}
-
-
 def get_feature_from_key_controller(key: int, fields: list) -> str:
-    """A controller for getting properties of a certain image given the image key and
+    """
+    A controller for getting properties of a certain image given the image key and
     the list of fields/properties to be returned
 
     :param key: The image key
@@ -85,7 +66,8 @@ def get_map_features_in_bbox_controller(
     filters: dict,
     layer: str = "points",
 ) -> str:
-    """For extracing either map feature points or traffic signs within a bounding box
+    """
+    For extracing either map feature points or traffic signs within a bounding box
 
     :param bbox: Bounding box coordinates as argument
     :type bbox: dict

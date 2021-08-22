@@ -26,7 +26,8 @@ from mapillary.utils.verify import check_file_name_validity
 
 
 def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
-    """Save data as CSV to given file path
+    """
+    Save data as CSV to given file path
 
     :param data: The data to save as CSV
     :type data: str
@@ -110,7 +111,8 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
 
 
 def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
-    """Save data as GeoJSON to given file path
+    """
+    Save data as GeoJSON to given file path
 
     :param data: The data to save as GeoJSON
     :type data: str

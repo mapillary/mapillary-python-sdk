@@ -14,30 +14,24 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :license: MIT LICENSE
 """
 
+# Library imports
+import json
+
+import mercantile
+import shapely
+from geojson import Polygon
 # Configs
 from mapillary.config.api.entities import Entities
 from mapillary.config.api.vector_tiles import VectorTiles
-
-# Exception Handling
-from mapillary.models.exceptions import InvalidImageKey
-from mapillary.utils.verify import (
-    image_check,
-    image_bbox_check,
-    sequence_bbox_check,
-    resolution_check,
-    valid_id,
-)
-
-# Client
-from mapillary.models.client import Client
-
+from mapillary.models.api.entities import EntityAdapter
 # # Adapters
 from mapillary.models.api.vector_tiles import VectorTilesAdapter
-from mapillary.models.api.entities import EntityAdapter
-
+# Client
+from mapillary.models.client import Client
+# Exception Handling
+from mapillary.models.exceptions import InvalidImageKey
 # # Class Representation
 from mapillary.models.geojson import GeoJSON
-
 # # Utilities
 from mapillary.utils.filter import pipeline
 from mapillary.utils.format import (
@@ -45,23 +39,25 @@ from mapillary.utils.format import (
     merged_features_list_to_geojson,
     geojson_to_polgyon,
 )
-
-# Library imports
-import json
-import shapely
-import mercantile
-from geojson import Polygon
+from mapillary.utils.verify import (
+    image_check,
+    image_bbox_check,
+    sequence_bbox_check,
+    resolution_check,
+    valid_id,
+)
 from requests import HTTPError
-from vt2geojson.tools import vt_bytes_to_geojson
 from turfpy.measurement import bbox
+from vt2geojson.tools import vt_bytes_to_geojson
 
 
 def get_image_close_to_controller(
-    longitude: float,
-    latitude: float,
-    kwargs: dict,
+        longitude: float,
+        latitude: float,
+        kwargs: dict,
 ) -> dict:
-    """Extracting the GeoJSON for the image data near the [longitude, latitude] coordinates
+    """
+    Extracting the GeoJSON for the image data near the [longitude, latitude] coordinates
 
     :param longitude: The longitude
     :type longitude: float
@@ -107,8 +103,8 @@ def get_image_close_to_controller(
 
     # Filtering for the attributes obtained above
     if (
-        unfiltered_data["features"] != {}
-        and unfiltered_data["features"][0]["properties"] != {}
+            unfiltered_data["features"] != {}
+            and unfiltered_data["features"][0]["properties"] != {}
     ):
         return GeoJSON(
             geojson=json.loads(
@@ -157,25 +153,28 @@ def get_image_close_to_controller(
 
 
 def get_image_looking_at_controller(
-    looker: dict,
-    at: dict,
-    filters: dict,
+        looker: dict,
+        at: dict,
+        filters: dict,
 ) -> dict:
-    """Extracting the GeoJSON for the image data from a 'looker' and 'at' coordinate view
+    """
+    Extracting the GeoJSON for the image data from a 'looker' and 'at' coordinate view
 
     :param looker: The dictionary of coordinates of the position of the looking from
-    coordinates, in the format,
+    coordinates. Format::
+
         >>> looker = {
-        >>>     'lng': <longitudinal parameter>
-        >>>     'lat': <latitude parameters>
+        >>>     'lng': <longitude>
+        >>>     'lat': <latitude>
         >>> }
     :type looker: dict
 
     :param at: The dict of coordinates of the position of the looking at
-    coordinates, in the format,
+    coordinates. Format::
+
         >>> at = {
-        >>>     'lng': <longitudinal parameter>
-        >>>     'lat': <latitude parameters>
+        >>>     'lng': <longitude>
+        >>>     'lat': <latitude>
         >>> }
     :type at: dict
 
@@ -251,15 +250,18 @@ def get_image_looking_at_controller(
     )
 
 
-def get_image_thumbnail_controller(image_id, resolution: int) -> str:
-    """This controller holds the business logic for retrieving
+def get_image_thumbnail_controller(image_id: str, resolution: int) -> str:
+    """
+    This controller holds the business logic for retrieving
     an image thumbnail with a specific resolution (256, 1024, or 2048)
     using an image ID/key
 
     :param image_id: Image key as the argument
+    :type image_id: str
 
     :param resolution: Option for the thumbnail size, with available resolutions:
     256, 1024, and 2048
+    :type resolution: int
 
     :return: A URL for the thumbnail
     :rtype: str
@@ -278,18 +280,20 @@ def get_image_thumbnail_controller(image_id, resolution: int) -> str:
 
 
 def get_images_in_bbox_controller(
-    bbox: dict, layer: str, zoom: int, filters: dict
+        bbox: dict, layer: str, zoom: int, filters: dict
 ) -> str:
-    """For getting a complete list of images that lie within a bounding box,
-     that can be filered via the filters argument
+    """
+    For getting a complete list of images that lie within a bounding box,
+    that can be filered via the filters argument
 
     :param bbox: A bounding box representation
-    example: {
-        'west': 'BOUNDARY_FROM_WEST',
-        'south': 'BOUNDARY_FROM_SOUTH',
-        'east': 'BOUNDARY_FROM_EAST',
-        'north': 'BOUNDARY_FROM_NORTH'
-    }
+    Example::
+        {
+            'west': 'BOUNDARY_FROM_WEST',
+            'south': 'BOUNDARY_FROM_SOUTH',
+            'east': 'BOUNDARY_FROM_EAST',
+            'north': 'BOUNDARY_FROM_NORTH'
+        }
     :type bbox: dict
 
     :param filters.max_captured_at: The max date that can be filtered upto
@@ -318,7 +322,8 @@ def get_images_in_bbox_controller(
     :return: GeoJSON
     :rtype: str
 
-    Reference: https://www.mapillary.com/developer/api-documentation/#coverage-tiles
+    Reference::
+        - https://www.mapillary.com/developer/api-documentation/#coverage-tiles
     """
 
     # Check if the given filters are valid ones
@@ -381,7 +386,7 @@ def get_images_in_bbox_controller(
                     else {},
                     {"filter": "image_type", "type": filters.get("image_type")}
                     if filters["image_type"] is not None
-                    or filters["image_type"] != "all"
+                       or filters["image_type"] != "all"
                     else {},
                     {
                         "filter": "organization_id",
@@ -406,6 +411,7 @@ def get_image_from_key_controller(key: int, fields: list) -> str:
     """
     A controller for getting properties of a certain image given the image key and
     the list of fields/properties to be returned
+
     :param key: The image key
     :type key: int
 
@@ -417,15 +423,17 @@ def get_image_from_key_controller(key: int, fields: list) -> str:
     """
 
     valid_id(id=key, image=True)
+
     return merged_features_list_to_geojson(
         feature_to_geojson(EntityAdapter().fetch_image(image_id=key, fields=fields))
     )
 
 
 def geojson_features_controller(
-    geojson: dict, is_image: bool = True, filters: dict = None
+        geojson: dict, is_image: bool = True, filters: dict = None
 ) -> dict:
-    """For extracting images that lie within a GeoJSON and merges the results of the found
+    """
+    For extracting images that lie within a GeoJSON and merges the results of the found
     GeoJSON(s) into a single object - by merging all the features into one feature list.
 
     :param geojson: The geojson to act as the query extent
@@ -488,7 +496,6 @@ def geojson_features_controller(
 
         # Going through the coordinate's nested list
         for coordinates in feature["geometry"]["coordinates"][0]:
-
             # Appending a tuple of coordinates
             coordinates_list.append((coordinates[0], coordinates[1]))
 
@@ -506,7 +513,7 @@ def geojson_features_controller(
         # at specified zoom level
         layers: GeoJSON = (
             VectorTilesAdapter()
-            .fetch_layers(
+                .fetch_layers(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -514,13 +521,13 @@ def geojson_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-            .to_dict()
+                .to_dict()
         )
     else:
         # Get all the map features within the boundary box for the polygon
         layers: GeoJSON = (
             VectorTilesAdapter()
-            .fetch_map_features(
+                .fetch_map_features(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -530,7 +537,7 @@ def geojson_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-            .to_dict()
+                .to_dict()
         )
 
     # Return as GeoJSON output
@@ -590,33 +597,34 @@ def geojson_features_controller(
 
 
 def shape_features_controller(
-    shape, is_image: bool = True, filters: dict = None
+        shape, is_image: bool = True, filters: dict = None
 ) -> dict:
-    """For extracting images that lie within a shape, merging the results of the found features
+    """
+    For extracting images that lie within a shape, merging the results of the found features
     into a single object - by merging all the features into one list in a feature collection.
 
-    The shape format is as follows,
-    'shape = {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
+    The shape format is as follows::
+        'shape = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {},
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
                             [
-                                7.2564697265625,
-                                43.69716905314008
-                            ],
-                            ...
+                                [
+                                    7.2564697265625,
+                                    43.69716905314008
+                                ],
+                                ...
+                            ]
                         ]
-                    ]
+                    }
                 }
-            }
-        ]
-    }'
+            ]
+        }'
 
     :param shape: A shape that describes features, formatted as a geojson
     :type shape: dict
@@ -671,7 +679,6 @@ def shape_features_controller(
 
         # Going through the coordinate's nested list
         for coordinates in feature["geometry"]["coordinates"][0]:
-
             # Appending a tuple of coordinates
             coordinates_list.append((coordinates[0], coordinates[1]))
 
@@ -688,7 +695,7 @@ def shape_features_controller(
         # Get all the map features within the boundary box for the polygon
         output: GeoJSON = (
             VectorTilesAdapter()
-            .fetch_layers(
+                .fetch_layers(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -696,13 +703,13 @@ def shape_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-            .to_dict()
+                .to_dict()
         )
     else:
         # Get all the map features within the boundary box for the polygon
         output: GeoJSON = (
             VectorTilesAdapter()
-            .fetch_map_features(
+                .fetch_map_features(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -712,7 +719,7 @@ def shape_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-            .to_dict()
+                .to_dict()
         )
 
     # Return as GeoJSON output
