@@ -16,14 +16,19 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 import mercantile
+
 # # Config
 from mapillary.config.api.vector_tiles import VectorTiles
+
 # # Client import
 from mapillary.models.client import Client
+
 # # Exception handling
 from mapillary.models.exceptions import InvalidOptionError
+
 # # Models
 from mapillary.models.geojson import GeoJSON
+
 # Package imports
 from vt2geojson.tools import vt_bytes_to_geojson
 
@@ -82,7 +87,7 @@ class VectorTilesAdapter(object):
         self.__max_zoom = 14
 
     def fetch_layer(
-            self, layer: str, longitude: float, latitude: float, zoom: int = 14
+        self, layer: str, longitude: float, latitude: float, zoom: int = 14
     ) -> dict:
         """
         Fetches an image tile layer depending on the coordinates, and the layer selected
@@ -121,7 +126,7 @@ class VectorTilesAdapter(object):
         )
 
     def fetch_computed_layer(
-            self, layer: str, zoom: int, longitude: float, latitude: float
+        self, layer: str, zoom: int, longitude: float, latitude: float
     ):
         """
         Same as `fetch_layer`, but gets in return computed tiles only.
@@ -160,7 +165,7 @@ class VectorTilesAdapter(object):
         )
 
     def fetch_features(
-            self, feature_type: str, zoom: int, longitude: float, latitude: float
+        self, feature_type: str, zoom: int, longitude: float, latitude: float
     ):
         """
         Fetches specified features from the coordinates with the apppropriate zoom level
@@ -198,11 +203,11 @@ class VectorTilesAdapter(object):
         )
 
     def fetch_layers(
-            self,
-            coordinates: "list[list]",
-            layer: str = "image",
-            zoom: int = 14,
-            is_computed: bool = False,
+        self,
+        coordinates: "list[list]",
+        layer: str = "image",
+        zoom: int = 14,
+        is_computed: bool = False,
     ) -> GeoJSON:
         """
         Fetches multiple vector tiles based on a list of multiple coordinates in a listed format
@@ -283,10 +288,10 @@ class VectorTilesAdapter(object):
         return geojson
 
     def fetch_map_features(
-            self,
-            coordinates: "list[list]",
-            feature_type: str,
-            zoom: int = 14,
+        self,
+        coordinates: "list[list]",
+        feature_type: str,
+        zoom: int = 14,
     ) -> GeoJSON:
         """
         Fetches map features based on a list Polygon object
@@ -346,9 +351,9 @@ class VectorTilesAdapter(object):
         return geojson
 
     def __check_parameters(
-            self,
-            longitude: float,
-            latitude: float,
+        self,
+        longitude: float,
+        latitude: float,
     ):
         """
         Range checking for the paramters of longitude, latitude, layer, zoom
@@ -556,7 +561,7 @@ class VectorTilesAdapter(object):
         )
 
     def __preprocess_features(
-            self, feature_type: str, tile: mercantile.Tile, zoom: int
+        self, feature_type: str, tile: mercantile.Tile, zoom: int
     ) -> dict:
         """
         Preprocess features

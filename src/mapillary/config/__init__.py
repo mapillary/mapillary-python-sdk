@@ -10,7 +10,8 @@ use of the APIv4
 
 # SOME NOTES FROM THE API,
 
-## Over Authentication
+Over Authentication
+!!!!!!!!!!!!!!!!!!!
 
 1. All requests against https://graph.mapillary.com must be authorized. They require a client or
 user access tokens. Tokens can be sent in two ways

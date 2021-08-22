@@ -20,18 +20,24 @@ import json
 import mercantile
 import shapely
 from geojson import Polygon
+
 # Configs
 from mapillary.config.api.entities import Entities
 from mapillary.config.api.vector_tiles import VectorTiles
 from mapillary.models.api.entities import EntityAdapter
+
 # # Adapters
 from mapillary.models.api.vector_tiles import VectorTilesAdapter
+
 # Client
 from mapillary.models.client import Client
+
 # Exception Handling
 from mapillary.models.exceptions import InvalidImageKey
+
 # # Class Representation
 from mapillary.models.geojson import GeoJSON
+
 # # Utilities
 from mapillary.utils.filter import pipeline
 from mapillary.utils.format import (
@@ -52,9 +58,9 @@ from vt2geojson.tools import vt_bytes_to_geojson
 
 
 def get_image_close_to_controller(
-        longitude: float,
-        latitude: float,
-        kwargs: dict,
+    longitude: float,
+    latitude: float,
+    kwargs: dict,
 ) -> dict:
     """
     Extracting the GeoJSON for the image data near the [longitude, latitude] coordinates
@@ -103,8 +109,8 @@ def get_image_close_to_controller(
 
     # Filtering for the attributes obtained above
     if (
-            unfiltered_data["features"] != {}
-            and unfiltered_data["features"][0]["properties"] != {}
+        unfiltered_data["features"] != {}
+        and unfiltered_data["features"][0]["properties"] != {}
     ):
         return GeoJSON(
             geojson=json.loads(
@@ -153,9 +159,9 @@ def get_image_close_to_controller(
 
 
 def get_image_looking_at_controller(
-        looker: dict,
-        at: dict,
-        filters: dict,
+    looker: dict,
+    at: dict,
+    filters: dict,
 ) -> dict:
     """
     Extracting the GeoJSON for the image data from a 'looker' and 'at' coordinate view
@@ -280,7 +286,7 @@ def get_image_thumbnail_controller(image_id: str, resolution: int) -> str:
 
 
 def get_images_in_bbox_controller(
-        bbox: dict, layer: str, zoom: int, filters: dict
+    bbox: dict, layer: str, zoom: int, filters: dict
 ) -> str:
     """
     For getting a complete list of images that lie within a bounding box,
@@ -386,7 +392,7 @@ def get_images_in_bbox_controller(
                     else {},
                     {"filter": "image_type", "type": filters.get("image_type")}
                     if filters["image_type"] is not None
-                       or filters["image_type"] != "all"
+                    or filters["image_type"] != "all"
                     else {},
                     {
                         "filter": "organization_id",
@@ -430,7 +436,7 @@ def get_image_from_key_controller(key: int, fields: list) -> str:
 
 
 def geojson_features_controller(
-        geojson: dict, is_image: bool = True, filters: dict = None
+    geojson: dict, is_image: bool = True, filters: dict = None
 ) -> dict:
     """
     For extracting images that lie within a GeoJSON and merges the results of the found
@@ -513,7 +519,7 @@ def geojson_features_controller(
         # at specified zoom level
         layers: GeoJSON = (
             VectorTilesAdapter()
-                .fetch_layers(
+            .fetch_layers(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -521,13 +527,13 @@ def geojson_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-                .to_dict()
+            .to_dict()
         )
     else:
         # Get all the map features within the boundary box for the polygon
         layers: GeoJSON = (
             VectorTilesAdapter()
-                .fetch_map_features(
+            .fetch_map_features(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -537,7 +543,7 @@ def geojson_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-                .to_dict()
+            .to_dict()
         )
 
     # Return as GeoJSON output
@@ -597,7 +603,7 @@ def geojson_features_controller(
 
 
 def shape_features_controller(
-        shape, is_image: bool = True, filters: dict = None
+    shape, is_image: bool = True, filters: dict = None
 ) -> dict:
     """
     For extracting images that lie within a shape, merging the results of the found features
@@ -695,7 +701,7 @@ def shape_features_controller(
         # Get all the map features within the boundary box for the polygon
         output: GeoJSON = (
             VectorTilesAdapter()
-                .fetch_layers(
+            .fetch_layers(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -703,13 +709,13 @@ def shape_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-                .to_dict()
+            .to_dict()
         )
     else:
         # Get all the map features within the boundary box for the polygon
         output: GeoJSON = (
             VectorTilesAdapter()
-                .fetch_map_features(
+            .fetch_map_features(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
@@ -719,7 +725,7 @@ def shape_features_controller(
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
-                .to_dict()
+            .to_dict()
         )
 
     # Return as GeoJSON output

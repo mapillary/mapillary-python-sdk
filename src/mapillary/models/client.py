@@ -32,6 +32,7 @@ import sys
 from math import floor
 
 import requests
+
 # Exception imports
 from mapillary.models.exceptions import InvalidTokenError
 

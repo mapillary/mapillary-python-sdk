@@ -54,10 +54,10 @@ class InvalidTokenError(MapillaryException):
 
     def __repr__(self):
         return (
-                "InvalidTokenError: An exception occured."
-                + f'Message: "{self.message}", Type: "{self.type}",'
-                + f'Code: "{self.code}",'
-                + f'fbtrace_id: "{self.fbtrace_id}"'
+            "InvalidTokenError: An exception occured."
+            + f'Message: "{self.message}", Type: "{self.type}",'
+            + f'Code: "{self.code}",'
+            + f'fbtrace_id: "{self.fbtrace_id}"'
         )
 
 
@@ -72,7 +72,8 @@ class AuthError(MapillaryException):
     :type type: str
 
     :var code: The error code returned, most likely 190, "Access token has expired", see
-    https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/ for more information
+    https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/
+    for more information
     :type code: str
 
     :var fbtrace_id: A unique ID to track the issue/exception
@@ -80,8 +81,8 @@ class AuthError(MapillaryException):
     """
 
     def __init__(
-            self,
-            message: str,
+        self,
+        message: str,
     ):
         """Initializing AuthError constructor"""
         self.message = message
@@ -157,11 +158,11 @@ class InvalidKwargError(MapillaryException):
     """
 
     def __init__(
-            self,
-            func: str,
-            key: str,
-            value: str,
-            options: list,
+        self,
+        func: str,
+        key: str,
+        value: str,
+        options: list,
     ):
         """Initializing InvalidKwargError constructor"""
         self.func = func
@@ -198,10 +199,10 @@ class InvalidOptionError(MapillaryException):
     """
 
     def __init__(
-            self,
-            param: str,
-            value: int,
-            options: list,
+        self,
+        param: str,
+        value: int,
+        options: list,
     ):
         """Initializing InvalidOptionError constructor"""
         self.param = param
@@ -234,9 +235,9 @@ class InvalidFieldError(MapillaryException):
     """
 
     def __init__(
-            self,
-            endpoint: str,
-            field: str,
+        self,
+        endpoint: str,
+        field: str,
     ):
         """Initializing InvalidFieldError constructor"""
         self.endpoint = endpoint
