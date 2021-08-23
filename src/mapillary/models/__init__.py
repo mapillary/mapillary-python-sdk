@@ -5,7 +5,7 @@
 mapillary.models.__init__
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This package contains the class representations of logic within the Mapilary Python SDK.
+This package contains the class representations of logic within the Mapillary Python SDK.
 
 :copyright: (c) 2021 Facebook
 :license: MIT LICENSE
