@@ -38,9 +38,10 @@ colors = {
     "UNDERLINE": "\033[4m",
 }
 
+
 def list_fetched_functions(fetched_functions: list) -> None:
     """Simply lists out the functions described in fetch.py along with their DocString
-    
+
     :param fetched_functions: List of function names along with their references in a tuple set
     :type fetched_functions: list
 
@@ -51,15 +52,14 @@ def list_fetched_functions(fetched_functions: list) -> None:
     # Through each tuple in the format (name, reference)
     for index, function in enumerate(fetched_functions):
 
-        # Print out ... 
+        # Print out ...
         print(
-
             # ... an index for the function, then the name of the function in cyan color ...
             f"{index + 1}. {colors['OKCYAN']}{function[0]}{colors['ENDC']} "
-
             # ... then print the docstring as well
             f"- {function[1].__doc__}"
         )
+
 
 def save_as_geojson(data: dict) -> None:
     """Saves the resulting geojson dictionary in a file tagged .geojson
@@ -74,10 +74,13 @@ def save_as_geojson(data: dict) -> None:
     # TODO: Test if this works perfectly fine in Windows, since it uses the `os` package
 
     # Save the file at the given path, create it if it does not exist
-    with open(f'{os.path.abspath(".")}/data/{sys.argv[2]}.geojson', mode='w') as geojson_file:
-        
+    with open(
+        f'{os.path.abspath(".")}/data/{sys.argv[2]}.geojson', mode="w"
+    ) as geojson_file:
+
         # Save the dictionary as a json in a clean formatted way
         json.dump(data, geojson_file, sort_keys=True, indent=4)
+
 
 def main():
     """Main logic for the CLI"""
@@ -88,18 +91,14 @@ def main():
     # If there are insufficient arguments
     if len(sys.argv) < 3:
 
-        # Log an error ... 
+        # Log an error ...
         logging.error(
-
             # ... indicating the source of the error ...
             " - client.py\n"
-
             # ... the reason for the error ...
             f"{colors['FAIL']}Invalid format!{colors['ENDC']}\n"
-
             # ... giving the user a format for the colors ...
             f"Try: python client.py {colors['BOLD']}'MLY|XXX'{colors['ENDC']} "
-
             # ... format of the function called
             f"{colors['OKCYAN']}fetch_function_here{colors['ENDC']}\n"
         )
@@ -127,13 +126,11 @@ def main():
         # If the results ends up empty
         if result == {}:
 
-            # Log an error ... 
+            # Log an error ...
             logging.error(
-
-                # ... indicating the source of the error ...                
+                # ... indicating the source of the error ...
                 " - client.py\n"
-
-            # ... the reason for the error                
+                # ... the reason for the error
                 f"{colors['FAIL']}Unrecognized function call!{colors['ENDC']}\n"
             )
 
@@ -141,7 +138,6 @@ def main():
             list_fetched_functions(fetched_functions=fetched_functions)
 
         # Saving the data
-        # TODO: Assumes user is working in Linux!
         save_as_geojson(result)
 
 

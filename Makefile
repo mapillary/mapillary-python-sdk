@@ -2,3 +2,6 @@
 
 style:
 	black src/mapillary && flake8 src/mapillary
+
+test:
+	@ pytest --log-cli-level=20

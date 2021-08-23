@@ -11,29 +11,72 @@ For testing the functions under mapillary/utils/filter.py
 :license: MIT LICENSE
 """
 
+# Package imports
+import pytest
+import logging  # Logger
 
-import requests
-import mercantile
-from vt2geojson.tools import vt_bytes_to_geojson
-from mapillary.utils.filter import pipeline
+# Local imports
+from mapillary.utils.filter import pipeline  # Pipeline
+from tests.conftest import data  # Data as fixture
+
+logger = logging.getLogger(__name__)
 
 
-def test_pipeline(zoom, longitude, latitude):
+@pytest.mark.parametrize(
+    "operation, expected",
+    [("pipeline(data=fetched_data, components=[...]", "len(data['features'])")],
+)
+def test_pipeline_min_captured_at(data: dict, operation, expected):
 
-    tile = mercantile.tile(lng=longitude, lat=latitude, zoom=zoom)
+    # Operation to test
+    test_that = f"len({operation}) != {expected}"
 
-    data = vt_bytes_to_geojson(
-        b_content=requests.get(
-            f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/14/{tile[0]}/{tile[1]}/?access_token=MLY|4352045404840373|b35c62c790e9b52c8476cfd08eb58704"
-        ).content,
-        x=tile.x,
-        y=tile.y,
-        z=tile.z,
-        layer="image",
+    # Logging the intended operation to be tested
+    logger.info(f"\n[test_pipeline_min_captured_at] Test that {test_that}")
+
+    # Get data from data fixture
+    fetched_data, _, longitude, latitude = data.values()
+
+    # Pass through pipeline. Actual data on left, operation on right
+    actual = pipeline(
+        data=fetched_data,
+        components=[
+            {
+                "filter": "haversine_dist",
+                "radius": 5000,
+                "coords": [longitude, latitude],
+            },
+            {
+                "filter": "min_captured_at",
+                "min_timestamp": "2020-01-01",
+            },
+        ],
     )
 
-    result = pipeline(
-        data=data,
+    # What was expected left, what was actual on the right
+    assert len(actual) != len(
+        fetched_data["features"]
+    ), f"{test_that} failed, got {actual}"
+
+
+@pytest.mark.parametrize(
+    "operation, expected",
+    [("pipeline(data=fetched_data, components=[...]", "len(data['features'])")],
+)
+def test_pipeline_haversine_dist(data: dict, operation, expected):
+
+    # Operation to test
+    test_that = f"len({operation}) != {expected}"
+
+    # Logging the intended operation to be tested
+    logger.info(f"\n[test_pipeline_haversine_dist] Test that {test_that}")
+
+    # Get data from data fixture
+    fetched_data, _, longitude, latitude = data.values()
+
+    # Pass through pipeline. Actual data on left, operation on right
+    actual = pipeline(
+        data=fetched_data,
         components=[
             {
                 "filter": "haversine_dist",
@@ -45,48 +88,10 @@ def test_pipeline(zoom, longitude, latitude):
                 "radius": 1000,
                 "coords": [longitude, latitude],
             },
-            {
-                "filter": "min_date",
-                "min_timestamp": '2020-01-01',
-            },
         ],
     )
 
-    print(len(result['features']))    
-    assert(len(result['features']) != len(data['features']))
-
-    result = pipeline(
-        data=data,
-        components=[
-            {
-                "filter": "haversine_dist",
-                "radius": 5000,
-                "coords": [longitude, latitude],
-            },
-            {
-                "filter": "haversine_dist",
-                "radius": 800,
-                "coords": [longitude, latitude],
-            },
-        ],
-    )
-
-    print(len(result['features']))
-    assert(len(result['features']) != len(data['features']))
-
-    result = pipeline(
-        data=data,
-        components=[
-            {
-                "filter": "haversine_dist",
-                "radius": 5000,
-                "coords": [longitude, latitude],
-            },
-        ],
-    )
-
-    print(len(result['features']))
-    assert(len(result['features']) == len(data['features']))
-
-if __name__ == '__main__':
-    test_pipeline(zoom=14, longitude=31, latitude=30)
+    # What was expected left, what was actual on the right
+    assert len(actual) != len(
+        fetched_data["features"]
+    ), f"{test_that} failed, got {actual}"

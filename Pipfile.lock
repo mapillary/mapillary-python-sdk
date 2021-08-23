@@ -32,14 +32,6 @@
             "index": "pypi",
             "version": "==3.3.0"
         },
-        "build": {
-            "hashes": [
-                "sha256:32290592c8ccf70ce84107962f6129407abf52cedaa752af28c0c95d99dfa2e7",
-                "sha256:d8d8417caff47888274d677f984de509554637dd1ea952d467b027849b06d83b"
-            ],
-            "index": "pypi",
-            "version": "==0.6.0.post1"
-        },
         "certifi": {
             "hashes": [
                 "sha256:2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee",
@@ -257,13 +249,6 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==21.0"
-        },
-        "pep517": {
-            "hashes": [
-                "sha256:3fa6b85b9def7ba4de99fb7f96fe3f02e2d630df8aa2720a5cf3b183f087a738",
-                "sha256:e1ba5dffa3a131387979a68ff3e391ac7d645be409216b961bc2efe6468ab0b2"
-            ],
-            "version": "==0.11.0"
         },
         "pkginfo": {
             "hashes": [
