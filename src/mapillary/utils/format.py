@@ -29,13 +29,13 @@ def feature_to_geojson(json_data: dict) -> dict:
 
     From::
 
-        {'geometry': {'type': 'Point', 'coordinates': [30.003755665554, 30.985948744314]}, 'id':
-        '506566177256016'}
+        >>> {'geometry': {'type': 'Point', 'coordinates': [30.003755665554, 30.985948744314]},
+        ... 'id':'506566177256016'}
 
     To::
 
-        {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-        'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
+        >>> {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type':
+        ... 'Point','coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
 
     :param json_data: The feature as a JSON
     :type json_data: dict
@@ -84,10 +84,11 @@ def join_geojson_with_keys(
     Usage::
 
         >>> join_geojson_with_keys(
-            geojson_src=geojson_src,
-            geojson_src_key='id',
-            geojson_dest=geojson_dest,
-            geojson_dest_key='id')
+        ...     geojson_src=geojson_src,
+        ...     geojson_src_key='id',
+        ...     geojson_dest=geojson_dest,
+        ...     geojson_dest_key='id'
+        ... )
     """
 
     # Go through the feature set in the src geojson
@@ -120,9 +121,9 @@ def join_geojson_with_keys(
                 # Going through the old properties in the features of src_geojson
                 for new_property in new_properties:
 
-                    # Going through the new propeties in the features of dest_geojson
+                    # Going through the new properties in the features of dest_geojson
                     if new_property not in old_properties:
-                        # Put the new_featu
+                        # Put the new_feature
                         from_features["properties"][new_property] = old_properties[
                             "properties"
                         ][new_property]
@@ -139,13 +140,14 @@ def geojson_to_features_list(json_data: dict) -> list:
 
     From::
 
-        {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-        'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]}
+        >>> {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry':
+        ... {'type': 'Point','coordinates': [30.98594605922699, 30.003757307208872]},
+        ... 'properties': {}}]}
 
     To::
 
-        [{'type': 'Feature', 'geometry': {'type': 'Point',
-        'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]
+        >>> [{'type': 'Feature', 'geometry': {'type': 'Point',
+        ... 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}]
 
     :param json_data: The given json data
     :type json_data: dict
@@ -164,13 +166,14 @@ def merged_features_list_to_geojson(features_list: list) -> str:
 
     From::
 
-        [{'type': 'Feature', 'geometry': {'type': 'Point',
-        'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}, ...]
+        >>> [{'type': 'Feature', 'geometry': {'type': 'Point',
+        ... 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}, ...]
 
     To::
 
-        {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry': {'type': 'Point',
-        'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties': {}}, ...]}
+        >>> {'type': 'FeatureCollection', 'features': [{'type': 'Feature', 'geometry':
+        ... {'type': 'Point','coordinates': [30.98594605922699, 30.003757307208872]},
+        ... 'properties': {}}, ...]}
 
     :param features_list: a list of processed features merged from different tiles within a bbox
     :type features_list: list
@@ -187,9 +190,9 @@ def detection_features_to_geojson(feature_list: list) -> dict:
     Converts a preprocessed list (i.e, features from the detections of either images or
     map_features from multiple segments) into a fully featured GeoJSON
 
-    :param features_list: A list of processed features merged from different segments within a
+    :param feature_list: A list of processed features merged from different segments within a
     detection
-    :type features_list: list
+    :type feature_list: list
 
     :return: GeoJSON formatted as expected in a detection format
     :rtype: dict
@@ -258,35 +261,36 @@ def detection_features_to_geojson(feature_list: list) -> dict:
     for _feature in resulting_geojson["features"]:
 
         # Going through each property in the feature
-        for _property in _feature["properties"]:
+        for key, value in _feature["properties"].items():
 
-            # If the _property has defauled to None
-            if _property is None:
+            # If the _property has defaulted to None
+            if value is None:
+
                 # Delete the _property from the feature
-                del _feature["properties"][_property]
+                del _feature["properties"][key]
 
     # Finally return the output
     return resulting_geojson
 
 
-def flatten_geojson(geojson: dict) -> dict:
+def flatten_geojson(geojson: dict) -> list:
     """
     Flattens a GeoJSON dictionary to a dictionary with only the relevant keys.
     This is useful for writing to a CSV file.
 
     Output Structure::
 
-        {
-            "geometry": {
-                "type": "Point",
-                "coordinates": [x, y]
-            },
-            "first_seen_at": "UNIX_TIMESTAMP",
-            "last_seen_at": "UNIX_TIMESTAMP",
-            "value": "regulatory--no-parking--g2",
-            "id": "FEATURE_ID",
-            "image_id": "IMAGE_ID"
-        }
+        >>> {
+        ...     "geometry": {
+        ...         "type": "Point",
+        ...         "coordinates": [71.45343, 12.523432]
+        ...     },
+        ...     "first_seen_at": "UNIX_TIMESTAMP",
+        ...     "last_seen_at": "UNIX_TIMESTAMP",
+        ...     "value": "regulatory--no-parking--g2",
+        ...     "id": "FEATURE_ID",
+        ...     "image_id": "IMAGE_ID"
+        ... }
 
     :param geojson: The GeoJSON to flatten
     :type geojson: dict
@@ -324,79 +328,79 @@ def flatten_geojson(geojson: dict) -> dict:
     ]
 
 
-def geojson_to_polgyon(geojson: dict) -> dict:
+def geojson_to_polygon(geojson: dict) -> GeoJSON:
     """
     Converts a GeoJSON into a collection of only geometry coordinates for the purpose of
     checking whether a given coordinate point exists within a shapely polygon
 
     From::
 
-        {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "geometry": {
-                        "coordinates": [
-                            -80.13069927692413,
-                            25.78523699486192
-                        ],
-                        "type": "Point"
-                    },
-                    "properties": {
-                        "first_seen_at": 1422984049000,
-                        "id": 481978503020355,
-                        "last_seen_at": 1422984049000,
-                        "value": "object--street-light"
-                    },
-                    "type": "Feature"
-                },
-                {
-                    "geometry": {
-                        "coordinates": [
-                            -80.13210475444794,
-                            25.78362849816017
-                        ],
-                        "type": "Point"
-                    },
-                    "properties": {
-                        "first_seen_at": 1423228306666,
-                        "id": 252538103315239,
-                        "last_seen_at": 1423228306666,
-                        "value": "object--street-light"
-                    },
-                    "type": "Feature"
-                },
-                ...
-            ]
-        }
+        >>> {
+        ...     "type": "FeatureCollection",
+        ...     "features": [
+        ...         {
+        ...             "geometry": {
+        ...                 "coordinates": [
+        ...                     -80.13069927692413,
+        ...                     25.78523699486192
+        ...                 ],
+        ...                 "type": "Point"
+        ...             },
+        ...             "properties": {
+        ...                 "first_seen_at": 1422984049000,
+        ...                 "id": 481978503020355,
+        ...                 "last_seen_at": 1422984049000,
+        ...                 "value": "object--street-light"
+        ...             },
+        ...             "type": "Feature"
+        ...         },
+        ...         {
+        ...             "geometry": {
+        ...                 "coordinates": [
+        ...                     -80.13210475444794,
+        ...                     25.78362849816017
+        ...                 ],
+        ...                 "type": "Point"
+        ...             },
+        ...             "properties": {
+        ...                 "first_seen_at": 1423228306666,
+        ...                 "id": 252538103315239,
+        ...                 "last_seen_at": 1423228306666,
+        ...                 "value": "object--street-light"
+        ...             },
+        ...             "type": "Feature"
+        ...         },
+        ...         ...
+        ...     ]
+        ... }
 
     To::
 
-        {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                    [
-                        [
-                        7.2564697265625,
-                        43.69716905314008
-                        ],
-                        [
-                        7.27020263671875,
-                        43.69419030566581
-                        ],
-                        ...
-                    ]
-                    ]
-                }
-                }
-            ]
-        }
+        >>> {
+        ... "type": "FeatureCollection",
+        ... "features": [
+        ...         {
+        ...             "type": "Feature",
+        ...             "properties": {},
+        ...             "geometry": {
+        ...                 "type": "Polygon",
+        ...                 "coordinates": [
+        ...                     [
+        ...                         [
+        ...                             7.2564697265625,
+        ...                             43.69716905314008
+        ...                         ],
+        ...                         [
+        ...                             7.27020263671875,
+        ...                             43.69419030566581
+        ...                         ],
+        ...                         ...
+        ...                     ]
+        ...                 ]
+        ...             }
+        ...         }
+        ...     ]
+        ... }
 
     :param geojson: The input GeoJSON
     :type geojson: dict
@@ -428,21 +432,25 @@ def geojson_to_polgyon(geojson: dict) -> dict:
     )
 
 
-def flatten_dictionary(data: dict, parent_key: str = "", sep: str = "_") -> dict:
+def flatten_dictionary(
+    data: typing.Union[dict, collections.MutableMapping],
+    parent_key: str = "",
+    sep: str = "_",
+) -> dict:
     """
     Flattens dictionaries
 
     From::
 
-        result = {'mpy-or': {'extent': 4096, 'version': 2, 'features': [{'geometry': {'type':
-        'Polygon', 'coordinates': [[[2402, 2776], [2408, 2776]]]}, 'properties': {}, 'id': 1,
-        'type': 3}]}}
+        >>> {'mpy-or': {'extent': 4096, 'version': 2, 'features': [{'geometry': {'type':
+        ... 'Polygon', 'coordinates': [[[2402, 2776], [2408, 2776]]]}, 'properties': {}, 'id': 1,
+        ... 'type': 3}]}}
 
     To::
 
-        {'mpy-or_extent': 4096, 'mpy-or_version': 2, 'mpy-or_features': [{'geometry': {'type':
-        'Polygon', 'coordinates': [[[2402, 2776], [2408, 2776]]]}, 'properties': {}, 'id': 1,
-        'type': 3}]}
+        >>> {'mpy-or_extent': 4096, 'mpy-or_version': 2, 'mpy-or_features': [{'geometry':
+        ... {'type':'Polygon', 'coordinates': [[[2402, 2776], [2408, 2776]]]}, 'properties':
+        ... {}, 'id': 1,'type': 3}]}
 
     :param data: The dictionary itself
     :type data: dict
@@ -453,7 +461,7 @@ def flatten_dictionary(data: dict, parent_key: str = "", sep: str = "_") -> dict
     :param sep: The separator
     :type sep: str
 
-    :return: A flattend dictionary
+    :return: A flattened dictionary
     :rtype: dict
     """
 
@@ -479,7 +487,7 @@ def flatten_dictionary(data: dict, parent_key: str = "", sep: str = "_") -> dict
             # Append to the list
             items.append((new_key, value))
 
-    # Cnverting to dictionary, and returning
+    # Converting to dictionary, and returning
     return dict(items)
 
 
@@ -489,7 +497,7 @@ def normalize_list(coordinates: list, width: int = 4096, height: int = 4096) -> 
 
     From::
 
-        >>> coordinates = [[[2402, 2776], [2408, 2776]]]
+        >>> [[[2402, 2776], [2408, 2776]]]
 
     To::
 
@@ -562,13 +570,13 @@ def decode_pixel_geometry(
     # Getting the results from mapbox_vector_tile
     result = mapbox_vector_tile.decode(data)
 
-    # Flattening the resultant dicionary
+    # Flattening the resultant dictionary
     flattened = flatten_dictionary(result)
 
     # Init geometry var
     geometry = None
 
-    # For key in the flattend keys
+    # For key in the flattened keys
     for key in flattened.keys():
 
         # If the key contains the word "features"
@@ -617,7 +625,7 @@ def decode_pixel_geometry_in_geojson(
     # Remove pass by reference for idempotent principle
     data = geojson.copy()
 
-    # Iterature through the features
+    # Iterate through the features
     for feature in data["features"]:
         # For the pixel_geometry feature, decode it
         feature["properties"]["pixel_geometry"] = decode_pixel_geometry(

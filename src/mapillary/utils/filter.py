@@ -3,7 +3,7 @@
 
 """
 mapillary.utils.filter
-====================-
+=====================
 
 This module contains the filter utilies for high level filtering logic
 
@@ -76,23 +76,23 @@ def pipeline(data: dict, components: list) -> list:
 
         >>> # assume variables 'data', 'kwargs'
         >>> pipeline(
-            data=data,
-            components=[
-                {"filter": "image_type", "tile": kwargs["image_type"]}
-                if "image_type" in kwargs
-                else {},
-                {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-                if "org_id" in kwargs
-                else {},
-                {
-                    "filter": "haversine_dist",
-                    "radius": kwargs["radius"],
-                    "coords": [longitude, latitude],
-                }
-                if "radius" in kwargs
-                else 1000,
-            ],
-        )
+        ...     data=data,
+        ...     components=[
+        ...         {"filter": "image_type", "tile": kwargs["image_type"]}
+        ...         if "image_type" in kwargs
+        ...         else {},
+        ...         {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
+        ...         if "org_id" in kwargs
+        ...         else {},
+        ...         {
+        ...             "filter": "haversine_dist",
+        ...             "radius": kwargs["radius"],
+        ...             "coords": [longitude, latitude],
+        ...         }
+        ...         if "radius" in kwargs
+        ...         else 1000
+        ...     ]
+        ... )
     """
 
     # Python treats dict objects as passed reference, thus
@@ -161,7 +161,7 @@ def max_captured_at(data: list, max_timestamp: str) -> list:
 
         >>> max_captured_at([{'type': 'Feature', 'geometry':
         ... {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
-        { ... }, ...}], '2020-05-23')
+        ... { ... }, ...}], '2020-05-23')
     """
 
     return [
@@ -189,7 +189,7 @@ def min_captured_at(data: list, min_timestamp: str) -> list:
 
         >>> max_captured_at([{'type': 'Feature', 'geometry':
         ... {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
-        { ... }, ...}], '2020-05-23')
+        ... { ... }, ...}], '2020-05-23')
     """
 
     return [
@@ -208,12 +208,14 @@ def features_in_bounding_box(data: list, bbox: dict) -> list:
 
     :param bbox: Bounding box coordinates
     Example::
-        {
-            'east': 'BOUNDARY_FROM_EAST',
-            'south': 'BOUNDARY_FROM_SOUTH',
-            'west': 'BOUNDARY_FROM_WEST',
-            'north': 'BOUNDARY_FROM_NORTH'
-        }
+
+        >>> {
+        ...     'east': 'BOUNDARY_FROM_EAST',
+        ...     'south': 'BOUNDARY_FROM_SOUTH',
+        ...     'west': 'BOUNDARY_FROM_WEST',
+        ...     'north': 'BOUNDARY_FROM_NORTH'
+        ... }
+
     :type bbox: dict
 
     :return: Features that only exist within the bounding box selected for the given features list
@@ -246,8 +248,8 @@ def filter_values(data: list, values: list, property: str = "value") -> list:
     Filter the features based on the existence of a specified value
     in one of the property.
 
-    ### TODO: Need documentation that lists the 'values', specifically, it refers to 'value'
-    ### TODO: under 'Detection', and 'Map feature', related to issue #65
+    *TODO*: Need documentation that lists the 'values', specifically, it refers to 'value'
+    *TODO*: under 'Detection', and 'Map feature', related to issue #65
 
     :param data: The data to be filtered
     :type data: dict
@@ -310,8 +312,8 @@ def existed_before(data: list, existed_before: str) -> list:
 
 def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> list:
     """
-    Returns features that are only in the radius specified
-    using the Haversine distance, from the haversine package
+    Returns features that are only in the radius specified using the Haversine distance, from
+    the haversine package
 
     :param data: The data to be filtered
     :type data: dict
@@ -349,8 +351,8 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
 
 def image_type(data: list, image_type: str) -> list:
     """
-    The parameter might be 'all' (both is_pano == true and false), 'pano'
-    (is_pano == true only), or 'flat' (is_pano == false only)
+    The parameter might be 'all' (both is_pano == true and false), 'pano' (is_pano == true only),
+    or 'flat' (is_pano == false only)
 
     :param data: The data to be filtered
     :type data: list

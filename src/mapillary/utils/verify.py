@@ -6,7 +6,7 @@ mapillary.controller.rules.verify
 =================================
 
 This module implements the verification of the filters or keys passed to each of the controllers
-under `./controllers` that implemeent the business logic functionalities of the Mapillary
+under `./controllers` that implement the business logic functionalities of the Mapillary
 Python SDK.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/
@@ -14,6 +14,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 :copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
+
 # Local Imports
 from mapillary.models.exceptions import InvalidKwargError, InvalidOptionError
 from mapillary.config.api.entities import Entities
@@ -118,8 +119,10 @@ def resolution_check(resolution: int) -> bool:
     if resolution not in [256, 1024, 2048]:
         # Raising exception for resolution value
         raise InvalidOptionError(
-            param="resolution", value=resolution, options=[256, 1024, 2048]
+            param="resolution", value=str(resolution), options=[256, 1024, 2048]
         )
+
+    return True
 
 
 def image_bbox_check(kwargs: dict) -> dict:
@@ -208,13 +211,13 @@ def points_traffic_signs_check(kwargs: dict) -> dict:
         }
 
 
-def valid_id(id: int, image=True):
+def valid_id(identity: int, image=True) -> None:
     """
     Checks if a given id is valid as it is assumed. For example, is a given id expectedly an
     image_id or not? Is the id expectedly a map_feature_id or not?
 
-    :param id: The ID passed
-    :type id: int
+    :param identity: The ID passed
+    :type identity: int
 
     :param image: Is the passed id an image_id?
     :type image: bool
@@ -229,14 +232,14 @@ def valid_id(id: int, image=True):
 
     # IF image == False, and error_check == True, this becomes True
     # IF image == True, and error_check == False, this becomes True
-    if image ^ is_image_id(id=id, fields=[]):
+    if image ^ is_image_id(identity=identity, fields=[]):
         # The EntityAdapter() sends a request to the server, checking
         # if the id is indeed an image_id, TRUE is so, else FALSE
 
         # Raises an exception of InvalidOptionError
         raise InvalidOptionError(
             param="id",
-            value=f"ID: {id}, image: {image}",
+            value=f"ID: {identity}, image: {image}",
             options=[
                 "ID is image_id AND image is True",
                 "ID is map_feature_id AND image is False",
@@ -244,12 +247,12 @@ def valid_id(id: int, image=True):
         )
 
 
-def is_image_id(id: int, fields: list = []) -> bool:
+def is_image_id(identity: int, fields: list = None) -> bool:
     """
     Checks if the id is an image_id
 
-    :param id: The id to be checked
-    :type id: int
+    :param identity: The id to be checked
+    :type identity: int
 
     :param fields: The fields to be checked
     :type fields: list
@@ -261,7 +264,7 @@ def is_image_id(id: int, fields: list = []) -> bool:
     try:
         res = requests.get(
             Entities.get_image(
-                image_id=id,
+                image_id=str(identity),
                 fields=fields if fields != [] else Entities.get_image_fields(),
             ),
             headers={"Authorization": f"OAuth {Client.get_token()}"},
@@ -274,9 +277,9 @@ def is_image_id(id: int, fields: list = []) -> bool:
 
 def check_file_name_validity(file_name: str) -> bool:
     """
-    Checks if the file name is valid.
+    Checks if the file name is valid
 
-    Valid file names are:
+    Valid file names are,
         - without extensions
         - without special characters
         - A-Z, a-z, 0-9, _, -
@@ -287,7 +290,7 @@ def check_file_name_validity(file_name: str) -> bool:
     :return: True if the file name is valid, else False
     """
 
-    string_check = re.compile("[@.!#$%^&*()<>?/\|}{~:]")  # noqa: W605
+    string_check = re.compile("[@.!#$%^&*()<>?/}{~:]")  # noqa: W605
     if (
         # File name characters are not all ASCII
         not all(ord(c) < 128 for c in file_name)
