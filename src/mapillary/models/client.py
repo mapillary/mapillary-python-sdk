@@ -40,8 +40,8 @@ from mapillary.models.exceptions import InvalidTokenError
 logger = logging.getLogger("mapillary.utils.client")
 
 # stdout logger setup
-hdlr = logging.StreamHandler(sys.stdout)
-logger.addHandler(hdlr)
+stream_handler = logging.StreamHandler(sys.stdout)
+logger.addHandler(stream_handler)
 
 # Setting log_level to INFO
 log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
@@ -53,7 +53,7 @@ try:
     logger.setLevel(log_level)
 except ValueError:
     logger.setLevel(logging.INFO)
-    logger.warn("LOG_LEVEL: unvalid variable - Defaulting to: INFO")
+    logger.warning("LOG_LEVEL: invalid variable - Defaulting to: INFO")
 
 
 class Client:
@@ -64,11 +64,11 @@ class Client:
 
     Usage::
 
-        >>> client = Client(access_token=MLY||XXX)
+        >>> client = Client(access_token='MLY|XXX')
         >>> # for entities endpoints
         >>> client.get(endpoint='endpoint specific path', entity=True, params={
-            'fields': ['id', 'value']
-        })
+        ...     'fields': ['id', 'value']
+        ... })
         >>> # for tiles endpoint
         >>> client.get(endpoint='endpoint specific path', entity=False)
     """
@@ -99,16 +99,28 @@ class Client:
             )
 
     @staticmethod
-    def get_token():
+    def get_token() -> str:
+        """
+        Gets the access token
+
+        :return: The access token
+        """
+
         return Client.__access_token
 
     @staticmethod
-    def set_token(access_token):
+    def set_token(access_token: str) -> None:
+        """
+        Sets the access token
+
+        :param access_token: The access token to be set
+        """
+
         Client.__check_token_validity(access_token)
 
         Client.__access_token = access_token
 
-    def _initiate_request(self, url: str, method: str, params: dict = {}):
+    def _initiate_request(self, url: str, method: str, params: dict = None):
         """
         Private method - For internal use only.
         This method is responsible for making tailored API requests to the mapillary API v4.
@@ -120,7 +132,7 @@ class Client:
         :param method: HTTP method to be used - required
         :type method: str
 
-        :param params: Query parameters to be attached to the requeset - optional
+        :param params: Query parameters to be attached to the request - optional
         :type params: dict
         """
 
@@ -130,13 +142,13 @@ class Client:
         prepped_req = self.session.prepare_request(request)
 
         # Log the prepped request before sending it.
-        self._pprint_request(prepped_req)
+        Client._pprint_request(prepped_req)
 
         # Sending the request
         res = self.session.send(prepped_req)
 
         # Log the responses
-        self._pprint_response(res)
+        Client._pprint_response(res)
 
         # Handling the response status codes
         if res.status_code == requests.codes.ok:
@@ -164,14 +176,14 @@ class Client:
 
         return res
 
-    def get(self, url: str = None, params: dict = {}):
+    def get(self, url: str = None, params: dict = None):
         """
         Make GET requests to both mapillary main endpoints
 
         :param url: The specific path of the request URL
         :type url: str
 
-        :param params: Query paramaters to be attached to the URL (Dict)
+        :param params: Query parameters to be attached to the URL (Dict)
         :type params: dict
         """
         # Check if an endpoint is specified.
@@ -183,12 +195,15 @@ class Client:
 
         return self._initiate_request(url=url, method="GET", params=params)
 
-    def _pprint_request(self, prepped_req):
+    @staticmethod
+    def _pprint_request(prepped_req):
         """
-        method endpoint HTTP/version
-        Host: host
-        header_key: header_value
-        body
+        Format::
+
+            Method endpoint: HTTP/version
+            Host: host
+            Header_key: Header_value
+            Body
 
         :param prepped_req: The prepped request object
 
@@ -213,11 +228,14 @@ class Client:
             )
         )
 
-    def _pprint_response(self, res):
+    @staticmethod
+    def _pprint_response(res):
         """
-        HTTP/version status_code status_text
-        header_key: header_value
-        body
+        Format::
+
+            HTTP/version status_code status_text
+            Header_key: Header_value
+            Body
 
         :param res: Response object returned from the API request
 
@@ -227,8 +245,8 @@ class Client:
                 '24730c4631ffc30068272386669/exampleClient.py#L230'
         """
 
-        httpv0, httpv1 = list(str(res.raw.version))
-        httpv = f"HTTP/{httpv0}.{httpv1}"
+        http_v0, http_v1 = list(str(res.raw.version))
+        http_v = f"HTTP/{http_v0}.{http_v1}"
         status_code = res.status_code
         status_text = res.reason
         headers = "\n".join(f"{k}: {v}" for k, v in res.headers.items())
@@ -242,7 +260,7 @@ class Client:
         logger.debug(
             "{}\n{} {} {}\n{}\n\n{}".format(
                 "-----------RESPONSE-----------",
-                httpv,
+                http_v,
                 status_code,
                 status_text,
                 headers,

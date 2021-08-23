@@ -26,7 +26,7 @@ from mapillary.utils.format import detection_features_to_geojson
 from mapillary.models.client import Client
 
 # # Exception Handling
-from mapillary.models.exceptions import InvalidImageKey
+from mapillary.models.exceptions import InvalidImageKeyError
 
 # # Config
 from mapillary.config.api.entities import Entities
@@ -103,7 +103,7 @@ class EntityAdapter(object):
             )
         except HTTPError:
             # If given ID is an invalid image ID, let the user know
-            raise InvalidImageKey(image_id)
+            raise InvalidImageKeyError(image_id)
 
     def fetch_map_feature(self, map_feature_id: int, fields: list = []):
         """

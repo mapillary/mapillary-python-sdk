@@ -120,7 +120,7 @@ class Geometry:
         """
         Initializing Geometry constructor
 
-        :param geometry: The geomtry object for creation
+        :param geometry: The geometry object for creation
         :type geometry: dict
         """
 
@@ -161,8 +161,8 @@ class Geometry:
 class Feature:
     """Representation for a feature in a feature list
 
-    :param geojson: The GeoJSON as the input
-    :type geojson: dict
+    :param feature: The GeoJSON as the input
+    :type feature: dict
 
     '''
     :raise InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
@@ -173,7 +173,12 @@ class Feature:
     """
 
     def __init__(self, feature: dict) -> None:
-        """Initializing Feature constructor"""
+        """
+        Initializing Feature constructor
+
+        :param feature: Feature JSON
+        :type feature: dict
+        """
 
         # Validate that the geojson passed is indeed a dictionary
         if not isinstance(feature, dict):
@@ -245,8 +250,8 @@ class GeoJSON:
 
         >>> import mapillary as mly
         >>> from models.geojson import GeoJSON
-        >>> mly.set_access_token('MLY|XXX')
-        >>> data = mly.get_image_close_to(longitude=31, latitude=31)
+        >>> mly.interface.set_access_token('MLY|XXX')
+        >>> data = mly.interface.get_image_close_to(longitude=31, latitude=31)
         >>> geojson = GeoJSON(geojson=data)
         >>> type(geojson)
         ... <class 'mapillary.models.geojson.GeoJSON'>
@@ -280,7 +285,7 @@ class GeoJSON:
 
             # The GeoJSON should only contain the keys of `type`, `features`, if not empty,
             # raise exception
-            if [key for key in geojson.keys() if key not in ["type", "features"]] != []:
+            if [key for key in geojson.keys() if key not in ["type", "features"]]:
                 # Raise InvalidOptionError
                 InvalidOptionError(
                     # The parameter that caused the exception
