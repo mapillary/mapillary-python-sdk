@@ -30,6 +30,36 @@ import mapillary.controller.feature as feature
 import mapillary.controller.detection as detection
 import mapillary.controller.save as save
 
+def international_dateline(bbox):
+    if bbox['west']>0 and bbox['east']<0:
+        return True
+    return False
+
+def check_bbox_validity(bbox):
+    # longitude check
+    if bbox['west'] < 180 or bbox['east'] > 180:
+        return False
+    # lattitude check
+    elif bbox['north'] > 90 or bbox['south'] < 90:
+        return False
+    # longitude validity check
+    elif bbox['west']>bbox['east'] :
+        # extra check for international dateline
+        # it could either be an error or cross an internaitonal dateline
+        # hence if it is passing the dateline, return True
+        if international_dateline(bbox):
+            new_east = bbox['east'] + 360
+            bbox['east'] = new_east
+            return bbox
+        return False
+    # lattitude validitiy check
+    elif bbox['north']<bbox['south']:
+        return False
+    elif bbox['north']==bbox['south'] and bbox['west']==bbox['east']:        
+        # checking for equal values to avoid flat box 
+        return False
+    else:
+        return True
 
 def set_access_token(token: str):
     """A function allowing the user to set an access
@@ -371,10 +401,13 @@ def images_in_bbox(bbox: dict, **filters) -> str:
         ...     organization_id='ORG_ID'
         ... )
     """
-
-    return image.get_images_in_bbox_controller(
-        bbox=bbox, layer="image", zoom=14, filters=filters
-    )
+    if check_bbox_validity(bbox):
+        return image.get_images_in_bbox_controller(
+            bbox=bbox, layer="image", zoom=14, filters=filters
+        )
+    else:
+        print("Please enter the correct bounding box values")
+        return
 
 
 @auth()
@@ -420,10 +453,13 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
         ...     org_id='ORG_ID'
         ... )
     """
-
-    return image.get_images_in_bbox_controller(
-        bbox=bbox, layer="sequence", zoom=14, filters=filters
-    )
+    if check_bbox_validity(bbox):
+        return image.get_images_in_bbox_controller(
+            bbox=bbox, layer="sequence", zoom=14, filters=filters
+        )
+    else:
+        print("Please enter the correct bounding box values")
+        return
 
 
 @auth()
@@ -523,10 +559,14 @@ def traffic_signs_in_bbox(
         ...    existed_before='YYYY-MM-DD HH:MM:SS'
         ... )
     """
-
-    return feature.get_map_features_in_bbox_controller(
-        bbox=bbox, filters=filters, filter_values=filter_values, layer="traffic_signs"
-    )
+    if check_bbox_validity(bbox):
+        return feature.get_map_features_in_bbox_controller(
+            bbox=bbox, filters=filters, filter_values=filter_values, layer="traffic_signs"
+        )
+    else:
+        print("Please enter the correct bounding box values")
+        return
+        
 
 
 @auth()
