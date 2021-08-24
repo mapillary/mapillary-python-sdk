@@ -211,9 +211,9 @@ def features_in_bounding_box(data: list, bbox: dict) -> list:
         Example::
 
             >>> {
-            ...     'east': 'BOUNDARY_FROM_EAST',
-            ...     'south': 'BOUNDARY_FROM_SOUTH',
             ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'east': 'BOUNDARY_FROM_EAST',
             ...     'north': 'BOUNDARY_FROM_NORTH'
             ... }
 
