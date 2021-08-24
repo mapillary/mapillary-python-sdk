@@ -16,6 +16,10 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 
 
 class General:
+    """
+    A general list of metadata API endpoints for APIv4
+    """
+
     @staticmethod
     def get_tile_metadata():
         """Root endpoint for metadata"""
@@ -61,7 +65,7 @@ class General:
         )
 
     @staticmethod
-    def get_map_fearurs_traffic_signs_tiles(
+    def get_map_features_traffic_signs_tiles(
         x: float,
         y: float,
         z: float,

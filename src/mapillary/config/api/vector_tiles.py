@@ -234,7 +234,7 @@ class VectorTiles:
         )
 
     @staticmethod
-    def get_map_feature_traffic_signs(
+    def get_map_feature_traffic_sign(
         x: float,
         y: float,
         z: float,

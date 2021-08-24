@@ -22,7 +22,7 @@ from mapillary.models.exceptions import InvalidFieldError
 
 class Entities:
     """
-    Each API call requires specifying the fields of the Entity you're interestedin explicitly.
+    Each API call requires specifying the fields of the Entity you're interested in explicitly.
     A sample image by ID request which returns the id and a computed geometry could look as
     below. For each entity available fields are listed in the relevant sections. All IDs are
     unique and the underlying metadata for each entity is accessible at
@@ -32,14 +32,14 @@ class Entities:
 
     Usage::
 
-        >>> GET https://graph.mapillary.com/$IMAGE_ID?access_token=TOKEN&fields=id,computed_geometry
-        >>> {
-        >>>     "id": "$IMAGE_ID",
-        >>>     "computed_geometry": {
-        >>>         "type": "Point",
-        >>>         "coordinates": [0, 0]
-        >>>     }
-        >>> }
+        $ GET 'https://graph.mapillary.com/$IMAGE_ID?access_token=TOKEN&fields=id,computed_geometry'
+        ... {
+        ...     "id": "$IMAGE_ID",
+        ...     "computed_geometry": {
+        ...         "type": "Point",
+        ...         "coordinates": [0, 0]
+        ...     }
+        ... }
     """
 
     @staticmethod
@@ -50,7 +50,7 @@ class Entities:
 
         Usage::
 
-            >>> https://graph.mapillary.com/:image_id # endpoint
+            >>> 'https://graph.mapillary.com/:image_id' # endpoint
 
         Fields::
 
@@ -65,7 +65,7 @@ class Entities:
             9. computed_geometry - GeoJSON Point, location after running image processing
             10. computed_rotation - enum, corrected orientation of the image
             11. exif_orientation - enum, orientation of the camera as given by the exif tag
-            (see: http://sylvana.net/jpegcrop/exif_orientation.html)
+            (see: https://sylvana.net/jpegcrop/exif_orientation.html)
             12. geometry - GeoJSON Point geometry
             13. height - int, height of the original image uploaded
             14. thumb_256_url - string, URL to the 256px wide thumbnail
@@ -89,6 +89,13 @@ class Entities:
 
     @staticmethod
     def get_image_fields() -> list:
+        """
+        Gets list of possible image fields
+
+        :return: Image field list
+        :rtype: list
+        """
+
         return [
             "altitude",
             "atomic_scale",
@@ -122,7 +129,7 @@ class Entities:
 
         Usage::
 
-            >>> https://graph.mapillary.com/:map_feature_id # endpoint
+            >>> 'https://graph.mapillary.com/:map_feature_id' # endpoint
 
         Fields::
 
@@ -148,6 +155,13 @@ class Entities:
 
     @staticmethod
     def get_map_feature_fields() -> list:
+        """
+        Gets map feature fields
+
+        :return: Possible map feature fields
+        :rtype: list
+        """
+
         return [
             "first_seen_at",
             "last_seen_at",
@@ -170,7 +184,7 @@ class Entities:
 
         Usage::
 
-            >>> https://graph.mapillary.com/:image_id/detections
+            >>> 'https://graph.mapillary.com/:image_id/detections'
             >>> # detections in the image with ID image_id
 
         Fields::
@@ -191,6 +205,13 @@ class Entities:
 
     @staticmethod
     def get_detection_with_image_id_fields() -> list:
+        """
+        Gets list of possible detections for image ids
+
+        :return: Possible detection parameters
+        :rtype: list
+        """
+
         return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
@@ -205,10 +226,12 @@ class Entities:
         contribute or belong to.
 
         Usage::
-            >>> https://graph.mapillary.com/:map_feature_id/detections
+
+            >>> 'https://graph.mapillary.com/:map_feature_id/detections'
             >>> # detections in the image with ID map_feature_id
 
         Fields::
+
             1. created_at - timestamp, when was this detection created
             2. geometry - string, base64 encoded polygon
             3. image - object, image the detection belongs to
@@ -225,6 +248,13 @@ class Entities:
 
     @staticmethod
     def get_detection_with_map_feature_id_fields() -> list:
+        """
+        Gets list of possible field parameters for map features
+
+        :return: Map feature detection fields
+        :rtype: list
+        """
+
         return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
@@ -238,7 +268,7 @@ class Entities:
 
         Usage::
 
-            >>> https://graph.mapillary.com/:organization_id # endpoint
+            >>> 'https://graph.mapillary.com/:organization_id' # endpoint
 
         Fields::
 
@@ -259,6 +289,13 @@ class Entities:
 
     @staticmethod
     def get_organization_id_fields() -> list:
+        """
+        Gets list of possible organization id fields
+
+        :return: Possible organization fields
+        :rtype: list
+        """
+
         return ["slug", "name", "description"]
 
     @staticmethod
@@ -270,7 +307,7 @@ class Entities:
 
         Usage::
 
-            >>> https://graph.mapillary.com/image_ids?sequence_id=XXX
+            >>> 'https://graph.mapillary.com/image_ids?sequence_id=XXX'
             >>> # endpoint
 
         Fields::
@@ -332,5 +369,5 @@ class Entities:
                     field=field,
                 )
 
-        # If no error occured, and all the fields are correct, return the given_fields
+        # If no error occurred, and all the fields are correct, return the given_fields
         return given_fields
