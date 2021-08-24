@@ -5,7 +5,7 @@
 mapillary.models.api.vector_tiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the adapter design for the Vector Tiles API of Mapillary APIv4, Vector tiles
+This module contains the adapter design for the Vector Tiles API of Mapillary API v4, Vector tiles
 provide an easy way to visualize vast amounts of data. Vector tiles support filtering and querying
 rendered features. Mapillary vector tiles follow the Mapbox tile specification.
 
@@ -37,7 +37,7 @@ class VectorTilesAdapter(object):
     """
     Adapter model for dealing with the VectorTiles API, through the DRY principle. The
     VectorTilesAdapter class can be instantiated in the controller modules, providing an
-    abstraction layer that uses the Client class, endpoints provided by the APIv4 under
+    abstraction layer that uses the Client class, endpoints provided by the API v4 under
     `/config/api/vector_tiles.py`.
 
     It performs parsing, handling of layers, properties, and fields to make it easier to

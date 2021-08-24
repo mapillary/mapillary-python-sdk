@@ -5,7 +5,7 @@
 mapillary.models.api.entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the Adapter design for the Entities API of Mapillary APIv4.
+This module contains the Adapter design for the Entities API of Mapillary API v4.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
@@ -40,7 +40,7 @@ class EntityAdapter(object):
     """
     Adapter model for dealing with the Entity API, through the DRY principle. The EntityAdapter
     class can be instantiated in the controller modules, providing an abstraction layer that uses
-    the Client class, endpoints provided by the APIv4 under `/config/api/entities.py`.
+    the Client class, endpoints provided by the API v4 under `/config/api/entities.py`.
 
     It performs parsing, handling of layers, properties, and fields to make it easier to
     write higher level logic for extracing information, and lets developers to focus only

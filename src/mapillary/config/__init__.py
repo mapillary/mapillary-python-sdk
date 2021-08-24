@@ -5,8 +5,9 @@
 mapillary.config.__init__
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the APIv4 configuration and URL arguments. Created to help in ease of
-use of the APIv4
+This module contains the API v4 configuration and URL arguments.
+
+Created to help in ease of use of the API v4.
 
 # SOME NOTES FROM THE API
 

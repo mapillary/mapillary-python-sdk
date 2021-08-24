@@ -4,7 +4,7 @@
 """
 mapillary.config.api.__init__
 
-This package contains all the APIv4 endpoints provided with the Mapillary Python SDK.
+This package contains all the API v4 endpoints provided with the Mapillary Python SDK.
 
 - Copyright: (c) 2021 Facebook
 - License: MIT LICENSE

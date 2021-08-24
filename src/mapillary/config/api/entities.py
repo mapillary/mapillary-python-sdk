@@ -6,7 +6,7 @@ mapillary.config.api.entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module contains the class implementation of the Entities API endpoints
-as string, for the entity API endpoint aspect of the APIv4 of Mapillary.
+as string, for the entity API endpoint aspect of the API v4 of Mapillary.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 

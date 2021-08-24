@@ -6,7 +6,7 @@ mapillary.config.api.general
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module contains the class implementation of the
-general metadata functionalities for the APIv4 of Mapillary.
+general metadata functionalities for the API v4 of Mapillary.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
@@ -17,7 +17,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 
 class General:
     """
-    A general list of metadata API endpoints for APIv4
+    A general list of metadata API endpoints for API v4
     """
 
     @staticmethod

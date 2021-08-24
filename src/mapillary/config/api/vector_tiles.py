@@ -6,7 +6,7 @@ mapillary.config.api.vector_tiles
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module contains the class implementation of the VectorTile functionalities for the Vector Tile
-aspect of the APIv4 of Mapillary.
+aspect of the API v4 of Mapillary.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
