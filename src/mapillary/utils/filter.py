@@ -3,7 +3,7 @@
 
 """
 mapillary.utils.filter
-=====================
+======================
 
 This module contains the filter utilies for high level filtering logic
 

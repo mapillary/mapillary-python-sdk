@@ -56,7 +56,9 @@ def get_feature_from_key_controller(key: int, fields: list) -> str:
     # ? feature_to_geojson returns dict, but merged_features_list_to_geojson takes list as input
     return merged_features_list_to_geojson(
         features_list=feature_to_geojson(
-            json_data=EntityAdapter().fetch_map_feature(map_feature_id=key, fields=fields)
+            json_data=EntityAdapter().fetch_map_feature(
+                map_feature_id=key, fields=fields
+            )
         )
     )
 

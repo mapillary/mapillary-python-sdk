@@ -470,7 +470,7 @@ class VectorTilesAdapter(object):
         # * See "FOR DEVELOPERS (3, 3.1)"
 
         # Extract the url depending upon the layer
-        url = ''
+        url = ""
 
         # For overview
         if layer == "overview":
@@ -516,7 +516,7 @@ class VectorTilesAdapter(object):
         # * See "FOR DEVELOPERS (3, 3.1)"
 
         # Extracting url from specified VectorTiles endpoint
-        url = ''
+        url = ""
 
         # For overview
         if layer == "overview":

@@ -29,7 +29,9 @@ from mapillary.models.geojson import GeoJSON
 from mapillary.utils.verify import valid_id
 
 
-def get_image_detections_controller(image_id: typing.Union[str, int], fields: list = None) -> GeoJSON:
+def get_image_detections_controller(
+    image_id: typing.Union[str, int], fields: list = None
+) -> GeoJSON:
     """
     Get image detections with given (image) key
 

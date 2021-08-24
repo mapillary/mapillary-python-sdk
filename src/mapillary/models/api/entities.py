@@ -66,7 +66,9 @@ class EntityAdapter(object):
         # client object to deal with session and requests
         self.client = Client()
 
-    def fetch_image(self, image_id: typing.Union[int, str], fields: list = None) -> dict:
+    def fetch_image(
+        self, image_id: typing.Union[int, str], fields: list = None
+    ) -> dict:
         """
         Fetches images depending on the image_id and the fields provided
 
@@ -108,7 +110,9 @@ class EntityAdapter(object):
             # If given ID is an invalid image ID, let the user know
             raise InvalidImageKeyError(image_id)
 
-    def fetch_map_feature(self, map_feature_id: typing.Union[int, str], fields: list = None):
+    def fetch_map_feature(
+        self, map_feature_id: typing.Union[int, str], fields: list = None
+    ):
         """
         Fetches map features depending on the map_feature_id and the fields provided
 
@@ -140,7 +144,9 @@ class EntityAdapter(object):
             ).content.decode("utf-8")
         )
 
-    def fetch_detections(self, identity: int, id_type: bool = True, fields: list = None):
+    def fetch_detections(
+        self, identity: int, id_type: bool = True, fields: list = None
+    ):
         """
         Fetches detections depending on the id, detections for either map_features or
         images and the fields provided

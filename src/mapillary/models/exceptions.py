@@ -71,10 +71,10 @@ class InvalidTokenError(MapillaryException):
 
     def __repr__(self):
         return (
-                "InvalidTokenError: An exception occurred."
-                + f'Message: "{self.message}", Type: "{self.error_type}",'
-                + f'Code: "{self.code}",'
-                + f'fbtrace_id: "{self.fbtrace_id}"'
+            "InvalidTokenError: An exception occurred."
+            + f'Message: "{self.message}", Type: "{self.error_type}",'
+            + f'Code: "{self.code}",'
+            + f'fbtrace_id: "{self.fbtrace_id}"'
         )
 
 
@@ -182,11 +182,11 @@ class InvalidKwargError(MapillaryException):
     """
 
     def __init__(
-            self,
-            func: str,
-            key: str,
-            value: str,
-            options: list,
+        self,
+        func: str,
+        key: str,
+        value: str,
+        options: list,
     ):
         """
         Initializing InvalidKwargError constructor
@@ -241,10 +241,10 @@ class InvalidOptionError(MapillaryException):
     """
 
     def __init__(
-            self,
-            param: str,
-            value: any,
-            options: list,
+        self,
+        param: str,
+        value: any,
+        options: list,
     ):
         """
         Initializing InvalidOptionError constructor
@@ -289,9 +289,9 @@ class InvalidFieldError(MapillaryException):
     """
 
     def __init__(
-            self,
-            endpoint: str,
-            field: list,
+        self,
+        endpoint: str,
+        field: list,
     ):
         """
         Initializing InvalidFieldError constructor

@@ -3,7 +3,7 @@
 
 """
 mapillary.models.api.__init__
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This package contains the class adaptors of the API logic within the Mapillary Python SDK.
 
