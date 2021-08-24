@@ -11,32 +11,30 @@ For testing the functions under mapillary/utils/extract.py
 :license: MIT LICENSE
 """
 
-import requests
-import mercantile
-from vt2geojson.tools import vt_bytes_to_geojson
-from mapillary.utils.extract import extract_properties
+# Package imports
+import pytest
+import logging  # Logger
 
-def test_extract_properties(properties: list) -> dict:
+# Local imports
+from mapillary.utils.extract import extract_properties  # Function to test
+from tests.conftest import data  # Data as fixture
 
-    tile = mercantile.tile(lng=31, lat=30, zoom=14)
+logger = logging.getLogger(__name__)
 
-    data = vt_bytes_to_geojson(
-        b_content=requests.get(
-            f"https://tiles.mapillary.com/maps/vtp/mly1_public/2/14/{tile[0]}/{tile[1]}/?access_token=MLY|4352045404840373|b35c62c790e9b52c8476cfd08eb58704"
-        ).content,
-        x=tile.x,
-        y=tile.y,
-        z=tile.z,
-        layer="image",
-    )
 
-    extracted = extract_properties(data, properties)
+@pytest.mark.parametrize(
+    "operation, expected", [("extract_properties(data['data'], ['id'])", 0)]
+)
+def test_extract_properties(data: dict, operation, expected):
 
-    assert('id' in extracted)
+    # Operation to test
+    test_that = f"{operation} != {expected}"
 
-    assert(len(extracted['id']) != 0)
+    # Logging the intended operation to be tested
+    logger.info(f"\n[test_extract_properties] Test that {test_that}")
 
-    return {"Test": "Success"}
+    # Actual data on left, operation on right
+    actual = extract_properties(data["data"], ["id"])
 
-if __name__ == '__main__':
-    test_extract_properties(['id'])
+    # What was expected left, what was actual on the right
+    assert len(actual["id"]) != 0, f"{test_that} failed, got {actual}"

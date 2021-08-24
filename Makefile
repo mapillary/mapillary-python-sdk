@@ -23,3 +23,6 @@ docs:
 
 docs-clean:
 	rm -rf docs/
+
+test:
+	@ pytest --log-cli-level=20
