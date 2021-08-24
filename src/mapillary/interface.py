@@ -5,7 +5,7 @@
 mapillary.interface
 ~~~~~~~~~~~~~~~~~~~
 
-This module implements the basic functionalities of the Mapillary Python SDK, a pythonic
+This module implements the basic functionalities of the Mapillary Python SDK, a Python
 implementation of the Mapillary API v4. For more information, please check out
 https://www.mapillary.com/developer/api-documentation/
 
@@ -20,6 +20,7 @@ import os
 # Local
 from mapillary.models.client import Client
 from mapillary.models.auth import auth
+from mapillary.models.geojson import GeoJSON
 
 # Exception classes
 from mapillary.models.exceptions import InvalidOptionError
@@ -121,7 +122,7 @@ def get_image_looking_at(
     looker: dict,
     at: dict,
     **filters: dict,
-) -> dict:
+) -> GeoJSON:
     """
     Function that takes two sets of latitude and longitude, where the 2nd set is the
     "looking at" location from 1st set's perspective argument and outputs the near images. This
@@ -163,7 +164,7 @@ def get_image_looking_at(
     :type filters.organization_id: str
 
     :return: The GeoJSON response containing relevant features
-    :rtype: dict
+    :rtype: GeoJSON
 
     Usage::
 
@@ -195,7 +196,7 @@ def get_image_looking_at(
 
 
 @auth()
-def get_detections_with_image_id(image_id: int, fields: list = []):
+def get_detections_with_image_id(image_id: int, fields: list = None):
     """
     Extracting all the detections within an image using an image key
 
@@ -234,7 +235,7 @@ def get_detections_with_image_id(image_id: int, fields: list = []):
 @auth()
 def get_detections_with_map_feature_id(
     map_feature_id: str, fields: list = None
-) -> dict:
+) -> GeoJSON:
     """
     Extracting all detections made for a map feature key
 
@@ -246,13 +247,13 @@ def get_detections_with_map_feature_id(
     :type fields: list
 
     :return: The GeoJSON in response
-    :rtype: dict
+    :rtype: GeoJSON
 
     Usage::
 
         >>> import mapillary as mly
         >>> mly.interface.set_access_token('MLY|XXX')
-        >>> mly.interface.get_detections_with_map_feature_id(map_feature_id=1933525276802129)
+        >>> mly.interface.get_detections_with_map_feature_id(map_feature_id='1933525276802129')
         ...     File "/home/saif/MLH/mapillary-python-sdk/mapillary/controller/rules/verify.py",
         ...         line 227, in valid_id
         ...             raise InvalidOptionError(
@@ -342,7 +343,7 @@ def images_in_bbox(bbox: dict, **filters) -> str:
     """
 
     return image.get_images_in_bbox_controller(
-        bbox=bbox, layer="image", zoom=14, filters=filters
+        bounding_box=bbox, layer="image", zoom=14, filters=filters
     )
 
 
@@ -396,7 +397,7 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
     """
 
     return image.get_images_in_bbox_controller(
-        bbox=bbox, layer="sequence", zoom=14, filters=filters
+        bounding_box=bbox, layer="sequence", zoom=14, filters=filters
     )
 
 

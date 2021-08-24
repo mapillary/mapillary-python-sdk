@@ -51,11 +51,12 @@ def get_feature_from_key_controller(key: int, fields: list) -> str:
     :rtype: str
     """
 
-    valid_id(id=key, image=False)
+    valid_id(identity=key, image=False)
 
+    # ? feature_to_geojson returns dict, but merged_features_list_to_geojson takes list as input
     return merged_features_list_to_geojson(
-        feature_to_geojson(
-            EntityAdapter().fetch_map_feature(map_feature_id=key, fields=fields)
+        features_list=feature_to_geojson(
+            json_data=EntityAdapter().fetch_map_feature(map_feature_id=key, fields=fields)
         )
     )
 
@@ -67,7 +68,7 @@ def get_map_features_in_bbox_controller(
     layer: str = "points",
 ) -> str:
     """
-    For extracing either map feature points or traffic signs within a bounding box
+    For extracting either map feature points or traffic signs within a bounding box
 
     :param bbox: Bounding box coordinates as argument
     :type bbox: dict
@@ -88,10 +89,10 @@ def get_map_features_in_bbox_controller(
     # Verifying the existence of the filter kwargs
     filters = points_traffic_signs_check(filters)
 
-    # Instatinatin Client for API requests
+    # Instantiating Client for API requests
     client = Client()
 
-    # Getting all tiles within or interseting the bbox
+    # Getting all tiles within or intersecting the bbox
     tiles = list(
         mercantile.tiles(
             west=bbox["west"],
@@ -111,7 +112,7 @@ def get_map_features_in_bbox_controller(
         url = (
             VectorTiles.get_map_feature_point(x=tile.x, y=tile.y, z=tile.z)
             if layer == "points"
-            else VectorTiles.get_map_feature_traffic_signs(x=tile.x, y=tile.y, z=tile.z)
+            else VectorTiles.get_map_feature_traffic_sign(x=tile.x, y=tile.y, z=tile.z)
         )
 
         res = client.get(url)

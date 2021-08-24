@@ -106,7 +106,7 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
                 )
     except Exception as e:
         # If there is an error, log it
-        print(f"An error occured: {e}")
+        print(f"An error occurred: {e}")
     return None
 
 
@@ -123,7 +123,7 @@ def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
     :param file_name: The file name to save as
     :type file_name: str
 
-    :return: Npne
+    :return: None
     :rtype: None
     """
     # Ensure that the geojson is a dictionary
