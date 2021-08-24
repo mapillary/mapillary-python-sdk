@@ -10,8 +10,8 @@ This module contains the class implementation for the geojson
 For more information about the API, please check out
 https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package
@@ -30,9 +30,7 @@ class Properties:
     :param properties: The properties as the input
     :type properties: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.Properties'>
@@ -108,9 +106,7 @@ class Geometry:
     :param geometry: The geometry as the input
     :type geometry: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geometry passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geometry passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.Geometry'>
@@ -164,9 +160,7 @@ class Feature:
     :param feature: The GeoJSON as the input
     :type feature: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.Feature'>
@@ -239,9 +233,7 @@ class GeoJSON:
     :param geojson: The GeoJSON as the input
     :type geojson: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.GeoJSON'>

@@ -11,8 +11,8 @@ rendered features. Mapillary vector tiles follow the Mapbox tile specification.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package imports
@@ -216,7 +216,7 @@ class VectorTilesAdapter(object):
         :type coordinates: "list[list]"
 
         :param layer: Either "overview", "sequence", "image", "traffic_sign", or "map_feature",
-        defaults to "image"
+            defaults to "image"
         :type layer: str
 
         :param zoom: the zoom level [0, 14], inclusive. Defaults to 14
@@ -387,9 +387,7 @@ class VectorTilesAdapter(object):
         :param zoom: The zoom levels,
         :type zoom: int
 
-        ...
         :raises InvalidOptionError: Invalid option passed
-        ...
 
         :return: A GeoJSON for the return object
         :rtype: dict

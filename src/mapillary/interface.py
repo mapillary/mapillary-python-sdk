@@ -9,8 +9,8 @@ This module implements the basic functionalities of the Mapillary Python SDK, a 
 implementation of the Mapillary API v4. For more information, please check out
 https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 # Package level imports
 import requests
@@ -41,7 +41,7 @@ def set_access_token(token: str):
     https://blog.mapillary.com/update/2021/06/23/getting-started-with-the-new-mapillary-api-v4.html
 
     :param token: The token itself that would
-    be set and accessed globally. Must be obtained
+        be set and accessed globally. Must be obtained
     :type token: str
 
     :return: None
@@ -71,7 +71,7 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     :type latitude: float or double
 
     :param kwargs.fields: A list of options, either as ['all'], or a list of fields.
-    See https://www.mapillary.com/developer/api-documentation/, under 'Fields' for more insight.
+        See https://www.mapillary.com/developer/api-documentation/, under 'Fields' for more insight.
     :type kwargs.fields: list
 
     :param kwargs.zoom: The zoom level of the tiles to obtain, defaults to 14
@@ -81,8 +81,8 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     :type kwargs.radius: float or int or double
 
     :param kwargs.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
-    (panoramic), or 'both'. See https://www.mapillary.com/developer/api-documentation/ under
-    'image_type Tiles' for more information
+        (panoramic), or 'both'. See https://www.mapillary.com/developer/api-documentation/ under
+        'image_type Tiles' for more information
     :type kwargs.image_type: str
 
     :param kwargs.min_captured_at: The min date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
@@ -92,7 +92,7 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     :type kwargs.max_captured_at: str
 
     :param kwargs.org_id: The organization id, ID of the organization this image (or sets of
-    images) belong to. It can be absent. Thus, default is -1 (None)
+        images) belong to. It can be absent. Thus, default is -1 (None)
     :type kwargs.org_id: int
 
     :return: GeoJSON
@@ -128,23 +128,25 @@ def get_image_looking_at(
     "looking at" location from 1st set's perspective argument and outputs the near images. This
     makes an API call with the token set in set_access_token and returns a JSON object.
 
-    :param looker: The coordinate sets from where a certain point is being looked at.
-    Format::
+    :param looker: The coordinate sets from where a certain point is being looked at
 
-        >>> _ = {
-        >>>     'lng': 'longitude',
-        >>>     'lat': 'latitude'
-        >>> }
+        Format::
+
+            >>> {
+            ...     'lng': 'longitude',
+            ...     'lat': 'latitude'
+            ... }
 
     :type looker: dict
 
-    :param at: The coordinate sets to where a certain point is being looked at.
-    Format::
+    :param at: The coordinate sets to where a certain point is being looked at
 
-        >>> _ = {
-        >>>     'lng': 'longitude',
-        >>>     'lat': 'latitude'
-        >>> }
+        Format::
+
+            >>> {
+            ...     'lng': 'longitude',
+            ...     'lat': 'latitude'
+            ... }
 
     :type at: dict
 
@@ -204,7 +206,7 @@ def get_detections_with_image_id(image_id: int, fields: list = None):
     :type image_id: int
 
     :param fields: The fields possible for the detection endpoint. Please see
-    https://www.mapillary.com/developer/api-documentation for more information
+        https://www.mapillary.com/developer/api-documentation for more information
     :type fields: list
 
     :return: The GeoJSON in response
@@ -243,7 +245,7 @@ def get_detections_with_map_feature_id(
     :type map_feature_id: int
 
     :param fields: The fields possible for the detection endpoint. Please see
-    https://www.mapillary.com/developer/api-documentation for more information
+        https://www.mapillary.com/developer/api-documentation for more information
     :type fields: list
 
     :return: The GeoJSON in response
@@ -276,7 +278,7 @@ def image_thumbnail(image_id: str, resolution: int = 1024) -> str:
     :param image_id: Image key as the argument
 
     :param resolution: Option for the thumbnail size, with available resolutions:
-    256, 1024, and 2048
+        256, 1024, and 2048
 
     :return: A URL for the thumbnail
     :rtype: str
@@ -299,27 +301,33 @@ def images_in_bbox(bbox: dict, **filters) -> str:
     Gets a complete list of images with custom filter within a BBox
 
     :param bbox: Bounding box coordinates
-    example: {
-        'west': 'BOUNDARY_FROM_WEST',
-        'south': 'BOUNDARY_FROM_SOUTH',
-        'east': 'BOUNDARY_FROM_EAST',
-        'north': 'BOUNDARY_FROM_NORTH'
-    }
+
+        Format::
+
+            >>> {
+            ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'east': 'BOUNDARY_FROM_EAST',
+            ...     'north': 'BOUNDARY_FROM_NORTH'
+            ... }
+
     :type bbox: dict
 
-    :param filters: Different filters that may be applied to the output.
-    Example filters::
+    :param filters: Different filters that may be applied to the output
 
-        - max_captured_at
-        - min_captured_at
-        - image_type: pano, flat, or all
-        - compass_angle
-        - sequence_id
-        - organization_id
+        Example filters::
+
+            - max_captured_at
+            - min_captured_at
+            - image_type: pano, flat, or all
+            - compass_angle
+            - sequence_id
+            - organization_id
+
     :type filters: dict
 
     :return: Output is a GeoJSON string that represents all the within a bbox after passing given
-    filters.
+        filters
     :rtype: str
 
     Usage::
@@ -354,28 +362,32 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
     within a BBox.
 
     :param bbox: Bounding box coordinates
-    Example::
 
-        >>> _ = {
-        ...     'west': 'BOUNDARY_FROM_WEST',
-        ...     'south': 'BOUNDARY_FROM_SOUTH',
-        ...     'east': 'BOUNDARY_FROM_EAST',
-        ...     'north': 'BOUNDARY_FROM_NORTH'
-        ... }
+        Example::
+
+            >>> _ = {
+            ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'east': 'BOUNDARY_FROM_EAST',
+            ...     'north': 'BOUNDARY_FROM_NORTH'
+            ... }
+
     :type bbox: dict
 
-    :param filters: Different filters that may be applied to the output.
-    Example filters::
+    :param filters: Different filters that may be applied to the output
 
-        - max_captured_at
-        - min_captured_at
-        - image_type: pano, flat, or all
-        - org_id
+        Example filters::
+
+            - max_captured_at
+            - min_captured_at
+            - image_type: pano, flat, or all
+            - org_id
+
     :type filters: dict
 
     :return: Output is a GeoJSON string that contains all the filtered sequences within a bbox.
-    Sequences would NOT be cut at BBox boundary, would select all sequences which are partially
-    or entirely in BBox
+        Sequences would NOT be cut at BBox boundary, would select all sequences which are partially
+        or entirely in BBox
     :rtype: str
 
     Usage::
@@ -409,28 +421,32 @@ def map_feature_points_in_bbox(
     Extracts map feature points within a bounding box (bbox)
 
     :param bbox: bbox coordinates as the argument
-    Example::
 
-        >>> _ = {
-        ...     'west': 'BOUNDARY_FROM_WEST',
-        ...     'south': 'BOUNDARY_FROM_SOUTH',
-        ...     'east': 'BOUNDARY_FROM_EAST',
-        ...     'north': 'BOUNDARY_FROM_NORTH'
-        ... }
+        Example::
+
+            >>> _ = {
+            ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'east': 'BOUNDARY_FROM_EAST',
+            ...     'north': 'BOUNDARY_FROM_NORTH'
+            ... }
+
     :type bbox: dict
 
-    :param filter_values: a list of filter values supported by the API.
-    Example::
+    :param filter_values: a list of filter values supported by the API
 
-        >>> _ = ['object--support--utility-pole', 'object--street-light']
+        Example::
+
+            >>> _ = ['object--support--utility-pole', 'object--street-light']
 
     :type filter_values: list
 
     :param filters: kwarg filters to be applied on the resulted GeoJSON
-    Chronological filters::
 
-        - *existed_at*: checks if a feature existed after a certain date depending on the time it
-        was first seen at.
+        Chronological filters,
+
+        - *existed_at*: checks if a feature existed after a certain date depending on the time
+            it was first seen at.
         - *existed_before*: filters out the features that existed after a given date
 
     :type filters: dict
@@ -468,29 +484,32 @@ def traffic_signs_in_bbox(
     Extracts traffic signs within a bounding box (bbox)
 
     :param bbox: bbox coordinates as the argument
-    Example::
 
-        >>> _ = {
-        ...     'west': 'BOUNDARY_FROM_WEST',
-        ...     'south': 'BOUNDARY_FROM_SOUTH',
-        ...     'east': 'BOUNDARY_FROM_EAST',
-        ...     'north': 'BOUNDARY_FROM_NORTH'
-        ... }
+        Example::
+
+            >>> {
+            ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'east': 'BOUNDARY_FROM_EAST',
+            ...     'north': 'BOUNDARY_FROM_NORTH'
+            ... }
 
     :type bbox: dict
 
     :param filter_values: a list of filter values supported by the API,
-    Example::
 
-        >>> _ = ['regulatory--advisory-maximum-speed-limit--g1', 'regulatory--atvs-permitted--g1']
+        Example::
+
+            >>> ['regulatory--advisory-maximum-speed-limit--g1', 'regulatory--atvs-permitted--g1']
 
     :type filter_values: list
 
     :param filters: kwarg filters to be applied on the resulted GeoJSON
-    Chronological filters::
 
-        - *existed_at*: checks if a feature existed after a certain date depending on the time it
-        was first seen at.
+        Chronological filters,
+
+        - *existed_at*: checks if a feature existed after a certain date depending on the time
+            it was first seen at.
         - *existed_before*: filters out the features that existed after a given date
 
     :type filters: dict
@@ -541,8 +560,8 @@ def images_in_geojson(geojson: dict, **filters: dict):
     :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
-    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
-    'image_type Tiles' for more information
+        (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+        'image_type Tiles' for more information
     :type filters.image_type: str
 
     :param filters.compass_angle: The compass angle of the image
@@ -579,7 +598,7 @@ def images_in_shape(shape, **filters: dict):
 
     Format::
 
-        >>> _ = {
+        >>> {
         ...    "type": "FeatureCollection",
         ...     "features": [
         ...        {
@@ -614,8 +633,8 @@ def images_in_shape(shape, **filters: dict):
     :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
-    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
-    'image_type Tiles' for more information
+        (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+        'image_type Tiles' for more information
     :type filters.image_type: str
 
     :param filters.compass_angle: The compass angle of the image
@@ -663,8 +682,8 @@ def map_features_in_geojson(geojson: dict, **filters: dict):
     :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
-    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
-    'image_type Tiles' for more information
+        (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+        'image_type Tiles' for more information
     :type filters.image_type: str
 
     :param filters.compass_angle: The compass angle of the image
@@ -746,8 +765,8 @@ def map_features_in_shape(shape: dict, **filters: dict):
     :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
-    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
-    'image_type Tiles' for more information
+        (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+        'image_type Tiles' for more information
     :type filters.image_type: str
 
     :param filters.compass_angle: The compass angle of the image
@@ -787,21 +806,21 @@ def feature_from_key(key: str, fields: list = []) -> str:
     :type key: int
 
     :param fields: The fields to include. The field 'geometry' will always be included
-    so you do not need to specify it, or if you leave it off, it will still be returned.
+        so you do not need to specify it, or if you leave it off, it will still be returned.
 
-    Fields::
+        Fields::
 
-            1. first_seen_at - timestamp, timestamp of the least recent
-            detection contributing to this feature
-            2. last_seen_at - timestamp, timestamp of the most recent
-            detection contributing to this feature
-            3. object_value - string, what kind of map feature it is
-            4. object_type - string, either a traffic_sign or point
-            5. geometry - GeoJSON Point geometry
-            6. images - list of IDs, which images this map feature was derived
-            from
+                1. first_seen_at - timestamp, timestamp of the least recent
+                detection contributing to this feature
+                2. last_seen_at - timestamp, timestamp of the most recent
+                detection contributing to this feature
+                3. object_value - string, what kind of map feature it is
+                4. object_type - string, either a traffic_sign or point
+                5. geometry - GeoJSON Point geometry
+                6. images - list of IDs, which images this map feature was derived
+                from
 
-    Refer to https://www.mapillary.com/developer/api-documentation/#map-feature for more details
+        Refer to https://www.mapillary.com/developer/api-documentation/#map-feature for more details
 
     :type fields: list
 
@@ -830,35 +849,37 @@ def image_from_key(key: str, fields: list = None) -> str:
     :type key: int
 
     :param fields: The fields to include. The field 'geometry' will always be included
-    so you do not need to specify it, or if you leave it off, it will still be returned.
+        so you do not need to specify it, or if you leave it off, it will still be returned.
 
-    Fields::
+        Fields,
 
-            1. altitude - float, original altitude from Exif
-            2. atomic_scale - float, scale of the SfM reconstruction around the image
-            3. camera_parameters - array of float, intrinsic camera parameters
-            4. camera_type - enum, type of camera projection (perspective, fisheye, or spherical)
-            5. captured_at - timestamp, capture time
-            6. compass_angle - float, original compass angle of the image
-            7. computed_altitude - float, altitude after running image processing
-            8. computed_compass_angle - float, compass angle after running image processing
-            9. computed_geometry - GeoJSON Point, location after running image processing
-            10. computed_rotation - enum, corrected orientation of the image
-            11. exif_orientation - enum, orientation of the camera as given by the exif tag
+        1. altitude - float, original altitude from Exif
+        2. atomic_scale - float, scale of the SfM reconstruction around the image
+        3. camera_parameters - array of float, intrinsic camera parameters
+        4. camera_type - enum, type of camera projection (perspective, fisheye, or
+            spherical)
+        5. captured_at - timestamp, capture time
+        6. compass_angle - float, original compass angle of the image
+        7. computed_altitude - float, altitude after running image processing
+        8. computed_compass_angle - float, compass angle after running image processing
+        9. computed_geometry - GeoJSON Point, location after running image processing
+        10. computed_rotation - enum, corrected orientation of the image
+        11. exif_orientation - enum, orientation of the camera as given by the exif tag
             (see: https://sylvana.net/jpegcrop/exif_orientation.html)
-            12. geometry - GeoJSON Point geometry
-            13. height - int, height of the original image uploaded
-            14. thumb_256_url - string, URL to the 256px wide thumbnail
-            15. thumb_1024_url - string, URL to the 1024px wide thumbnail
-            16. thumb_2048_url - string, URL to the 2048px wide thumbnail
-            17. merge_cc - int, id of the connected component of images that were aligned together
-            18. mesh - { id: string, url: string } - URL to the mesh
-            19. quality_score - float, how good the image is (experimental)
-            20. sequence - string, ID of the sequence
-            21. sfm_cluster - { id: string, url: string } - URL to the point cloud
-            22. width - int, width of the original image uploaded
+        12. geometry - GeoJSON Point geometry
+        13. height - int, height of the original image uploaded
+        14. thumb_256_url - string, URL to the 256px wide thumbnail
+        15. thumb_1024_url - string, URL to the 1024px wide thumbnail
+        16. thumb_2048_url - string, URL to the 2048px wide thumbnail
+        17. merge_cc - int, id of the connected component of images that were aligned
+            together
+        18. mesh - { id: string, url: string } - URL to the mesh
+        19. quality_score - float, how good the image is (experimental)
+        20. sequence - string, ID of the sequence
+        21. sfm_cluster - { id: string, url: string } - URL to the point cloud
+        22. width - int, width of the original image uploaded
 
-    Refer to https://www.mapillary.com/developer/api-documentation/#image for more details
+        Refer to https://www.mapillary.com/developer/api-documentation/#image for more details
 
     :type fields: list
 

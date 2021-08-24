@@ -7,8 +7,8 @@ mapillary.utils.filter
 
 This module contains the filter utilies for high level filtering logic
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 import logging
@@ -207,19 +207,20 @@ def features_in_bounding_box(data: list, bbox: dict) -> list:
     :type data: list
 
     :param bbox: Bounding box coordinates
-    Example::
 
-        >>> {
-        ...     'east': 'BOUNDARY_FROM_EAST',
-        ...     'south': 'BOUNDARY_FROM_SOUTH',
-        ...     'west': 'BOUNDARY_FROM_WEST',
-        ...     'north': 'BOUNDARY_FROM_NORTH'
-        ... }
+        Example::
+
+            >>> {
+            ...     'east': 'BOUNDARY_FROM_EAST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'north': 'BOUNDARY_FROM_NORTH'
+            ... }
 
     :type bbox: dict
 
     :return: Features that only exist within the bounding box selected for the given features list
-    provided in the BBox functon
+        provided in the BBox functon
     :rtype: list
     """
 
@@ -524,12 +525,14 @@ def hits_by_look_at(data: list, at: dict) -> list:
     :type data: list
 
     :param at: The lng and lat coordinates
-    Example::
 
-        >>> at = {
-        >>>     'lng': <longitude>,
-        >>>     'lat': <latitude>,
-        >>> }
+        Example::
+
+            >>> {
+            ...     'lng': 'longitude',
+            ...     'lat': 'latitude'
+            ... }
+
     :type at: dict
 
     :return: Filtered results of features only looking at `at`

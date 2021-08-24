@@ -11,8 +11,8 @@ Python SDK.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Local Imports
@@ -38,9 +38,7 @@ def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
     :param callback: The function that called 'kwarg_check' in the case of an exception
     :type callback: str
 
-    '''
-    :raise InvalidOptionError: Invalid option exception
-    '''
+    :raises InvalidOptionError: Invalid option exception
 
     :return: A boolean, whether the kwargs are appropriate or not
     :rtype: bool
@@ -108,9 +106,7 @@ def resolution_check(resolution: int) -> bool:
     :param resolution: The image size to fetch for
     :type resolution: int
 
-    '''
     :raises InvalidOptionError: Invalid thumbnail size passed raises exception
-    '''
 
     :return: A check if the size is correct
     :rtype: bool
@@ -222,9 +218,7 @@ def valid_id(identity: int, image=True) -> None:
     :param image: Is the passed id an image_id?
     :type image: bool
 
-    '''
     :raises InvalidOptionError: Raised when invalid arguments are passed
-    '''
 
     :return: None
     :rtype: None
@@ -280,14 +274,16 @@ def check_file_name_validity(file_name: str) -> bool:
     Checks if the file name is valid
 
     Valid file names are,
-        - without extensions
-        - without special characters
-        - A-Z, a-z, 0-9, _, -
+
+    - Without extensions
+    - Without special characters
+    - A-Z, a-z, 0-9, _, -
 
     :param file_name: The file name to be checked
     :type file_name: str
 
     :return: True if the file name is valid, else False
+    :rtype: bool
     """
 
     string_check = re.compile("[@.!#$%^&*()<>?/}{~:]")  # noqa: W605

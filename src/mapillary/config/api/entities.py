@@ -10,8 +10,8 @@ as string, for the entity API endpoint aspect of the APIv4 of Mapillary.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Local imports
@@ -65,7 +65,7 @@ class Entities:
             9. computed_geometry - GeoJSON Point, location after running image processing
             10. computed_rotation - enum, corrected orientation of the image
             11. exif_orientation - enum, orientation of the camera as given by the exif tag
-            (see: https://sylvana.net/jpegcrop/exif_orientation.html)
+                (see: https://sylvana.net/jpegcrop/exif_orientation.html)
             12. geometry - GeoJSON Point geometry
             13. height - int, height of the original image uploaded
             14. thumb_256_url - string, URL to the 256px wide thumbnail
@@ -134,9 +134,9 @@ class Entities:
         Fields::
 
             1. first_seen_at - timestamp, timestamp of the least recent detection
-            contributing to this feature
+                contributing to this feature
             2. last_seen_at - timestamp, timestamp of the most recent detection
-            contributing to this feature
+                contributing to this feature
             3. object_value - string, what kind of map feature it is
             4. object_type - string, either a traffic_sign or point
             5. geometry - GeoJSON Point geometry
@@ -334,9 +334,7 @@ class Entities:
         :param endpoint: The endpoint that is being targeted
         :type endpoint: str
 
-        ...
         :raises InvalidFieldError: Raised when an API endpoint is passed invalid field elements
-        ...
 
         :return: The given_fields if everything is correct
         :rtype: list

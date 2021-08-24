@@ -7,8 +7,8 @@ mapillary.utils.format
 
 This module deals with converting data to and from different file formats.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package imports
@@ -191,7 +191,7 @@ def detection_features_to_geojson(feature_list: list) -> dict:
     map_features from multiple segments) into a fully featured GeoJSON
 
     :param feature_list: A list of processed features merged from different segments within a
-    detection
+        detection
     :type feature_list: list
 
     :return: GeoJSON formatted as expected in a detection format

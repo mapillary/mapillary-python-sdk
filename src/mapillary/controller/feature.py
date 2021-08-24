@@ -10,8 +10,8 @@ Python SDK.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Configs

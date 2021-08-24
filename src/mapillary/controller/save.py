@@ -9,8 +9,8 @@ This module implements the saving business logic functionalities of the Mapillar
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package Imports
@@ -126,6 +126,7 @@ def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
     :return: None
     :rtype: None
     """
+
     # Ensure that the geojson is a dictionary
     if isinstance(data, str):
         data = json.loads(data)

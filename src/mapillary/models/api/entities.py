@@ -9,8 +9,8 @@ This module contains the Adapter design for the Entities API of Mapillary APIv4.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package Imports
@@ -155,7 +155,7 @@ class EntityAdapter(object):
         :type identity: int
 
         :param id_type: Either True(id is for image), or False(id is for map_feature),
-        defaults to True
+            defaults to True
         :type id_type: bool
 
         :param fields: The fields to extract properties for, defaults to []

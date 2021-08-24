@@ -10,8 +10,8 @@ Mapillary Python SDK.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Library imports
@@ -173,21 +173,23 @@ def get_image_looking_at_controller(
     :type filters: dict
 
     :param looker: The dictionary of coordinates of the position of the looking from
-    coordinates. Format::
+        coordinates. Format::
 
-        >>> {
-        >>>     'lng': 'longitude',
-        >>>     'lat': 'latitude'
-        >>> }
+            >>> {
+            >>>     'lng': 'longitude',
+            >>>     'lat': 'latitude'
+            >>> }
+
     :type looker: dict
 
     :param at: The dict of coordinates of the position of the looking at
-    coordinates. Format::
+        coordinates. Format::
 
-        >>> {
-        >>>     'lng': 'longitude',
-        >>>     'lat': 'latitude'
-        >>> }
+            >>> {
+            >>>     'lng': 'longitude',
+            >>>     'lat': 'latitude'
+            >>> }
+
     :type at: dict
 
     :param filters.min_captured_at: The minimum date to filter till
@@ -272,7 +274,7 @@ def get_image_thumbnail_controller(image_id: str, resolution: int) -> str:
     :type image_id: str
 
     :param resolution: Option for the thumbnail size, with available resolutions:
-    256, 1024, and 2048
+        256, 1024, and 2048
     :type resolution: int
 
     :return: A URL for the thumbnail
@@ -299,13 +301,15 @@ def get_images_in_bbox_controller(
     that can be filtered via the filters argument
 
     :param bounding_box: A bounding box representation
-    Example::
-        {
-            'west': 'BOUNDARY_FROM_WEST',
-            'south': 'BOUNDARY_FROM_SOUTH',
-            'east': 'BOUNDARY_FROM_EAST',
-            'north': 'BOUNDARY_FROM_NORTH'
-        }
+        Example::
+
+            >>> {
+            ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'east': 'BOUNDARY_FROM_EAST',
+            ...     'north': 'BOUNDARY_FROM_NORTH'
+            ... }
+
     :type bounding_box: dict
 
     :param zoom: The zoom level
@@ -335,16 +339,15 @@ def get_images_in_bbox_controller(
     :param filters.sequence_id:
     :type filters.sequence_id: str
 
-    '''
-    :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
-    that do not belong to the requested API end call
-    '''
+    :raises InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
+        that do not belong to the requested API end call
 
     :return: GeoJSON
     :rtype: str
 
-    Reference::
-        - https://www.mapillary.com/developer/api-documentation/#coverage-tiles
+    Reference,
+
+    - https://www.mapillary.com/developer/api-documentation/#coverage-tiles
     """
 
     # Check if the given filters are valid ones
@@ -464,7 +467,7 @@ def geojson_features_controller(
     :type geojson: dict
 
     :param is_image: Is the feature extraction for images? True for images, False for map features
-    Defaults to True
+        Defaults to True
     :type is_image: bool
 
     :param filters: Different filters that may be applied to the output, defaults to {}
@@ -480,8 +483,8 @@ def geojson_features_controller(
     :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
-    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
-    'image_type Tiles' for more information
+        (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+        'image_type Tiles' for more information
     :type filters.image_type: str
 
     :param filters.compass_angle: The compass angle of the image
@@ -494,17 +497,15 @@ def geojson_features_controller(
     :type filters.organization_id: str
 
     :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image'
-    if is_image is True, defaults to 'image'
+        if is_image is True, defaults to 'image'
     :type filters.layer: str
 
     :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs'
-    if is_image is False, defaults to 'point'
+        if is_image is False, defaults to 'point'
     :type filters.feature_type: str
 
-    '''
-    :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
-    that do not belong to the requested API end call
-    '''
+    :raises InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
+        that do not belong to the requested API end call
 
     :return: A feature collection as a GeoJSON
     :rtype: dict
@@ -629,33 +630,34 @@ def shape_features_controller(
     into a single object - by merging all the features into one list in a feature collection.
 
     The shape format is as follows::
-        'shape = {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [
-                            [
-                                [
-                                    7.2564697265625,
-                                    43.69716905314008
-                                ],
-                                ...
-                            ]
-                        ]
-                    }
-                }
-            ]
-        }'
+
+        >>> {
+        ...     "type": "FeatureCollection",
+        ...     "features": [
+        ...         {
+        ...             "type": "Feature",
+        ...             "properties": {},
+        ...             "geometry": {
+        ...                 "type": "Polygon",
+        ...                 "coordinates": [
+        ...                     [
+        ...                        [
+        ...                              7.2564697265625,
+        ...                             43.69716905314008
+        ...                         ],
+        ...                         ...
+        ...                     ]
+        ...                 ]
+        ...             }
+        ...         }
+        ...     ]
+        ... }
 
     :param shape: A shape that describes features, formatted as a geojson
     :type shape: dict
 
     :param is_image: Is the feature extraction for images? True for images, False for map features
-    Defaults to True
+        Defaults to True
     :type is_image: bool
 
     :param filters: Different filters that may be applied to the output, defaults to {}
@@ -668,8 +670,8 @@ def shape_features_controller(
     :type filters.min_captured_at: str
 
     :param filters.image_type: The tile image_type to be obtained, either as 'flat', 'pano'
-    (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
-    'image_type Tiles' for more information
+        (panoramic), or 'all'. See https://www.mapillary.com/developer/api-documentation/ under
+        'image_type Tiles' for more information
     :type filters.image_type: str
 
     :param filters.compass_angle: The compass angle of the image
@@ -682,17 +684,15 @@ def shape_features_controller(
     :type filters.organization_id: str
 
     :param filters.layer: The specified image layer, either 'overview', 'sequence', 'image'
-    if is_image is True, defaults to 'image'
+        if is_image is True, defaults to 'image'
     :type filters.layer: str
 
     :param filters.feature_type: The specified map features, either 'point' or 'traffic_signs'
-    if is_image is False, defaults to 'point'
+        if is_image is False, defaults to 'point'
     :type filters.feature_type: str
 
-    '''
-    :raise InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
-    that do not belong to the requested API end call
-    '''
+    :raises InvalidKwargError: Raised when a function is called with the invalid keyword argument(s)
+        that do not belong to the requested API end call
 
     :return: A feature collection as a GeoJSON
     :rtype: dict

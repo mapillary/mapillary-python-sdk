@@ -9,8 +9,8 @@ This module contains the set of Mapillary Exceptions used internally.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package imports
@@ -34,10 +34,9 @@ class InvalidTokenError(MapillaryException):
     :var error_type: The type of error that occurred
     :type error_type: str
 
-    :var code: The error code returned, most likely 190, "Access token has expired",
-
-    See https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/
-    for more information
+    :var code: The error code returned, most likely 190, "Access token has expired".
+        See https://developers.facebook.com/docs/graph-api/using-graph-api/error-handling/
+        for more information
     :type code: str
 
     :var fbtrace_id: A unique ID to track the issue/exception
@@ -164,8 +163,7 @@ class InvalidImageKeyError(MapillaryException):
 
 class InvalidKwargError(MapillaryException):
     """
-    Raised when a function is called with the invalid
-    keyword argument(s) that do not belong to the
+    Raised when a function is called with the invalid keyword argument(s) that do not belong to the
     requested API end call
 
     :var func: The function that was called
@@ -278,8 +276,7 @@ class InvalidOptionError(MapillaryException):
 
 class InvalidFieldError(MapillaryException):
     """
-    Raised when an API endpoint is passed invalid
-    field elements
+    Raised when an API endpoint is passed invalid field elements
 
     :var endpoint: The API endpoint that was targeted
     :type endpoint: str

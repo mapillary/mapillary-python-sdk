@@ -7,8 +7,8 @@ mapillary.utils.extract
 
 This module deals with extracting multiple fields nested within a GeoJSON packet.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 

@@ -10,8 +10,8 @@ Python SDK.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package imports
@@ -39,7 +39,7 @@ def get_image_detections_controller(
     :type image_id: str
 
     :param fields: The fields possible for the detection endpoint. Please see
-    https://www.mapillary.com/developer/api-documentation for more information
+        https://www.mapillary.com/developer/api-documentation for more information
     :type fields: list
 
     :return: GeoJSON
@@ -69,7 +69,7 @@ def get_map_feature_detections_controller(
     :type map_feature_id: str
 
     :param fields: The fields possible for the detection endpoint. Please see
-    https://www.mapillary.com/developer/api-documentation for more information
+        https://www.mapillary.com/developer/api-documentation for more information
     :type fields: list
 
     :return: GeoJSON
