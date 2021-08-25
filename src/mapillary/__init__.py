@@ -1,6 +1,16 @@
 # Copyright (c) Facebook, Inc. and its affiliates. (http://www.facebook.com)
 # -*- coding: utf-8 -*-
 
+"""
+mapillary.__init__
+~~~~~~~~~~~~~~~~~~
+
+This module imports the necessary parts of the SDK
+
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
+"""
+
 # Class models for representing the classes
 from . import models  # noqa: F401
 

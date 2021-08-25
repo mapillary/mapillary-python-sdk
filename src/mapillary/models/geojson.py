@@ -10,8 +10,8 @@ This module contains the class implementation for the geojson
 For more information about the API, please check out
 https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package
@@ -24,25 +24,33 @@ from mapillary.models.exceptions import InvalidOptionError
 
 
 class Properties:
-    """Representation for the properties in a GeoJSON
+    """
+    Representation for the properties in a GeoJSON
 
     :param properties: The properties as the input
     :type properties: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.Properties'>
     """
 
     def __init__(self, *properties, **kwargs) -> None:
-        """Initializing Properties constructor"""
+        """
+        Initializing Properties constructor
+
+        :param properties: Key value pair passed as list
+        :type properties: list
+
+        :param kwargs: The kwargs given to assign as properties
+        :type kwargs: dict
+
+        :return: The object created
+        """
 
         # Validate that the geojson passed is indeed a dictionary
         if not isinstance(properties, dict):
-
             # Raise InvalidOptionError
             InvalidOptionError(
                 # The parameter that caused the exception
@@ -92,25 +100,28 @@ class Properties:
 
 
 class Geometry:
-    """Representation for the geometry in a GeoJSON
+    """
+    Representation for the geometry in a GeoJSON
 
     :param geometry: The geometry as the input
     :type geometry: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geometry passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geometry passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.Geometry'>
     """
 
-    def __init__(self, geometry) -> None:
-        """Initializing Geometry constructor"""
+    def __init__(self, geometry: dict) -> None:
+        """
+        Initializing Geometry constructor
+
+        :param geometry: The geometry object for creation
+        :type geometry: dict
+        """
 
         # Validate that the geojson passed is indeed a dictionary
         if not isinstance(geometry, dict):
-
             # Raise InvalidOptionError
             InvalidOptionError(
                 # The parameter that caused the exception
@@ -146,23 +157,25 @@ class Geometry:
 class Feature:
     """Representation for a feature in a feature list
 
-    :param geojson: The GeoJSON as the input
-    :type geojson: dict
+    :param feature: The GeoJSON as the input
+    :type feature: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.Feature'>
     """
 
     def __init__(self, feature: dict) -> None:
-        """Initializing Feature constructor"""
+        """
+        Initializing Feature constructor
+
+        :param feature: Feature JSON
+        :type feature: dict
+        """
 
         # Validate that the geojson passed is indeed a dictionary
         if not isinstance(feature, dict):
-
             # If not, raise `InvalidOptionError`
             InvalidOptionError(
                 # The parameter that caused the exception
@@ -220,18 +233,17 @@ class GeoJSON:
     :param geojson: The GeoJSON as the input
     :type geojson: dict
 
-    '''
-    :raise InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
-    '''
+    :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
     :rtype: <class 'mapillary.models.geojson.GeoJSON'>
 
     Usage::
+
         >>> import mapillary as mly
         >>> from models.geojson import GeoJSON
-        >>> mly.set_access_token('MLY|XXX')
-        >>> data = mly.get_image_close_to(longitude=31, latitude=31)
+        >>> mly.interface.set_access_token('MLY|XXX')
+        >>> data = mly.interface.get_image_close_to(longitude=31, latitude=31)
         >>> geojson = GeoJSON(geojson=data)
         >>> type(geojson)
         ... <class 'mapillary.models.geojson.GeoJSON'>
@@ -265,8 +277,7 @@ class GeoJSON:
 
             # The GeoJSON should only contain the keys of `type`, `features`, if not empty,
             # raise exception
-            if [key for key in geojson.keys() if key not in ["type", "features"]] != []:
-
+            if [key for key in geojson.keys() if key not in ["type", "features"]]:
                 # Raise InvalidOptionError
                 InvalidOptionError(
                     # The parameter that caused the exception
@@ -292,7 +303,6 @@ class GeoJSON:
 
         # Validate that the geojson passed is indeed a dictionary
         if not isinstance(geojson["features"], list):
-
             # If not, raise InvalidOptionError
             InvalidOptionError(
                 # The parameter that caused the exception
@@ -314,18 +324,46 @@ class GeoJSON:
         )
 
     def append_features(self, features: list) -> None:
+        """
+        Given a feature list, append it to the GeoJSON object
 
+        :param features: A feature list
+        :type features: list
+
+        :return: None
+        """
+
+        # Iterating over features
         for feature in features:
+
+            # Appending the feature to the GeoJSON
             self.append_feature(feature)
 
     def append_feature(self, feature_inputs: dict) -> None:
+        """
+        Given a feature dictionary, append it to the GeoJSON object
 
+        :param feature_inputs: A feature as dict
+        :type feature_inputs: dict
+
+        :return: None
+        """
+
+        # Converting to a feature object
         feature = Feature(feature=feature_inputs)
 
+        # If the feature does not already exist in self.features
         if feature not in self.features:
+
+            # Append it
             self.features.append(feature)
 
-    def encode(self):
+    def encode(self) -> str:
+        """
+        Serializes the GeoJSON object
+
+        :return: Serialized GeoJSON
+        """
 
         return json.dumps(self.__dict__)
 

@@ -4,10 +4,10 @@
 """
 mapillary.config.api.__init__
 
-This package contains all the APIv4 endpoints provided with the Mapilary Python SDK.
+This package contains all the API v4 endpoints provided with the Mapillary Python SDK.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 from . import vector_tiles  # noqa: F401

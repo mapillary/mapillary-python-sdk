@@ -3,32 +3,51 @@
 
 """
 mapillary.utils.filter
-~~~~~~~~~~~~~~~~~~~~~~
+======================
 
 This module contains the filter utilies for high level filtering logic
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
+
+import logging
+
+import haversine
+from geojson import Point, Feature
 
 # Local imports
 from mapillary.utils.time import date_to_unix_timestamp
+from shapely.geometry import shape
 
 # Package imports
 from turfpy.measurement import bearing
-from geojson import Point, Feature
-from shapely.geometry import shape
-import haversine
-import logging
 
 logger = logging.getLogger("pipeline-logger")
 
 
-def pipeline_component(func, data, exception_message, args):
-    """A pipeline component which is respnonsible for sending functional arguments over
+def pipeline_component(func, data: list, exception_message: str, args: list) -> list:
+    """
+    A pipeline component which is respnonsible for sending functional arguments over
     to the selected target function - throwing a warning in case of an exception
 
+    :param func: The filter to apply
+    :type func: function
+
+    :param data: The list of features to filter
+    :type data: list
+
+    :param exception_message: The exception message to print
+    :type exception_message: str
+
+    :param args: Arguments
+    :type args: list
+
+    :return: The filtered feature list
+    :rtype: list
+
     Usage::
+
         >>> # internally used in mapillary.utils.pipeline
     """
 
@@ -38,42 +57,42 @@ def pipeline_component(func, data, exception_message, args):
         logger.warning(f"{exception_message}, {exception}. Arguments passed, {args}")
 
 
-def pipeline(data: list, components: list):
-    """A pipeline component that helps with making filtering easier. It provides
+def pipeline(data: dict, components: list) -> list:
+    """
+    A pipeline component that helps with making filtering easier. It provides
     access to different filtering mechanism by simplying letting users
     pass in what filter they want to apply, and the arguments for that filter
 
+    :param data: The GeoJSON to be filtered
+    :type data: dict
+
+    :param components: The list of filters to apply
+    :type components: list
+
+    :return: The filtered feature list
+    :rtype: list
+
     Usage::
+
         >>> # assume variables 'data', 'kwargs'
         >>> pipeline(
-            data=data,
-            components=[
-                {"filter": "image_type", "tile": kwargs["image_type"]}
-                if "image_type" in kwargs
-                else {},
-                {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-                if "org_id" in kwargs
-                else {},
-                {
-                    "filter": "haversine_dist",
-                    "radius": kwargs["radius"],
-                    "coords": [longitude, latitude],
-                }
-                if "radius" in kwargs
-                else 1000,
-            ],
-        )
-
-    Import::
-        >>> cd ${MAPILLARY_PROJECT_ROOT}
-        >>> from tests.utils.test_filter import test_pipeline
-        >>> test_pipeline(zoom=14, longitude=31, latitude=30)
-        53
-        0
-        676
-
-    Test::
-        >>> pytest -m tests/
+        ...     data=data,
+        ...     components=[
+        ...         {"filter": "image_type", "tile": kwargs["image_type"]}
+        ...         if "image_type" in kwargs
+        ...         else {},
+        ...         {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
+        ...         if "org_id" in kwargs
+        ...         else {},
+        ...         {
+        ...             "filter": "haversine_dist",
+        ...             "radius": kwargs["radius"],
+        ...             "coords": [longitude, latitude],
+        ...         }
+        ...         if "radius" in kwargs
+        ...         else 1000
+        ...     ]
+        ... )
     """
 
     # Python treats dict objects as passed reference, thus
@@ -125,13 +144,24 @@ def pipeline(data: list, components: list):
 
 
 def max_captured_at(data: list, max_timestamp: str) -> list:
-    """Selects only the feature items that are less
+    """
+    Selects only the feature items that are less
     than the max_timestamp
 
+    :param data: The feature list
+    :type data: list
+
+    :param max_timestamp: The UNIX timestamp as the max time
+    :type max_timestamp: str
+
+    :return: Filtered feature list
+    :rtype: list
+
     Usage::
+
         >>> max_captured_at([{'type': 'Feature', 'geometry':
-        {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
-        { ... }, ...}], '2020-05-23')
+        ... {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
+        ... { ... }, ...}], '2020-05-23')
     """
 
     return [
@@ -142,13 +172,24 @@ def max_captured_at(data: list, max_timestamp: str) -> list:
 
 
 def min_captured_at(data: list, min_timestamp: str) -> list:
-    """Selects only the feature items that are less
+    """
+    Selects only the feature items that are less
     than the min_timestamp
 
+    :param data: The feature list
+    :type data: list
+
+    :param min_timestamp: The UNIX timestamp as the max time
+    :type min_timestamp: str
+
+    :return: Filtered feature list
+    :rtype: list
+
     Usage::
+
         >>> max_captured_at([{'type': 'Feature', 'geometry':
-        {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
-        { ... }, ...}], '2020-05-23')
+        ... {'type': 'Point', 'coordinates': [30.98594605922699, 30.003757307208872]}, 'properties':
+        ... { ... }, ...}], '2020-05-23')
     """
 
     return [
@@ -159,22 +200,27 @@ def min_captured_at(data: list, min_timestamp: str) -> list:
 
 
 def features_in_bounding_box(data: list, bbox: dict) -> list:
-    """Filter for extracting features only in a bounding box
+    """
+    Filter for extracting features only in a bounding box
 
     :param data: the features list to be checked
     :type data: list
 
     :param bbox: Bounding box coordinates
-    example: {
-        'east': 'BOUNDARY_FROM_EAST',
-        'south': 'BOUNDARY_FROM_SOUTH',
-        'west': 'BOUNDARY_FROM_WEST',
-        'north': 'BOUNDARY_FROM_NORTH'
-    }
-    :type bbox: <class 'dict'>
+
+        Example::
+
+            >>> {
+            ...     'west': 'BOUNDARY_FROM_WEST',
+            ...     'south': 'BOUNDARY_FROM_SOUTH',
+            ...     'east': 'BOUNDARY_FROM_EAST',
+            ...     'north': 'BOUNDARY_FROM_NORTH'
+            ... }
+
+    :type bbox: dict
 
     :return: Features that only exist within the bounding box selected for the given features list
-    provided in the BBox functon
+        provided in the BBox functon
     :rtype: list
     """
 
@@ -192,7 +238,6 @@ def features_in_bounding_box(data: list, bbox: dict) -> list:
             feature["geometry"]["coordinates"][1] > bbox["south"]
             and feature["geometry"]["coordinates"][1] < bbox["north"]
         ):
-
             # Append feature to the output
             output.append(feature)
 
@@ -200,11 +245,12 @@ def features_in_bounding_box(data: list, bbox: dict) -> list:
 
 
 def filter_values(data: list, values: list, property: str = "value") -> list:
-    """Filter the features based on the existence of a specified value
+    """
+    Filter the features based on the existence of a specified value
     in one of the property.
 
-    ### TODO: Need documentation that lists the 'values', specifically, it refers to 'value'
-    ### TODO: under 'Detection', and 'Map feature'
+    *TODO*: Need documentation that lists the 'values', specifically, it refers to 'value'
+    *TODO*: under 'Detection', and 'Map feature', related to issue #65
 
     :param data: The data to be filtered
     :type data: dict
@@ -223,6 +269,19 @@ def filter_values(data: list, values: list, property: str = "value") -> list:
 
 
 def existed_at(data: list, existed_at: str) -> list:
+    """
+    Whether the first_seen_at properly existed after a specified time period
+
+    :param data: The feature list
+    :type data: list
+
+    :param existed_at: The UNIX timestamp
+    :type existed_at: str
+
+    :return: The feature list
+    :rtype: list
+    """
+
     return [
         feature
         for feature in data
@@ -231,7 +290,19 @@ def existed_at(data: list, existed_at: str) -> list:
 
 
 def existed_before(data: list, existed_before: str) -> list:
-    print(date_to_unix_timestamp(existed_before))
+    """
+    Whether the first_seen_at properly existed before a specified time period
+
+    :param data: The feature list
+    :type data: list
+
+    :param existed_before: The UNIX timestamp
+    :type existed_before: str
+
+    :return: A feature list
+    :rtype: list
+    """
+
     return [
         feature
         for feature in data
@@ -240,9 +311,10 @@ def existed_before(data: list, existed_before: str) -> list:
     ]
 
 
-def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> dict:
-    """Returns features that are only in the radius specified
-    using the Haversine distance, from the haversine package
+def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> list:
+    """
+    Returns features that are only in the radius specified using the Haversine distance, from
+    the haversine package
 
     :param data: The data to be filtered
     :type data: dict
@@ -257,7 +329,7 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
     :type unit: str
 
     :return: A feature list
-    :rtype: dict
+    :rtype: list
     """
 
     # Define an empty list
@@ -271,7 +343,6 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
             haversine.haversine(coords, feature["geometry"]["coordinates"], unit=unit)
             < radius
         ):
-
             # ... append to the output
             output.append(feature)
 
@@ -280,8 +351,9 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
 
 
 def image_type(data: list, image_type: str) -> list:
-    """The parameter might be 'all' (both is_pano == true and false), 'pano'
-    (is_pano == true only), or 'flat' (is_pano == false only)
+    """
+    The parameter might be 'all' (both is_pano == true and false), 'pano' (is_pano == true only),
+    or 'flat' (is_pano == false only)
 
     :param data: The data to be filtered
     :type data: list
@@ -311,7 +383,8 @@ def image_type(data: list, image_type: str) -> list:
 
 
 def organization_id(data: list, organization_ids: list) -> list:
-    """Select only features that contain the specific organization_id
+    """
+    Select only features that contain the specific organization_id
 
     :param data: The data to be filtered
     :type data: dict
@@ -335,7 +408,8 @@ def organization_id(data: list, organization_ids: list) -> list:
 
 
 def sequence_id(data: list, ids: list) -> list:
-    """filter out images that do not have the sequence_id in the list of ids
+    """
+    Filter out images that do not have the sequence_id in the list of ids
 
     :param data: The data to be filtered
     :type data: list
@@ -351,7 +425,8 @@ def sequence_id(data: list, ids: list) -> list:
 
 
 def compass_angle(data: list, angles: tuple = (0.0, 360.0)) -> list:
-    """Filter out images that do not lie within compass angle range
+    """
+    Filter out images that do not lie within compass angle range
 
     :param data: The data to be filtered
     :type data: list
@@ -378,7 +453,8 @@ def compass_angle(data: list, angles: tuple = (0.0, 360.0)) -> list:
 
 
 def is_looking_at(image_feature: Feature, look_at_feature: Feature) -> bool:
-    """Return whether the image_feature is looking at the look_at_feature
+    """
+    Return whether the image_feature is looking at the look_at_feature
 
     :param image_feature: The feature set of the image
     :type image_feature: dict
@@ -414,7 +490,8 @@ def is_looking_at(image_feature: Feature, look_at_feature: Feature) -> bool:
 
 
 def by_look_at_feature(image: dict, look_at_feature: Feature) -> bool:
-    """Filter through the given image features and return only features with the look_at_feature
+    """
+    Filter through the given image features and return only features with the look_at_feature
 
     :param image: The feature dictionary
     :type image: dict
@@ -441,16 +518,21 @@ def by_look_at_feature(image: dict, look_at_feature: Feature) -> bool:
 
 
 def hits_by_look_at(data: list, at: dict) -> list:
-    """Whether the given data have any feature that look at the `at` coordinates
+    """
+    Whether the given data have any feature that look at the `at` coordinates
 
     :param data: List of features with an Image entity
     :type data: list
 
-    :param at: The lng and lat coordinates. An example would be,
-        >>> at = {
-        >>>     'lng': <longitudinal parameter>,
-        >>>     'lat': <latitude parameter>,
-        >>> }
+    :param at: The lng and lat coordinates
+
+        Example::
+
+            >>> {
+            ...     'lng': 'longitude',
+            ...     'lat': 'latitude'
+            ... }
+
     :type at: dict
 
     :return: Filtered results of features only looking at `at`
@@ -464,6 +546,18 @@ def hits_by_look_at(data: list, at: dict) -> list:
 
 
 def in_shape(data: list, boundary) -> list:
+    """
+    Whether the given feature list lies within the shape
+
+    :param data: A feature list to be filtered
+    :type data: list
+
+    :param boundary: Shapely helper for determining existence of point within a boundary
+    :type boundary:
+
+    :return: A feature list
+    :rtype: list
+    """
 
     # Generating output format
     output = []
@@ -476,7 +570,6 @@ def in_shape(data: list, boundary) -> list:
 
         # Checking if point falls within the boundary using shapely.geometry.point.point
         if boundary.contains(point):
-
             # If true, append to output features
             output.append(feature)
 

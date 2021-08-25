@@ -5,15 +5,16 @@
 mapillary.models.api.entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This module contains the Adapter design for the Entities API of Mapillary APIv4.
+This module contains the Adapter design for the Entities API of Mapillary API v4.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package Imports
+import typing
 import json
 import ast
 
@@ -26,7 +27,7 @@ from mapillary.utils.format import detection_features_to_geojson
 from mapillary.models.client import Client
 
 # # Exception Handling
-from mapillary.models.exceptions import InvalidImageKey
+from mapillary.models.exceptions import InvalidImageKeyError
 
 # # Config
 from mapillary.config.api.entities import Entities
@@ -36,9 +37,10 @@ from requests import HTTPError
 
 
 class EntityAdapter(object):
-    """Adapter model for dealing with the Entity API, through the DRY principle. The EntityAdapter
+    """
+    Adapter model for dealing with the Entity API, through the DRY principle. The EntityAdapter
     class can be instantiated in the controller modules, providing an abstraction layer that uses
-    the Client class, endpoints provided by the APIv4 under `/config/api/entities.py`.
+    the Client class, endpoints provided by the API v4 under `/config/api/entities.py`.
 
     It performs parsing, handling of layers, properties, and fields to make it easier to
     write higher level logic for extracing information, and lets developers to focus only
@@ -47,12 +49,15 @@ class EntityAdapter(object):
     inputs and the outputs
 
     Usage::
-        >>> EntityAdapter().fetch_layer(image_id=image_id, fields=[
-                    'altitude', 'atomic_scale', 'geometry', 'width'
-                ])
-        >>> EntityAdapter().fetch_map_features(map_feature_id=map_feature_id, fields=[
-                    'first_seen_at', 'last_seen_at', 'geometry'
-                ])
+
+        >>> import mapillary
+        >>> from mapillary.models.api.entities import EntityAdapter
+        >>> EntityAdapter().fetch_image(image_id='IMAGE_ID', fields=[
+        ...     'altitude', 'atomic_scale', 'geometry', 'width'
+        ... ])
+        >>> EntityAdapter().fetch_map_feature(map_feature_id='MAP_FEATURE_ID', fields=[
+        ...         'first_seen_at', 'last_seen_at', 'geometry'
+        ...     ])
     """
 
     def __init__(self):
@@ -61,8 +66,11 @@ class EntityAdapter(object):
         # client object to deal with session and requests
         self.client = Client()
 
-    def fetch_image(self, image_id: int, fields: list = []) -> dict:
-        """Fetches images depending on the image_id and the fields provided
+    def fetch_image(
+        self, image_id: typing.Union[int, str], fields: list = None
+    ) -> dict:
+        """
+        Fetches images depending on the image_id and the fields provided
 
         :param image_id: The image_id to extract for
         :type image_id: int
@@ -100,10 +108,13 @@ class EntityAdapter(object):
             )
         except HTTPError:
             # If given ID is an invalid image ID, let the user know
-            raise InvalidImageKey(image_id)
+            raise InvalidImageKeyError(image_id)
 
-    def fetch_map_feature(self, map_feature_id: int, fields: list = []):
-        """Fetches map feaures depending on the map_feature_id and the fields provided
+    def fetch_map_feature(
+        self, map_feature_id: typing.Union[int, str], fields: list = None
+    ):
+        """
+        Fetches map features depending on the map_feature_id and the fields provided
 
         :param map_feature_id: The map_feature_id to extract for
         :type map_feature_id: int
@@ -133,15 +144,18 @@ class EntityAdapter(object):
             ).content.decode("utf-8")
         )
 
-    def fetch_detections(self, id: int, id_type: bool = True, fields: list = []):
-        """Fetches detections depending on the id, detections for either map_features or
+    def fetch_detections(
+        self, identity: int, id_type: bool = True, fields: list = None
+    ):
+        """
+        Fetches detections depending on the id, detections for either map_features or
         images and the fields provided
 
-        :param id: The id to extract for
-        :type id: int
+        :param identity: The id to extract for
+        :type identity: int
 
         :param id_type: Either True(id is for image), or False(id is for map_feature),
-        defaults to True
+            defaults to True
         :type id_type: bool
 
         :param fields: The fields to extract properties for, defaults to []
@@ -157,7 +171,7 @@ class EntityAdapter(object):
             # Store the URL as ...
             url = Entities.get_detection_with_image_id(
                 # .. extracted by setting image_id as id ...
-                image_id=id,
+                image_id=str(identity),
                 # ... passing in the fields given ...
                 fields=fields
                 # ... only if the fields are not provided empty ...
@@ -172,7 +186,7 @@ class EntityAdapter(object):
             # Store the URL as ...
             url = Entities.get_detection_with_map_feature_id(
                 # ... extracted by setting map_feature_id as id ...
-                map_feature_id=id,
+                map_feature_id=str(identity),
                 # ... passing in the fields given ...
                 fields=fields
                 # ... only if the fields are not provided empty ...
@@ -186,29 +200,28 @@ class EntityAdapter(object):
             json.loads(self.client.get(url).content.decode("utf-8"))["data"]
         )
 
-    def is_image_id(self, id: int, fields: list = []) -> dict:
+    def is_image_id(self, identity: int, fields: list = None) -> bool:
         """Determines whether the given id is an image_id or a map_feature_id
 
-        :param id: The ID given to test
-        :type id: int
+        :param identity: The ID given to test
+        :type identity: int
 
         :param fields: The fields to extract properties for, defaults to []
         :type fields: list
 
         :return: True if id is image, else False
         :rtype: bool
-
         """
 
         try:
             # If image data is fetched without an exception being thrown ...
-            self.fetch_image(image_id=id, fields=fields)
+            self.fetch_image(image_id=identity, fields=fields)
 
             # ... return True
             return True
 
         # An exception to catch the InvalidImageKey exception
-        except Exception:
+        except InvalidImageKeyError:
 
             # If exception, return False
             return False
