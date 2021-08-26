@@ -18,9 +18,8 @@ import json
 import os
 
 # Local
-from mapillary.models.client import Client
-from mapillary.models.auth import auth
 from mapillary.models.geojson import GeoJSON
+from mapillary.utils.auth import auth, set_token
 
 # Exception classes
 from mapillary.models.exceptions import InvalidOptionError
@@ -53,9 +52,7 @@ def set_access_token(token: str):
         >>> mly.interface.set_access_token('CLIENT_TOKEN_HERE')
     """
 
-    Client.set_token(token)
-
-    return {"Success": "Token set"}
+    return set_token(token)
 
 
 @auth()
