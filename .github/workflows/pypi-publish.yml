@@ -22,7 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip install sdist bdist_wheel twine toml
+          pip install wheel build twine readme-renderer check-manifest
 
       - name: Setup PyPi RC
         run: |
