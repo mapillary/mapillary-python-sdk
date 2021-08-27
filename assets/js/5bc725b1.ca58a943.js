@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[788],{1990:function(s){s.exports=JSON.parse('{"allTagsPath":"/mapillary-python-sdk/blog/tags","slug":"docusaurus","name":"docusaurus","count":3,"permalink":"/mapillary-python-sdk/blog/tags/docusaurus"}')}}]);
