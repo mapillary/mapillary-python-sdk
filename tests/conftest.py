@@ -20,7 +20,9 @@ from vt2geojson.tools import vt_bytes_to_geojson
 def mly_access_token():
     """Specify the access token here"""
 
-    token = "MLY|YYY"
+    # The default token is the "Testing" token specially created for testing services
+    # Ref:: 'PyTest Workflow for Mapillary API v4 Python SDK'
+    token = "MLY|3976749565769581|3022bf582da20b0ce0bb44373289ebb2"
 
     if "MLY|YYY" in token or "MLY|XXX" in token:
         raise ValueError("[tests.conftest]: MLY Access Token is not specified")
