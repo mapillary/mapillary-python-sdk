@@ -10,7 +10,7 @@ Reference::
     1. https://packaging.python.org/tutorials/packaging-projects/
     2. https://www.youtube.com/watch?v=GIF3LaRqgXo
 
-:copyight: (c) 2021 Facebook
+:copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
 
