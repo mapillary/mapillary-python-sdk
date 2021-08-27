@@ -27,7 +27,7 @@ jobs:
       - name: Setup PyPi RC
         run: |
           touch ~/.pypirc
-          echo <<<EOT >> ~/.pypyirc
+          cat >> ~/.pypyirc <<EOL 
           [distutils]
           index-servers =
             pypi
@@ -41,7 +41,7 @@ jobs:
           [pypi]
           username = ${{ secrets.PYPI_USERNAME }} 
           password = ${{ secrets.PYPI_PASSWORD }} 
-          EOT
+          EOL
           
       - name: Uploading To PyPi
         run: |
