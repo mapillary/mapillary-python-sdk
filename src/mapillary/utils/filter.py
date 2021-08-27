@@ -209,7 +209,6 @@ def features_in_bounding_box(data: list, bbox: dict) -> list:
     :param bbox: Bounding box coordinates
 
         Example::
-
             >>> {
             ...     'west': 'BOUNDARY_FROM_WEST',
             ...     'south': 'BOUNDARY_FROM_SOUTH',
