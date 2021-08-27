@@ -1,23 +1,28 @@
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @format
+ */
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  url: 'https://mapillary.github.io',
-  baseUrl: '/mapillary-python-sdk/',
+  tagline: 'The tagline of my site',
+  url: 'https://your-docusaurus-test-site.com',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'mapillary', // Usually your GitHub org/user name.
-  projectName: 'mapillary-python-sdk', // Usually your repo name.
-  trailingSlash: true,
+  organizationName: 'facebook', // Usually your GitHub org/user name.
+  projectName: 'docusaurus', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Site',
+      title: 'My Facebook Project',
       logo: {
-        alt: 'My Site Logo',
+        alt: 'My Facebook Project Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -27,9 +32,10 @@ module.exports = {
           position: 'left',
           label: 'Tutorial',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {to: 'blog', label: 'Blog', position: 'left'},
+        // Please keep GitHub link to the right for consistency.
         {
-          href: 'https://github.com/mapillary/mapillary-python-sdk',
+          href: 'https://github.com/facebook/docusaurus',
           label: 'GitHub',
           position: 'right',
         },
@@ -39,11 +45,15 @@ module.exports = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Learn',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Style Guide',
+              to: 'docs/',
+            },
+            {
+              label: 'Second Doc',
+              to: 'docs/doc2',
             },
           ],
         },
@@ -51,16 +61,16 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Facebook',
-              href: 'https://www.facebook.com/mapillary/',
-            },
-            {
-              label: 'Forum',
-              href: 'https://forum.mapillary.com/',
+              label: 'Stack Overflow',
+              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
             },
             {
               label: 'Twitter',
               href: 'https://twitter.com/docusaurus',
+            },
+            {
+              label: 'Discord',
+              href: 'https://discordapp.com/invite/docusaurus',
             },
           ],
         },
@@ -69,32 +79,44 @@ module.exports = {
           items: [
             {
               label: 'Blog',
-              href: 'https://blog.mapillary.com/',
+              to: 'blog',
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/mapillary/mapillary-python-sdk',
+              href: 'https://github.com/facebook/docusaurus',
+            },
+          ],
+        },
+        {
+          title: 'Legal',
+          // Please do not remove the privacy and terms, it's a legal requirement.
+          items: [
+            {
+              label: 'Privacy',
+              href: 'https://opensource.facebook.com/legal/privacy/',
             },
             {
-              label: 'PyPI Release',
-              href: 'https://pypi.org/project/mapillary/',
+              label: 'Terms',
+              href: 'https://opensource.facebook.com/legal/terms/',
             },
             {
-              label: 'Website',
-              href: 'https://www.mapillary.com/',
+              label: 'Data Policy',
+              href: 'https://opensource.facebook.com/legal/data-policy/',
             },
             {
-              label: 'Developer Resources',
-              href: 'https://www.mapillary.com/developer',
-            }
+              label: 'Cookie Policy',
+              href: 'https://opensource.facebook.com/legal/cookie-policy/',
+            },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
-    },
-    prism: {
-      theme: lightCodeTheme,
-      darkTheme: darkCodeTheme,
+      logo: {
+        alt: 'Facebook Open Source Logo',
+        src: 'img/oss_logo.png',
+        href: 'https://opensource.facebook.com',
+      },
+      // Please do not remove the credits, help to publicize Docusaurus :)
+      copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc. Built with Docusaurus.`,
     },
   },
   presets: [
@@ -104,14 +126,13 @@ module.exports = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+          editUrl: 'https://github.com/facebook/docusaurus/edit/main/website/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/blog/',
+            'https://github.com/facebook/docusaurus/edit/main/website/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
