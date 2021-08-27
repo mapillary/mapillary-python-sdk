@@ -1,0 +1,54 @@
+# This workflow will build the distributions with sdist, bdist_wheel, run tests, format, and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Mapillary Python SDK - PyTest Workflow
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      - users: actions/checkout@v2
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install sdist bdist_wheel twine toml
+
+      - name: Setup PyPi RC
+        run: |
+          touch ~/.pypirc
+          echo <<<EOT >> ~/.pypyirc
+          [distutils]
+          index-servers =
+            pypi
+            testpypi
+
+          [testpypi]
+          repository: https://test.pypi.org/legacy
+          username = ${{ secrets.PYPI_USERNAME }} 
+          password = ${{ secrets.PYPI_PASSWORD }} 
+
+          [pypi]
+          username = ${{ secrets.PYPI_USERNAME }} 
+          password = ${{ secrets.PYPI_PASSWORD }} 
+          EOT
+          
+      - name: Uploading To PyPi
+        run: |
+          python3 setup.py upload
+          
+      - name: Publish a Python distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: ${{ secrets.PYPI_USERNAME }} 
+          password: ${{ secrets.PYPI_PASSWORD }}
