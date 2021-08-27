@@ -1,4 +1,6 @@
-# mapillary-python-sdk - Internal Resources
+# Mapillary Python Sdk
+
+## Internal Resources
 
 ## Relevant Links
 
