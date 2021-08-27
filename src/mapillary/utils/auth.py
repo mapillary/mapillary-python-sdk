@@ -21,6 +21,23 @@ from mapillary.models.client import Client
 from mapillary.models.exceptions import AuthError
 
 
+def set_token(token: str) -> dict:
+    """
+    Allows the user to set access token to be able to interact with API v4
+    
+    :param token: Access token
+    :return: Dictionary containing the access token
+    """
+    if len(token) < 1:
+        raise AuthError("Token cannot be empty")
+    try:
+        Client.set_token(token)
+    except AuthError:
+        raise AuthError("Token is invalid")
+    return {"token": "SUCCESS"}
+    
+
+
 def auth():
     """Wrap interface functions with logic for Client"""
 
