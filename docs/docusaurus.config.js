@@ -9,20 +9,20 @@
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'My Site',
-  tagline: 'The tagline of my site',
-  url: 'https://your-docusaurus-test-site.com',
+  title: 'Mapillary Python SDK',
+  tagline: 'A Python 3 library built on the Mapillary API v4 to facilitate retrieving and working with Mapillary data',
+  url: 'https://mapillary.github.io',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
-  organizationName: 'facebook', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
+  organizationName: 'mapillary', // Usually your GitHub org/user name.
+  projectName: 'mapillary-python-sdk', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'My Facebook Project',
+      title: 'Mapillary Python SDK',
       logo: {
-        alt: 'My Facebook Project Logo',
+        alt: 'Mapillary',
         src: 'img/logo.svg',
       },
       items: [
@@ -35,7 +35,7 @@ module.exports = {
         {to: 'blog', label: 'Blog', position: 'left'},
         // Please keep GitHub link to the right for consistency.
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/mapillary/mapillary-python-sdk',
           label: 'GitHub',
           position: 'right',
         },
@@ -61,31 +61,66 @@ module.exports = {
           title: 'Community',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Forum',
+              href: 'https://forum.mapillary.com/',
             },
             {
               label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
+              href: 'https://twitter.com/mapillary',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'Facebook',
+              href: 'https://www.facebook.com/mapillary/',
             },
           ],
         },
         {
           title: 'More',
           items: [
+            // Do we want to keep the SDK blog?
+              // For now, commented out
+            //   {
+            //   label: 'SDK Blog',
+            //   to: 'blog',
+            // },
             {
               label: 'Blog',
-              to: 'blog',
+              href: 'https://blog.mapillary.com/',
+            },
+            {
+              label: 'Website',
+              href: 'https://www.mapillary.com/',
+            }
+          ],
+        },
+        {
+          title: 'SDK',
+          items: [
+            {
+              label: 'PyPi Homepage',
+              href: 'https://pypi.org/project/mapillary/'
+            },
+            {
+              label: 'Developer Resources',
+              href: 'https://www.mapillary.com/developer'
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/mapillary/mapillary-python-sdk',
             },
-          ],
+            {
+             label: 'Bug Tracker',
+             href: 'https://github.com/mapillary/mapillary-python-sdk/issues',
+            },
+            {
+              label: 'Release Notes',
+              href: 'https://github.com/mapillary/mapillary-python-sdk/releases'
+            },
+            {
+              label: 'Download',
+              href: 'https://pypi.org/project/mapillary/#files'
+            }
+          ]
         },
         {
           title: 'Legal',
