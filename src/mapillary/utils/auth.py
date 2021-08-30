@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-mapillary.models.auth
+mapillary.utils.auth
 ~~~~~~~~~~~~~~~~~~~~~
 
 This module contains the authorization logic for the client class of Mapillary, responsible
@@ -24,7 +24,7 @@ from mapillary.models.exceptions import AuthError
 def set_token(token: str) -> dict:
     """
     Allows the user to set access token to be able to interact with API v4
-    
+
     :param token: Access token
     :return: Dictionary containing the access token
     """
@@ -35,7 +35,6 @@ def set_token(token: str) -> dict:
     except AuthError:
         raise AuthError("Token is invalid")
     return {"token": "SUCCESS"}
-    
 
 
 def auth():

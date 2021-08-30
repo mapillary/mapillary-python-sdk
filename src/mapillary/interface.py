@@ -808,9 +808,9 @@ def feature_from_key(key: str, fields: list = []) -> str:
         Fields::
 
                 1. first_seen_at - timestamp, timestamp of the least recent
-                detection contributing to this feature
+                    detection contributing to this feature
                 2. last_seen_at - timestamp, timestamp of the most recent
-                detection contributing to this feature
+                    detection contributing to this feature
                 3. object_value - string, what kind of map feature it is
                 4. object_type - string, either a traffic_sign or point
                 5. geometry - GeoJSON Point geometry

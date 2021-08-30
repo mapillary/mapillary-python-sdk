@@ -142,3 +142,6 @@ cython_debug/
 
 # Testing
 tests/helper/data/*.geojson
+
+# Sphinx documentation generation
+sphinx-docs/
