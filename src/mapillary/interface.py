@@ -20,7 +20,7 @@ import os
 # Local
 from mapillary.models.geojson import GeoJSON
 from mapillary.utils.auth import auth, set_token
-
+from mapillary.utils.verify import international_dateline_check, bbox_validity_check
 # Exception classes
 from mapillary.models.exceptions import InvalidOptionError
 

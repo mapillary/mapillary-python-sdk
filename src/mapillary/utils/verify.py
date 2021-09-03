@@ -16,7 +16,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 """
 
 # Local Imports
-from mapillary.models.exceptions import InvalidKwargError, InvalidOptionError
+from mapillary.models.exceptions import InvalidBBoxError, InvalidKwargError, InvalidOptionError
 from mapillary.config.api.entities import Entities
 from mapillary.models.client import Client
 
@@ -24,7 +24,37 @@ from mapillary.models.client import Client
 import requests
 import re
 
+def international_dateline_check(bbox):
+    if bbox['west']>0 and bbox['east']<0:
+        return True
+    return False
 
+def bbox_validity_check(bbox):
+    # longitude check
+    if bbox['west'] < 180 or bbox['east'] > 180:
+        raise InvalidBBoxError(message="Input values exceed their permitted limits")
+    # lattitude check
+    elif bbox['north'] > 90 or bbox['south'] < 90:
+        raise InvalidBBoxError(message="Input values exceed their permitted limits")
+    # longitude validity check
+    elif bbox['west']>bbox['east'] :
+        # extra check for international dateline
+        # it could either be an error or cross an internaitonal dateline
+        # hence if it is passing the dateline, return True
+        if international_dateline_check(bbox):
+            new_east = bbox['east'] + 360
+            bbox['east'] = new_east
+            return bbox
+        raise InvalidBBoxError(message="Invalid values")
+    # lattitude validitiy check
+    elif bbox['north']<bbox['south']:
+        raise InvalidBBoxError(message="Invalid values")
+    elif bbox['north']==bbox['south'] and bbox['west']==bbox['east']:        
+        # checking for equal values to avoid flat box 
+        raise InvalidBBoxError(message="Invalid values")
+
+    return True
+    
 def kwarg_check(kwargs: dict, options: list, callback: str) -> bool:
     """
     Checks for keyword arguments amongst the kwarg argument to fall into the options list
