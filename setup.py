@@ -10,7 +10,7 @@ Reference::
     1. https://packaging.python.org/tutorials/packaging-projects/
     2. https://www.youtube.com/watch?v=GIF3LaRqgXo
 
-:copyight: (c) 2021 Facebook
+:copyright: (c) 2021 Facebook
 :license: MIT LICENSE
 """
 
@@ -23,7 +23,7 @@ import shutil
 
 # Setup variables. Change as needed
 NAME = "mapillary"  
-VERSION = "0.0.31"
+VERSION = "0.0.32"
 AUTHOR = "Christopher Beddow"
 AUTHOR_EMAIL = "support@mapillary.zendesk.com"
 LICENSE = "MIT"

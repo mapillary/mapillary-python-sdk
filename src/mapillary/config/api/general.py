@@ -6,16 +6,20 @@ mapillary.config.api.general
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module contains the class implementation of the
-general metadata functionalities for the APIv4 of Mapillary.
+general metadata functionalities for the API v4 of Mapillary.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 
 class General:
+    """
+    A general list of metadata API endpoints for API v4
+    """
+
     @staticmethod
     def get_tile_metadata():
         """Root endpoint for metadata"""
@@ -61,7 +65,7 @@ class General:
         )
 
     @staticmethod
-    def get_map_fearurs_traffic_signs_tiles(
+    def get_map_features_traffic_signs_tiles(
         x: float,
         y: float,
         z: float,

@@ -26,6 +26,9 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# PyCharm
+.idea/
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -139,3 +142,6 @@ cython_debug/
 
 # Testing
 tests/helper/data/*.geojson
+
+# Sphinx documentation generation
+sphinx-docs/

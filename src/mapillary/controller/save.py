@@ -9,8 +9,8 @@ This module implements the saving business logic functionalities of the Mapillar
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Package Imports
@@ -26,7 +26,8 @@ from mapillary.utils.verify import check_file_name_validity
 
 
 def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
-    """Save data as CSV to given file path
+    """
+    Save data as CSV to given file path
 
     :param data: The data to save as CSV
     :type data: str
@@ -105,12 +106,13 @@ def save_as_csv_controller(data: str, path: str, file_name: str) -> None:
                 )
     except Exception as e:
         # If there is an error, log it
-        print(f"An error occured: {e}")
+        print(f"An error occurred: {e}")
     return None
 
 
 def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
-    """Save data as GeoJSON to given file path
+    """
+    Save data as GeoJSON to given file path
 
     :param data: The data to save as GeoJSON
     :type data: str
@@ -121,9 +123,10 @@ def save_as_geojson_controller(data: str, path: str, file_name: str) -> None:
     :param file_name: The file name to save as
     :type file_name: str
 
-    :return: Npne
+    :return: None
     :rtype: None
     """
+
     # Ensure that the geojson is a dictionary
     if isinstance(data, str):
         data = json.loads(data)

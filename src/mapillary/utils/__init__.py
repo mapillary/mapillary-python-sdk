@@ -3,14 +3,15 @@
 
 """
 mapillary.utils.__init__
-~~~~~~~~~~~~~~~~~~~~~~~~
+========================
 
-This package contains all the internal utilities used within the mapilary python SDK.
+This package contains all the internal utilities used within the Mapillary python SDK.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
+from . import auth  # noqa: F401
 from . import extract  # noqa: F401
 from . import filter  # noqa: F401
 from . import format  # noqa: F401

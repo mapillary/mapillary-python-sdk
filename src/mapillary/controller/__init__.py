@@ -6,10 +6,10 @@ mapillary.controller.__init__
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This package contains all the business logic implementations of interfaces used within the
-Mapilary Python SDK.
+Mapillary Python SDK.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 from . import detection  # noqa: F401

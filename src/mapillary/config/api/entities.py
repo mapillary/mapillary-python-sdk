@@ -6,12 +6,12 @@ mapillary.config.api.entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This module contains the class implementation of the Entities API endpoints
-as string, for the entity API endpoint aspect of the APIv4 of Mapillary.
+as string, for the entity API endpoint aspect of the API v4 of Mapillary.
 
 For more information, please check out https://www.mapillary.com/developer/api-documentation/.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
 # Local imports
@@ -21,37 +21,39 @@ from mapillary.models.exceptions import InvalidFieldError
 
 
 class Entities:
-    """Each API call requires specifying the fields of the Entity you're
-    interested in explicitly. A sample image by ID request which returns
-    the id and a computed geometry could look as below. For each entity
-    available fields are listed in the relevant sections. All IDs are
+    """
+    Each API call requires specifying the fields of the Entity you're interested in explicitly.
+    A sample image by ID request which returns the id and a computed geometry could look as
+    below. For each entity available fields are listed in the relevant sections. All IDs are
     unique and the underlying metadata for each entity is accessible at
-    https://graph.mapillary.com/:id?fields=A,B,C. The responses are
-    uniform and always return a single object, unless otherwise stated
-    (collection endpoints). All collection endpoint metadata are wrapped
-    in a {"data": [ {...}, ...]} JSON object.
+    https://graph.mapillary.com/:id?fields=A,B,C. The responses are uniform and always return
+    a single object, unless otherwise stated (collection endpoints). All collection endpoint
+    metadata are wrapped in a {"data": [ {...}, ...]} JSON object.
 
     Usage::
-        >>> GET https://graph.mapillary.com/$IMAGE_ID? \
-        access_token=$TOKEN&fields=id,computed_geometry
-        >>> {
-        >>>     "id": "$IMAGE_ID",
-        >>>     "computed_geometry": {
-        >>>         "type": "Point",
-        >>>         "coordinates": [0, 0]
-        >>>     }
-        >>> }
+
+        $ GET 'https://graph.mapillary.com/$IMAGE_ID?access_token=TOKEN&fields=id,computed_geometry'
+        ... {
+        ...     "id": "$IMAGE_ID",
+        ...     "computed_geometry": {
+        ...         "type": "Point",
+        ...         "coordinates": [0, 0]
+        ...     }
+        ... }
     """
 
     @staticmethod
     def get_image(image_id: str, fields: list) -> str:
-        """Represents the metadata of the image on the Mapillary platform with
+        """
+        Represents the metadata of the image on the Mapillary platform with
         the following properties.
 
         Usage::
-            >>> https://graph.mapillary.com/:image_id # endpoint
+
+            >>> 'https://graph.mapillary.com/:image_id' # endpoint
 
         Fields::
+
             1. altitude - float, original altitude from Exif
             2. atomic_scale - float, scale of the SfM reconstruction around the image
             3. camera_parameters - array of float, intrinsic camera parameters
@@ -63,7 +65,7 @@ class Entities:
             9. computed_geometry - GeoJSON Point, location after running image processing
             10. computed_rotation - enum, corrected orientation of the image
             11. exif_orientation - enum, orientation of the camera as given by the exif tag
-            (see: http://sylvana.net/jpegcrop/exif_orientation.html)
+                (see: https://sylvana.net/jpegcrop/exif_orientation.html)
             12. geometry - GeoJSON Point geometry
             13. height - int, height of the original image uploaded
             14. thumb_256_url - string, URL to the 256px wide thumbnail
@@ -87,6 +89,13 @@ class Entities:
 
     @staticmethod
     def get_image_fields() -> list:
+        """
+        Gets list of possible image fields
+
+        :return: Image field list
+        :rtype: list
+        """
+
         return [
             "altitude",
             "atomic_scale",
@@ -114,22 +123,24 @@ class Entities:
 
     @staticmethod
     def get_map_feature(map_feature_id: str, fields: list) -> str:
-        """These are objects with a location which have been derived from
+        """
+        These are objects with a location which have been derived from
         multiple detections in multiple images.
 
         Usage::
-            >>> https://graph.mapillary.com/:map_feature_id # endpoint
+
+            >>> 'https://graph.mapillary.com/:map_feature_id' # endpoint
 
         Fields::
-            1. first_seen_at - timestamp, timestamp of the least recent
-            detection contributing to this feature
-            2. last_seen_at - timestamp, timestamp of the most recent
-            detection contributing to this feature
+
+            1. first_seen_at - timestamp, timestamp of the least recent detection
+                contributing to this feature
+            2. last_seen_at - timestamp, timestamp of the most recent detection
+                contributing to this feature
             3. object_value - string, what kind of map feature it is
             4. object_type - string, either a traffic_sign or point
             5. geometry - GeoJSON Point geometry
-            6. images - list of IDs, which images this map feature was derived
-            from
+            6. images - list of IDs, which images this map feature was derived from
         """
 
         fields = Entities.__field_validity(
@@ -144,6 +155,13 @@ class Entities:
 
     @staticmethod
     def get_map_feature_fields() -> list:
+        """
+        Gets map feature fields
+
+        :return: Possible map feature fields
+        :rtype: list
+        """
+
         return [
             "first_seen_at",
             "last_seen_at",
@@ -158,16 +176,19 @@ class Entities:
         image_id: str,
         fields: list,
     ) -> str:
-        """Represent an object detected in a single image. For convenience
+        """
+        Represent an object detected in a single image. For convenience
         this version of the API serves detections as collections. They can be
         requested as a collection on the resource (e.g. image) they contribute
         or belong to.
 
         Usage::
-            >>> https://graph.mapillary.com/:image_id/detections
+
+            >>> 'https://graph.mapillary.com/:image_id/detections'
             >>> # detections in the image with ID image_id
 
         Fields::
+
             1. created_at - timestamp, when was this detection created
             2. geometry - string, base64 encoded polygon
             3. image - object, image the detection belongs to
@@ -184,6 +205,13 @@ class Entities:
 
     @staticmethod
     def get_detection_with_image_id_fields() -> list:
+        """
+        Gets list of possible detections for image ids
+
+        :return: Possible detection parameters
+        :rtype: list
+        """
+
         return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
@@ -191,16 +219,19 @@ class Entities:
         map_feature_id: str,
         fields: list,
     ) -> str:
-        """Represent an object detected in a single image. For convenience
+        """
+        Represent an object detected in a single image. For convenience
         this version of the API serves detections as collections. They can be
         requested as a collection on the resource (e.g. map feature) they
         contribute or belong to.
 
         Usage::
-            >>> https://graph.mapillary.com/:map_feature_id/detections
+
+            >>> 'https://graph.mapillary.com/:map_feature_id/detections'
             >>> # detections in the image with ID map_feature_id
 
         Fields::
+
             1. created_at - timestamp, when was this detection created
             2. geometry - string, base64 encoded polygon
             3. image - object, image the detection belongs to
@@ -217,6 +248,13 @@ class Entities:
 
     @staticmethod
     def get_detection_with_map_feature_id_fields() -> list:
+        """
+        Gets list of possible field parameters for map features
+
+        :return: Map feature detection fields
+        :rtype: list
+        """
+
         return ["created_at", "geometry", "image", "value"]
 
     @staticmethod
@@ -224,13 +262,16 @@ class Entities:
         organization_id: str,
         fields: list,
     ) -> str:
-        """Represents an organization which can own the imagery if users
+        """
+        Represents an organization which can own the imagery if users
         upload to it
 
         Usage::
-            >>> https://graph.mapillary.com/:organization_id # endpoint
+
+            >>> 'https://graph.mapillary.com/:organization_id' # endpoint
 
         Fields::
+
             1. slug - short name, used in URLs
             2. name - nice name
             3. description - public description of the organization
@@ -248,19 +289,29 @@ class Entities:
 
     @staticmethod
     def get_organization_id_fields() -> list:
+        """
+        Gets list of possible organization id fields
+
+        :return: Possible organization fields
+        :rtype: list
+        """
+
         return ["slug", "name", "description"]
 
     @staticmethod
     def get_sequence(
         sequence_id: str,
     ) -> str:
-        """Represents a sequence of Image IDs ordered by capture time
+        """
+        Represents a sequence of Image IDs ordered by capture time
 
         Usage::
-            >>> https://graph.mapillary.com/image_ids?sequence_id=XXX
+
+            >>> 'https://graph.mapillary.com/image_ids?sequence_id=XXX'
             >>> # endpoint
 
         Fields::
+
             1. id - ID of the image belonging to the sequence
         """
 
@@ -270,7 +321,8 @@ class Entities:
     def __field_validity(
         given_fields: list, actual_fields: list, endpoint: str
     ) -> list:
-        """Checks if the given_fields are the actual correct fields for the given endpoint
+        """
+        Checks if the given_fields are the actual correct fields for the given endpoint
         Compares against the list provided in `actual_fields`
 
         :param given_fields: The fields given as argument to check in
@@ -282,9 +334,7 @@ class Entities:
         :param endpoint: The endpoint that is being targeted
         :type endpoint: str
 
-        ...
         :raises InvalidFieldError: Raised when an API endpoint is passed invalid field elements
-        ...
 
         :return: The given_fields if everything is correct
         :rtype: list
@@ -317,5 +367,5 @@ class Entities:
                     field=field,
                 )
 
-        # If no error occured, and all the fields are correct, return the given_fields
+        # If no error occurred, and all the fields are correct, return the given_fields
         return given_fields

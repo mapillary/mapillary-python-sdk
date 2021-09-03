@@ -5,13 +5,12 @@
 mapillary.models.__init__
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This package contains the class representations of logic within the Mapilary Python SDK.
+This package contains the class representations of logic within the Mapillary Python SDK.
 
-:copyright: (c) 2021 Facebook
-:license: MIT LICENSE
+- Copyright: (c) 2021 Facebook
+- License: MIT LICENSE
 """
 
-from . import auth  # noqa: F401
 from . import client  # noqa: F401
 from . import exceptions  # noqa: F401
 from . import geojson  # noqa: F401
