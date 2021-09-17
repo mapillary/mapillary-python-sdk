@@ -33,7 +33,7 @@ class Properties:
     :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
-    :rtype: <class 'mapillary.models.geojson.Properties'>
+    :rtype: mapillary.models.geojson.Properties
     """
 
     def __init__(self, *properties, **kwargs) -> None:
@@ -109,7 +109,7 @@ class Geometry:
     :raises InvalidOptionError: Raised when the geometry passed is the invalid type - not a dict
 
     :return: A class representation of the model
-    :rtype: <class 'mapillary.models.geojson.Geometry'>
+    :rtype: mapillary.models.geojson.Geometry
     """
 
     def __init__(self, geometry: dict) -> None:
@@ -163,7 +163,7 @@ class Feature:
     :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
-    :rtype: <class 'mapillary.models.geojson.Feature'>
+    :rtype: mapillary.models.geojson.Feature
     """
 
     def __init__(self, feature: dict) -> None:
@@ -236,7 +236,7 @@ class GeoJSON:
     :raises InvalidOptionError: Raised when the geojson passed is the invalid type - not a dict
 
     :return: A class representation of the model
-    :rtype: <class 'mapillary.models.geojson.GeoJSON'>
+    :rtype: mapillary.models.geojson.GeoJSON
 
     Usage::
 
