@@ -1,5 +1,7 @@
 # Mapillary Python SDK
 
+![Mapillary Python SDK Logo](./assets/img/logo/PNG/MapillaryPythonSDK-Logo.png)
+
 ## Internal Resources
 
 ## Relevant Links
