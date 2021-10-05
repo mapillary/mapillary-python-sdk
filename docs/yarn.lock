@@ -3267,7 +3267,7 @@ css-select@^4.1.3:
     css-what "^5.0.0"
     domhandler "^4.2.0"
     domutils "^2.6.0"
-    nth-check "^2.0.0"
+    nth-check "^2.0.1"
 
 css-select@~1.2.0:
   version "1.2.0"
