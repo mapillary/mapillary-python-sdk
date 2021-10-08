@@ -13,7 +13,7 @@ module.exports = {
   tagline: 'A Python 3 library built on the Mapillary API v4 to facilitate retrieving and working with Mapillary data',
   url: 'https://mapillary.github.io',
   baseUrl: '/',
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'mapillary', // Usually your GitHub org/user name.
