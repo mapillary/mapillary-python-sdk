@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkmy_website=self.webpackChunkmy_website||[]).push([[535],{5641:function(e){e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"Welcome","permalink":"/mapillary-python-sdk/blog/welcome"},{"title":"Hello","permalink":"/mapillary-python-sdk/blog/hello-world"},{"title":"Hola","permalink":"/mapillary-python-sdk/blog/hola"}]}')}}]);
