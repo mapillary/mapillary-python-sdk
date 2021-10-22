@@ -12,7 +12,7 @@ module.exports = {
   title: 'Mapillary Python SDK',
   tagline: 'A Python 3 library built on the Mapillary API v4 to facilitate retrieving and working with Mapillary data',
   url: 'https://mapillary.github.io',
-  baseUrl: '/',
+  baseUrl: '/mapillary-python-sdk/',
   onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
