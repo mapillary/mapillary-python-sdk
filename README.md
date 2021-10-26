@@ -1,65 +1,94 @@
 # Mapillary Python SDK
 
-![Mapillary Python SDK Logo](./assets/img/logo/PNG/MapillaryPythonSDK-Logo.png)
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
 
-## Internal Resources
+<br />
 
-## Relevant Links
+[![LinkedIn][linkedin-shield]][linkedin-url]
+[![Email][email-shield]][email-url]
+[![Twitter][twitter-shield]][twitter-url]
+[![Facebook][facebook-shield]][facebook-url]
 
-- [Python naming conventions](https://pythonguides.com/python-naming-conventions/)
-- [Building a Python Open Source Project](https://towardsdatascience.com/build-your-first-open-source-python-project-53471c9942a7)
-- [Example geospatial Python library, which we can reference for inspiration](https://github.com/gboeing/osmnx)
-- [Mapillary blog on API v4 examples](https://blog.mapillary.com/update/2021/06/23/getting-started-with-the-new-mapillary-api-v4.html)
-- [Facebook Open Source Legal Terms](https://opensource.fb.com/legal/terms/)
-- [Facebook Open Source Privacy Policy](https://opensource.fb.com/legal/privacy/)
+[![](./assets/img/logo/PNG/MapillaryPythonSDK-Logo.png)](https://github.com/mapillary/mapillary-python-sdk/)
 
-## mapillary-python-sdk -External Documentation
+<!-- PROJECT LOGO -->
+<div>
+<p align="center">
+    Mapillary's official Python SDK for GeoSpatial Data
+    <br />
+    <a href="https://mapillary.github.io/mapillary-python-sdk/"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://colab.research.google.com/drive/1BPWMP5k7QhXFB6nlWckHC1r54vIR0v2L?usp=sharing">View Demo</a>
+    ·
+    <a href="https://github.com/mapillary/mapillary-python-sdk/issues/new?assignees=&labels=bug&template=bug_report.md&title=Bug+Report">Report Bug</a>
+    ·
+    <a href="https://github.com/mapillary/mapillary-python-sdk/issues/new?assignees=&labels=feature&template=feature_request.md&title=Feature">Request Feature</a>
+    ·
+    <a href="https://mapillary.github.io/mapillary-python-sdk/">See Documentation</a>
+</p>
+</div>
 
-In this section, we keep a draft of the documentation.
+<!-- TABLE OF CONTENTS -->
+## Table Of Contents
 
-> here we should give a paragraph describing the library and what its capabilities are
+- [Mapillary Python SDK](#mapillary-python-sdk)
+  - [Table Of Contents](#table-of-contents)
+- [About](#about)
+- [Getting Started](#getting-started)
+  - [Formatting/Linting](#formattinglinting)
+  - [Building Package](#building-package)
+- [Contributing](#contributing)
+- [Links](#links)
+  - [Mapillary](#mapillary)
+  - [Legal](#legal)
+- [Acknowledgements](#acknowledgements)
 
-## Getting Started
-  
-How do I install the Mapillary Python SDK? See the installation instructions ***link to readthedocs.io***.
+# About
 
-How do I use the Mapillary Python SDK? See the usage examples and tutorials in the examples repo ***link to examples possibly***.
+Mapillary's Python SDK provides an easy mechanism for accessing and retrieving information from Mapillary's web application.
 
-How does this function work? Check out the documentation.
+For more information, please visit [Mapillary](https://www.mapillary.com) and [Mapillary's Blog](https://blog.mapillary.com).
 
-### Basic Start
+# Getting Started
 
-For installing `pipenv`, please see [here](https://pypi.org/project/pipenv/).
-
-To install packages from `Pipfile`,
+To get started, simply install `mapillary `by running,
 
 ```bash
-pipenv install
+pip install mapillary
 ```
 
-To install a package under `packages`,
+A quick demo,
 
-```bash
-pipenv install [package_name]
+```python
+"""
+Getting image coordinates from a nearby set of coordinates
+"""
+
+# Importing mapillary
+import mapillary.interface as mly
+
+# JSON import
+import json
+
+# Get image points close to in the given coordinates
+data = mly.get_image_close_to(longitude=31, latitude=30).to_dict()
+
+# Save the data as JSON
+file_name = "get_image_close_to_1.json"
+with open(file_name, mode="w") as f:
+    json.dump(data, f, indent=4)
 ```
 
-To install a package under `dev-packages`,
+You can check out all the implemented functionality from the [demo](https://colab.research.google.com/drive/1BPWMP5k7QhXFB6nlWckHC1r54vIR0v2L?usp=sharing).
 
-```bash
-pipenv install --dev [package_name]
-```
+Or you can check out the [documentation](https://mapillary.github.io/mapillary-python-sdk/)!
 
-To run `python` with `pipenv`,
-
-```bash
-pipenv run python
-```
-
-To enter the virtual environment, run,
-
-```bash
-pipenv shell
-```
+## Development
 
 ### Formatting/Linting
 
@@ -79,12 +108,91 @@ This runs the `style` policy from the `Makefile`.
 
 ### Building package
 
-To build the package, run `python3 setup.py sdist bdist_wheel`. To test out a local installation, run `pip install -e .`.
+To build the package, run,
 
-## Contributing
+```bash
+python3 setup.py sdist bdist_wheel
+```
 
-We welcome contributions! See [CONTRIBUTING](CONTRIBUTING.md) for details on how to get started, and our [code of conduct](CODE_OF_CONDUCT.md).
+To test out a local installation, run,
 
-## License
+```bash
+pip install -e .
+```
 
-Mapillary-Python-SDK is MIT licensed, as found in the [LICENSE](LICENSE) file.
+# Contributing
+
+We welcome contributions! See [CONTRIBUTING](CONTRIBUTING.md) for details on how to get started, and
+our [code of conduct](CODE_OF_CONDUCT.md).
+
+# Acknowledgements
+
+- [Christopher Beddow](https://github.com/cbeddow) - for leading the project
+- [Saif Ul Islam](https://github.com/rubix982)  - for developing the SDK under MLH fellowship
+- [Omar Ali](https://github.com/OmarMuhammedAli) - for developing the SDK under MLH fellowship
+
+# Links
+
+## Mapillary
+
+- [Website](https://www.mapillary.com)
+- [Blog](https://blog.mapillary.com)
+- [Web App](https://www.mapillary.com/app)
+- [Forum](https://forum.mapillary.com)
+- [API V4 - Mapillary Blog](https://blog.mapillary.com/update/2021/06/23/getting-started-with-the-new-mapillary-api-v4.html)
+
+## Legal
+
+- [Facebook Open Source Legal Terms](https://opensource.fb.com/legal/terms/)
+- [Facebook Open Source Privacy Policy](https://opensource.fb.com/legal/privacy/)
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
+<!-- Shields -->
+
+[contributors-shield]: https://img.shields.io/github/contributors/mapillary/mapillary-python-sdk.svg?style=for-the-badge
+
+[forks-shield]: https://img.shields.io/github/forks/mapillary/mapillary-python-sdk.svg?style=for-the-badge
+
+[stars-shield]: https://img.shields.io/github/stars/mapillary/mapillary-python-sdk.svg?style=for-the-badge
+
+[issues-shield]: https://img.shields.io/github/issues/mapillary/mapillary-python-sdk.svg?style=for-the-badge
+
+[license-shield]: https://img.shields.io/github/license/mapillary/mapillary-python-sdk.svg?style=for-the-badge
+
+[linkedin-shield]: https://img.shields.io/badge/LinkedIn-0A66C2.svg?style=for-the-badge&logo=linkedin&logoColor=white
+
+[email-shield]: https://img.shields.io/badge/gmail-EA4335?style=for-the-badge&logo=gmail&logoColor=white
+
+[twitter-shield]: https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white
+
+[facebook-shield]: https://img.shields.io/badge/facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white
+
+<!-- URLs -->
+
+[contributors-url]: https://github.com/mapillary/mapillary-python-sdk/graphs/contributors
+
+[forks-url]: https://github.com/mapillary/mapillary-python-sdk/network/members
+
+[stars-url]: https://github.com/mapillary/mapillary-python-sdk/stargazers
+
+[issues-url]: https://github.com/mapillary/mapillary-python-sdk/issues
+
+[license-url]: https://github.com/mapillary/mapillary-python-sdk/blob/master/LICENSE.txt
+
+[linkedin-url]: https://linkedin.com/in/othneildrew
+
+[email-url]: mailto:support@mapillary.zendesk.com
+
+[twitter-url]: https://twitter.com/mapillary
+
+[facebook-url]: https://www.facebook.com/mapillary/
+
+[website-url]: https://www.mapillary.com
+
+[blogs-url]: https://blog.mapillary.com
+
+[application-url]: https://www.mapillary.com/app
+
+[forum-url]: https://forum.mapillary.com
