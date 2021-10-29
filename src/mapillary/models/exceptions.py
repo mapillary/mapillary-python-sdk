@@ -16,6 +16,26 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 # Package imports
 import typing
 
+class InvalidBBoxError(MapillaryException):
+    """
+    Raised when an invalid coordinates for bounding box are entered
+    to access Mapillary's API.
+
+    :var message: The error message returned
+    :type message: str
+    """
+    def __init__(self, message: str):
+        self.message = message
+
+    def __str__(self):
+        return (
+            f'InvalidBBoxError: "{self.message}" '
+        )
+
+    def __repr__(self):
+        return (
+            f'InvalidBBoxError: = "{self.message}" '
+        )
 
 class MapillaryException(Exception):
     """Base class for exceptions in this module"""
