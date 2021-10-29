@@ -181,7 +181,7 @@ our [code of conduct](CODE_OF_CONDUCT.md).
 
 [license-url]: https://github.com/mapillary/mapillary-python-sdk/blob/master/LICENSE.txt
 
-[linkedin-url]: https://linkedin.com/in/othneildrew
+[linkedin-url]: https://www.linkedin.com/company/mapillary/
 
 [email-url]: mailto:support@mapillary.zendesk.com
 
