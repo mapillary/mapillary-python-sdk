@@ -30,9 +30,13 @@ module.exports = {
           type: 'doc',
           docId: 'intro',
           position: 'left',
-          label: 'Tutorial',
+          label: 'Documentation',
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
+        {
+          href: 'https://colab.research.google.com/drive/1BPWMP5k7QhXFB6nlWckHC1r54vIR0v2L?usp=sharing',
+          label: 'Demo',
+          position: 'left',
+        },
         // Please keep GitHub link to the right for consistency.
         {
           href: 'https://github.com/mapillary/mapillary-python-sdk',
@@ -44,19 +48,6 @@ module.exports = {
     footer: {
       style: 'dark',
       links: [
-        {
-          title: 'Learn',
-          items: [
-            {
-              label: 'Style Guide',
-              to: 'docs/',
-            },
-            {
-              label: 'Second Doc',
-              to: 'docs/doc2',
-            },
-          ],
-        },
         {
           title: 'Community',
           items: [
@@ -77,12 +68,6 @@ module.exports = {
         {
           title: 'More',
           items: [
-            // Do we want to keep the SDK blog?
-              // For now, commented out
-            //   {
-            //   label: 'SDK Blog',
-            //   to: 'blog',
-            // },
             {
               label: 'Blog',
               href: 'https://blog.mapillary.com/',
@@ -162,12 +147,6 @@ module.exports = {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           editUrl: 'https://github.com/mapillary/mapillary-python-sdk/tree/main/docs',
-        },
-        blog: {
-          showReadingTime: true,
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/mapillary/mapillary-python-sdk/tree/main/docs',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

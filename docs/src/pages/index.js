@@ -18,31 +18,31 @@ import styles from './styles.module.css';
 const features = [
   {
     title: 'Easy to Use',
-    imageUrl: 'img/undraw_docusaurus_mountain.svg',
+    // imageUrl: 'img/undraw_docusaurus_mountain.svg',
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
+        The SDK was designed from the ground up to be easily installed and
+        used to get geospatial data as easily as possible.
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    imageUrl: 'img/undraw_docusaurus_tree.svg',
+    title: 'Fully Featured',
+    // imageUrl: 'img/undraw_docusaurus_tree.svg',
     description: (
       <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
+        The SDK provides a focus on providing as much ease and utility to the users
+          as possible, and in helping users be power users if needed
       </>
     ),
   },
   {
-    title: 'Powered by React',
-    imageUrl: 'img/undraw_docusaurus_react.svg',
+    title: 'Powered by Python',
+    // imageUrl: 'img/undraw_docusaurus_react.svg',
     description: (
       <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
+          Developed with an extensible and easy to use language, Python provides
+          easy to understand semantics for beginners and advanced users alike
       </>
     ),
   },
@@ -80,7 +80,7 @@ export default function Home() {
                 'button button--outline button--secondary button--lg',
                 styles.getStarted,
               )}
-              to={useBaseUrl('docs/')}>
+              to={useBaseUrl('docs/intro')}>
               Get Started
             </Link>
           </div>
