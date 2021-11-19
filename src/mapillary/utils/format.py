@@ -249,7 +249,7 @@ def detection_features_to_geojson(feature_list: list) -> dict:
                     # "id" is always available in the response
                     "id": feature["id"],
                 },
-                "properties": {}
+                "properties": {},
             }
             # Going through the given of features
             for feature in feature_list
@@ -268,11 +268,11 @@ def detection_features_to_geojson(feature_list: list) -> dict:
             if value is not None:
 
                 # Add that property to the _feature
-                _feature['properties'][key] = value
+                _feature["properties"][key] = value
 
     for _feature in resulting_geojson["features"]:
 
-        del _feature['possible_none_properties']
+        del _feature["possible_none_properties"]
 
     # Finally return the output
     return resulting_geojson
