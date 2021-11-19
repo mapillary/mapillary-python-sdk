@@ -231,7 +231,7 @@ def detection_features_to_geojson(feature_list: list) -> dict:
                 if "image" in feature
                 else {},
                 # Property list
-                "properties": {
+                "possible_none_properties": {
                     # Only if "image" was specified in the `fields` of the endpoint, else None
                     "image_id": feature["image"]["id"]
                     if "image" in "feature"
@@ -249,6 +249,7 @@ def detection_features_to_geojson(feature_list: list) -> dict:
                     # "id" is always available in the response
                     "id": feature["id"],
                 },
+                "properties": {}
             }
             # Going through the given of features
             for feature in feature_list
@@ -261,13 +262,17 @@ def detection_features_to_geojson(feature_list: list) -> dict:
     for _feature in resulting_geojson["features"]:
 
         # Going through each property in the feature
-        for key, value in _feature["properties"].items():
+        for key, value in _feature["possible_none_properties"].items():
 
-            # If the _property has defaulted to None
-            if value is None:
+            # If the _property is not None
+            if value is not None:
 
-                # Delete the _property from the feature
-                del _feature["properties"][key]
+                # Add that property to the _feature
+                _feature['properties'][key] = value
+
+    for _feature in resulting_geojson["features"]:
+
+        del _feature['possible_none_properties']
 
     # Finally return the output
     return resulting_geojson
