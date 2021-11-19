@@ -145,7 +145,7 @@ class EntityAdapter(object):
         )
 
     def fetch_detections(
-        self, identity: int, id_type: bool = True, fields: list = None
+        self, identity: int, id_type: bool = True, fields: list = []
     ):
         """
         Fetches detections depending on the id, detections for either map_features or
