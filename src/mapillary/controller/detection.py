@@ -30,7 +30,7 @@ from mapillary.utils.verify import valid_id
 
 
 def get_image_detections_controller(
-    image_id: typing.Union[str, int], fields: list = None
+    image_id: typing.Union[str, int], fields: list = []
 ) -> GeoJSON:
     """
     Get image detections with given (image) key
@@ -60,7 +60,7 @@ def get_image_detections_controller(
 
 
 def get_map_feature_detections_controller(
-    map_feature_id: typing.Union[str, int], fields: list = None
+    map_feature_id: typing.Union[str, int], fields: list = []
 ) -> GeoJSON:
     """
     Get image detections with given (map feature) key

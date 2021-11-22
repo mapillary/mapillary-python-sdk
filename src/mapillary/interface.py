@@ -195,7 +195,7 @@ def get_image_looking_at(
 
 
 @auth()
-def get_detections_with_image_id(image_id: int, fields: list = None):
+def get_detections_with_image_id(image_id: int, fields: list = []):
     """
     Extracting all the detections within an image using an image key
 

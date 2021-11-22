@@ -144,9 +144,7 @@ class EntityAdapter(object):
             ).content.decode("utf-8")
         )
 
-    def fetch_detections(
-        self, identity: int, id_type: bool = True, fields: list = None
-    ):
+    def fetch_detections(self, identity: int, id_type: bool = True, fields: list = []):
         """
         Fetches detections depending on the id, detections for either map_features or
         images and the fields provided
