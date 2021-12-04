@@ -137,6 +137,7 @@ our [code of conduct](CODE_OF_CONDUCT.md).
 
 - [Website](https://www.mapillary.com)
 - [Blog](https://blog.mapillary.com)
+- [A blog showcasing the SDK](https://blog.mapillary.com/update/2021/12/03/mapillary-python-sdk.html)
 - [Web App](https://www.mapillary.com/app)
 - [Forum](https://forum.mapillary.com)
 - [API V4 - Mapillary Blog](https://blog.mapillary.com/update/2021/06/23/getting-started-with-the-new-mapillary-api-v4.html)
