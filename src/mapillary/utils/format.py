@@ -13,10 +13,10 @@ This module deals with converting data to and from different file formats.
 
 # Package imports
 import base64
-import collections
 import json
 import typing
 import mapbox_vector_tile
+from collections.abc import MutableMapping
 
 # Local imports
 # # Models
@@ -438,7 +438,7 @@ def geojson_to_polygon(geojson: dict) -> GeoJSON:
 
 
 def flatten_dictionary(
-    data: typing.Union[dict, collections.MutableMapping],
+    data: typing.Union[dict, MutableMapping],
     parent_key: str = "",
     sep: str = "_",
 ) -> dict:
@@ -481,7 +481,7 @@ def flatten_dictionary(
 
         # Checking value instance
         # MutableMapping makes this Python 2.6+ compatible
-        if isinstance(value, collections.MutableMapping):
+        if isinstance(value, MutableMapping):
 
             # Extending items list
             items.extend(flatten_dictionary(value, new_key, sep=sep).items())
