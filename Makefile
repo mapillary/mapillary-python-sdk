@@ -38,7 +38,7 @@ setup-prod:
 # # Install developer dependencies
 setup-dev:
 	python -m pip install --upgrade pip
-	pip install pipenv
+	pip install pipenv	
 	pipenv install --dev
 
 # PACKAGE BUILD
@@ -46,11 +46,11 @@ setup-dev:
 # # Build the package
 build:
 	# Builds the package distributions
-	python3 setup.py sdist bdist_wheel --universal
+	pipenv run python3 setup.py sdist bdist_wheel --universal
 
 local-install:
 	# Locally install mapillary - DO THIS ONLY AFTER RUNNING `make build`
-	pip3 install -e .
+	pipenv run pip3 install -e .
 
 # CODE QUALITY
 
