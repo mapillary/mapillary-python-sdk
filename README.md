@@ -147,7 +147,7 @@ import mapillary.interface as mly
 
 If you get messed up dependencies, feel free to delete the `Pipfile.lock` file with `rm Pipfile.lock`, then start again with the first step in [Dev Setup](#dev-setup).
 
-If you ever need to start with a clean build, you can always run `make build` which will clean the `dist` directory, then you can simply start again from the second step in [Dev Setup](#dev-setup).
+If you ever need to start with a clean build, you can always run `make clean` which will clean the `dist` directory, then you can simply start again from the second step in [Dev Setup](#dev-setup).
 
 ### Possible Issues
 
