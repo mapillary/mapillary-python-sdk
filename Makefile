@@ -38,7 +38,7 @@ setup-prod:
 # # Install developer dependencies
 setup-dev:
 	python -m pip install --upgrade pip
-	pip install pipenv	
+	pip install pipenv
 	pipenv install --dev
 
 # PACKAGE BUILD
