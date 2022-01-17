@@ -38,23 +38,29 @@
 
 - [Mapillary Python SDK](#mapillary-python-sdk)
   - [Table Of Contents](#table-of-contents)
-- [About](#about)
-- [Getting Started](#getting-started)
-  - [Formatting/Linting](#formattinglinting)
-  - [Building Package](#building-package)
-- [Contributing](#contributing)
-- [Links](#links)
-  - [Mapillary](#mapillary)
+  - [About](#about)
+  - [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Development](#development)
+      - [Formatting/Linting](#formattinglinting)
+      - [Dev Setup](#dev-setup)
+      - [Trouble shooting](#trouble-shooting)
+    - [Possible Issues](#possible-issues)
+  - [Contributing](#contributing)
+  - [Acknowledgements](#acknowledgements)
+  - [Links](#links)
+  - [More About Mapillary](#more-about-mapillary)
   - [Legal](#legal)
-- [Acknowledgements](#acknowledgements)
 
-# About
+## About
 
 Mapillary's Python SDK provides an easy mechanism for accessing and retrieving information from Mapillary's web application.
 
 For more information, please visit [Mapillary](https://www.mapillary.com) and [Mapillary's Blog](https://blog.mapillary.com).
 
-# Getting Started
+## Getting Started
+
+### Installation
 
 To get started, simply install `mapillary `by running,
 
@@ -88,9 +94,9 @@ You can check out all the implemented functionality from the [demo](https://cola
 
 Or you can check out the [documentation](https://mapillary.github.io/mapillary-python-sdk/)!
 
-## Development
+### Development
 
-### Formatting/Linting
+#### Formatting/Linting
 
 To run the formatter `black`, and the linter `flake8`, run,
 
@@ -106,34 +112,69 @@ make style
 
 This runs the `style` policy from the `Makefile`.
 
-### Building package
+#### Dev Setup
 
-To build the package, run,
+Aliases for setting up the environment have been provided in `Makefile` to reduce burden of replication.
+
+The steps to execute are, in order of running them,
+
+1. `make setup-dev`: Install developer dependencies
+2. `make build`: Build the package
+3. `make local-install`: Install package locally in the dev environment
+
+To use the new package installed locally, first use `pipenv` to change into the environment that the package was installed into by running,
 
 ```bash
-python3 setup.py sdist bdist_wheel
+pipenv shell
 ```
 
-To test out a local installation, run,
+Then run,
 
 ```bash
-pip install -e .
+python # assuming running python opens the Python3 shell
 ```
 
-# Contributing
+Then import and use as required,
+
+```python
+# import package here
+import mapillary.interface as mly
+
+# more code to follow here
+```
+
+#### Trouble shooting
+
+If you get messed up dependencies, feel free to delete the `Pipfile.lock` file with `rm Pipfile.lock`, then start again with the first step in [Dev Setup](#dev-setup).
+
+If you ever need to start with a clean build, you can always run `make build` which will clean the `dist` directory, then you can simply start again from the second step in [Dev Setup](#dev-setup).
+
+### Possible Issues
+
+<details>
+<summary><b>Failed installation/dev setup because of <i>libgeos_c.so</i> or <i>libgeos_c_1.so</i></b></summary>
+<br>
+With UNIX based systems, you would to install the `geos` package with you package manager.
+
+In debian systems, `sudo apt install geos`.
+In arch based systems, ```sudo pacman -S geos`.
+</details>
+
+
+## Contributing
 
 We welcome contributions! See [CONTRIBUTING](CONTRIBUTING.md) for details on how to get started, and
 our [code of conduct](CODE_OF_CONDUCT.md).
 
-# Acknowledgements
+## Acknowledgements
 
 - [Christopher Beddow](https://github.com/cbeddow) - for leading the project
 - [Saif Ul Islam](https://github.com/rubix982)  - for developing the SDK under MLH fellowship
 - [Omar Ali](https://github.com/OmarMuhammedAli) - for developing the SDK under MLH fellowship
 
-# Links
+## Links
 
-## Mapillary
+## More About Mapillary
 
 - [Website](https://www.mapillary.com)
 - [Blog](https://blog.mapillary.com)
