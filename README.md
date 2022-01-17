@@ -157,7 +157,7 @@ If you ever need to start with a clean build, you can always run `make clean` wh
 With UNIX based systems, you would to install the `geos` package with you package manager.
 
 In debian systems, `sudo apt install geos`.
-In arch based systems, ```sudo pacman -S geos`.
+In arch based systems, `sudo pacman -S geos`.
 </details>
 
 
