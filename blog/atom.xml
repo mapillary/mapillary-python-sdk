@@ -23,17 +23,6 @@
         </author>
     </entry>
     <entry>
-        <title type="html"><![CDATA[MDX Blog Post]]></title>
-        <id>mdx-blog-post</id>
-        <link href="https://mapillary.github.io/mapillary-python-sdk/blog/mdx-blog-post"/>
-        <updated>2021-08-01T00:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Blog posts support Docusaurus Markdown features, such as MDX.]]></summary>
-        <author>
-            <name>Sébastien Lorber</name>
-            <uri>https://sebastienlorber.com</uri>
-        </author>
-    </entry>
-    <entry>
         <title type="html"><![CDATA[Long Blog Post]]></title>
         <id>long-blog-post</id>
         <link href="https://mapillary.github.io/mapillary-python-sdk/blog/long-blog-post"/>
