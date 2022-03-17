@@ -55,6 +55,7 @@ def pipeline_component(func, data: list, exception_message: str, args: list) -> 
         return func(data, *args)
     except TypeError as exception:
         logger.warning(f"{exception_message}, {exception}. Arguments passed, {args}")
+        return []
 
 
 def pipeline(data: dict, components: list) -> list:
@@ -264,7 +265,7 @@ def filter_values(data: list, values: list, property: str = "value") -> list:
     :rtype: dict
     """
 
-    return [feature for feature in data if feature["properties"][property] in values]
+    return [feature for feature in data if feature["properties"].get(property) in values]
 
 
 def existed_at(data: list, existed_at: str) -> list:
