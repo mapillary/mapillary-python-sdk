@@ -111,7 +111,7 @@ docs-deploy:
 # CLEANING
 
 # # Removing temporary created artifacts
-clean: sphinx-docs-clean docs-clean build-clean
+clean: sphinx-docs-clean docs-clean build-clean dump-clean
 
 # # # Remove Sphinx Documentation
 sphinx-docs-clean:
@@ -124,6 +124,9 @@ docs-clean:
 # # # Remove latest sr/mapillary build
 build-clean:
 	rm -rf build/ dist/
+
+dump-clean:
+	rm -rf tests/dump/
 
 # TESTING
 
