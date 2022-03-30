@@ -60,14 +60,17 @@ style: format lint
 # # # Formatting
 format:
 	@ black src/mapillary
+	@ black tests/
 
 # # # Linting
 lint:
 	@ # stop the build if there are Python syntax errors or undefined names
 	@ flake8 src/mapillary --count --select=E9,F63,F7,F82 --show-source --statistics
+	@ flake8 tests/ --count --select=E9,F63,F7,F82 --show-source --statistics	
 
 	@ # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 	@ flake8 src/mapillary --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+	@ flake8 tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
 # DOCUMENTATION
 
@@ -108,7 +111,7 @@ docs-deploy:
 # CLEANING
 
 # # Removing temporary created artifacts
-clean: sphinx-docs-clean docs-clean build-clean
+clean: sphinx-docs-clean docs-clean build-clean dump-clean
 
 # # # Remove Sphinx Documentation
 sphinx-docs-clean:
@@ -122,8 +125,14 @@ docs-clean:
 build-clean:
 	rm -rf build/ dist/
 
+dump-clean:
+	rm -rf tests/dump/
+
 # TESTING
 
 # # Execute pytest on tests/
 test:
 	@ pytest --log-cli-level=20
+
+test-no-warn:
+	@ pytest --log-cli-level=20 --disable-warnings

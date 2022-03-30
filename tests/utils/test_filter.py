@@ -54,8 +54,9 @@ def test_pipeline_min_captured_at(data: dict, operation, expected):
     )
 
     # What was expected left, what was actual on the right
-    assert len(actual) != len(
-        fetched_data["features"]
+    assert (
+        len(actual) != len(fetched_data["features"])
+        or len(fetched_data["features"]) == 0
     ), f"{test_that} failed, got {actual}"
 
 
@@ -92,6 +93,7 @@ def test_pipeline_haversine_dist(data: dict, operation, expected):
     )
 
     # What was expected left, what was actual on the right
-    assert len(actual) != len(
-        fetched_data["features"]
+    assert (
+        len(actual) != len(fetched_data["features"])
+        or len(fetched_data["features"]) == 0
     ), f"{test_that} failed, got {actual}"

@@ -37,4 +37,4 @@ def test_extract_properties(data: dict, operation, expected):
     actual = extract_properties(data["data"], ["id"])
 
     # What was expected left, what was actual on the right
-    assert len(actual["id"]) != 0, f"{test_that} failed, got {actual}"
+    assert len(actual["id"]) != [], f"{test_that} failed, got {actual}"
