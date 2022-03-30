@@ -191,12 +191,14 @@ class Client:
         if url is None:
             logger.error("You need to specify an endpoint!")
             return
-        
+
         # Determine Authentication method based on the requested endpoint
         if "https://graph.mapillary.com" in url:
-            self.session.headers.update({"Authorization": f"OAuth {self.__access_token}"})
+            self.session.headers.update(
+                {"Authorization": f"OAuth {self.__access_token}"}
+            )
         else:
-            params['access_token'] = params.get('access_token', self.__access_token)
+            params["access_token"] = params.get("access_token", self.__access_token)
 
         return self._initiate_request(url=url, method="GET", params=params)
 

@@ -265,7 +265,9 @@ def filter_values(data: list, values: list, property: str = "value") -> list:
     :rtype: dict
     """
 
-    return [feature for feature in data if feature["properties"].get(property) in values]
+    return [
+        feature for feature in data if feature["properties"].get(property) in values
+    ]
 
 
 def existed_at(data: list, existed_at: str) -> list:
