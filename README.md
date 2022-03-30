@@ -62,7 +62,7 @@ For more information, please visit [Mapillary](https://www.mapillary.com) and [M
 
 ### Installation
 
-To get started, simply install `mapillary `by running,
+To get started, simply install `mapillary` by running,
 
 ```bash
 pip install mapillary
@@ -159,7 +159,6 @@ With UNIX based systems, you would to install the `geos` package with you packag
 In debian systems, `sudo apt install geos`.
 In arch based systems, `sudo pacman -S geos`.
 </details>
-
 
 ## Contributing
 
