@@ -48,8 +48,6 @@ def test_traffic_signs_in_bbox(test_initialize: dict, operation, expected):
     # Logging the intended operation to be tested
     logger.info(f"\n[traffic_signs_in_bbox] Test that {test_that}")
 
-    logger.info(test_initialize["tile_data"][:10])
-
     # Read relevant traffic signs' names
     traffic_signs_names_path = testing_envs["TRAFFIC_SIGNS_FILTER_VALUES"]
     traffic_sign_names = pd.read_csv(traffic_signs_names_path)["name"].tolist()
@@ -58,33 +56,36 @@ def test_traffic_signs_in_bbox(test_initialize: dict, operation, expected):
     time_now = datetime.datetime.today()
 
     # Define relevant bounding tiles
-    monaco_z11_btile = mercantile.Tile(x=1066, y=746, z=11)
-    monaco_z_tile = mercantile.Tile(x=2132, y=1439, z=12)
-    west, south, east, north = mercantile.bounds(
-        monaco_z_tile
-    )  # get bbox coordinates of the vector tile
+    for tile in test_initialize["testing_tile_data"]:
+        logger.info("--------------------------")
+        logger.info(f"For (Tile(x={tile[0]}, y={tile[1]}, z={tile[2]})\n")
+        z_tile = mercantile.Tile(x=int(tile[0]), y=int(tile[1]), z=int(tile[2]))
+        west, south, east, north = mercantile.bounds(
+            z_tile
+        )  # get bbox coordinates of the vector tile
 
-    # Make sure coordinates are inside the vector
-    west += 0.01
-    south += 0.01
-    east -= 0.01
-    north -= 0.01
+        # Dump file for better visualization
+        json_res = json.loads(
+            mly.interface.traffic_signs_in_bbox(
+                # Make sure coordinates are inside the vector
+                bbox={
+                    "west": west + 0.01,
+                    "south": south + 0.01,
+                    "east": east - 0.01,
+                    "north": north - 0.01,
+                },
+                filter_values=traffic_sign_names,
+                existed_at=str(time_now - relativedelta(years=1)).split(".")[0],
+                existed_before=str(time_now).split(".")[0],
+            )
+        )
 
-    # Actual data on left, operation on right
-    actual = mly.interface.traffic_signs_in_bbox(
-        bbox={"west": west, "south": south, "east": east, "north": north},
-        filter_values=traffic_sign_names,
-        existed_at=str(time_now - relativedelta(years=1)).split(".")[0],
-        existed_before=str(time_now).split(".")[0],
-    )
-
-    # Dump file for better visualization
-    json_res = json.loads(actual)
-    json.dump(
-        json_res,
-        open(
-            f"{testing_envs['DUMP_DIRECTORY']}/monaco_{monaco_z_tile.z}_{monaco_z_tile.x}_{monaco_z_tile.y}.json",
-            "a+",
-        ),
-        indent=4,
-    )
+        with open(
+            f"{testing_envs['TRAFFIC_SIGNS_IN_BBOX_DIR']}/{z_tile.z}_{z_tile.x}_{z_tile.y}.json",
+            "w",
+        ) as traffic_signs_fp:
+            json.dump(
+                json_res,
+                traffic_signs_fp,
+                indent=2,
+            )

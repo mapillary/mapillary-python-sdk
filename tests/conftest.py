@@ -47,7 +47,14 @@ def testing_envs():
     # https://www.mapillary.com/developer/api-documentation/traffic-signs
     envs[
         "TRAFFIC_SIGNS_FILTER_VALUES"
-    ] = f"{envs['DATA_DIRECTORY']}//traffic_signs_filter_values.csv"
+    ] = f"{envs['DATA_DIRECTORY']}/traffic_signs_filter_values.csv"
+
+    # TEST_INTERFACE
+
+    ## test_traffic_signs_in_bbox
+    envs[
+        "TRAFFIC_SIGNS_IN_BBOX_DIR"
+    ] = f"{envs['DUMP_DIRECTORY']}/test_interface.test_traffic_signs_in_bbox"
 
     # If needed, take back the OS Environment Variable Dictionary
     return envs
@@ -105,7 +112,7 @@ def directories(testing_envs):
     # Check for DUMP_DIRECTORY
     if not os.path.exists(testing_envs["DUMP_DIRECTORY"]):
         try:
-            os.makedirs(testing_envs["DUMP_DIRECTORY"])
+            os.makedirs(testing_envs["TRAFFIC_SIGNS_IN_BBOX_DIR"])
         except OSError as error:
             logger.error(
                 f"\n[tests.conftest.directories] Creation of needed directories for testing failed, raising OSError: {error}"
@@ -142,16 +149,16 @@ def test_initialize(mly_access_token: str, directories: bool, testing_envs: dict
     testing_tile_data = []
 
     ## Regex string
-    re_str = r'"^\(.*\(x\=(\d+), y\=(\d+), z\=(\d+)\),.*$"'
+    re_str = r"^\(.*\(x\=(-?\d+.?\d+?), y\=(-?\d+.?\d+?), z=(\d+)\)\)$"
 
     # Opening bad tiles file ...
     with open(testing_envs["BAD_TILES_US_WEST_COAST"]) as bad_tile_fp:
 
         ## ... while file input has not finished ...
-        while bad_tile_fp:
+        for line in bad_tile_fp:
 
             ## Append the extracted Tile parameters
-            testing_tile_data.append(re.search(re_str, bad_tile_fp.read()).groups())
+            testing_tile_data.append(re.search(re_str, line).groups())
 
     # Return dictionary
     return {"testing_envs": testing_envs, "testing_tile_data": testing_tile_data}
