@@ -112,7 +112,7 @@ def get_image_close_to_controller(
 
     # Filtering for the attributes obtained above
     if (
-        unfiltered_data["features"] != {}
+        len(unfiltered_data["features"]) != 0
         and unfiltered_data["features"][0]["properties"] != {}
     ):
         return GeoJSON(
