@@ -45,6 +45,7 @@
       - [Formatting/Linting](#formattinglinting)
       - [Dev Setup](#dev-setup)
       - [Trouble shooting](#trouble-shooting)
+      - [Upgrading A Package](#upgrading-a-package)
     - [Possible Issues](#possible-issues)
   - [Contributing](#contributing)
   - [Acknowledgements](#acknowledgements)
@@ -148,6 +149,10 @@ import mapillary.interface as mly
 If you get messed up dependencies, feel free to delete the `Pipfile.lock` file with `rm Pipfile.lock`, then start again with the first step in [Dev Setup](#dev-setup).
 
 If you ever need to start with a clean build, you can always run `make clean` which will clean the `dist` directory, then you can simply start again from the second step in [Dev Setup](#dev-setup).
+
+#### Upgrading A Package
+
+If you upgrade any package in `Pipfile`, be sure to run `pipenv install` to update the `Pipfile.lock` as well.
 
 ### Possible Issues
 
