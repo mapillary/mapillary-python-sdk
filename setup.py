@@ -23,7 +23,7 @@ import shutil
 
 # Setup variables. Change as needed
 NAME = "mapillary"  
-VERSION = "1.0.4"
+VERSION = "1.0.5"
 AUTHOR = "Christopher Beddow"
 AUTHOR_EMAIL = "support@mapillary.zendesk.com"
 LICENSE = "MIT"
