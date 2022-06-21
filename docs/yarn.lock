@@ -2617,9 +2617,9 @@ braces@^3.0.1, braces@~3.0.2:
   dependencies:
     fill-range "^7.0.1"
 
-browserslist@4.16.2:
-  version "4.16.2"
-  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.16.2.tgz#1b3cec458a1ba87588cc5e9be62f19b6d48813ce"
+browserslist@4.16.5:
+  version "4.16.5"
+  resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-4.16.5.tgz#1b3cec458a1ba87588cc5e9be62f19b6d48813ce"
   integrity sha512-HI4lPveGKUR0x2StIz+2FXfDk9SfVMrxn6PLh1JeGUwcuoDkdKZebWiyLRJ68iIPDpMI4JLVDf7S7XzslgWOhw==
   dependencies:
     caniuse-lite "^1.0.30001125"
