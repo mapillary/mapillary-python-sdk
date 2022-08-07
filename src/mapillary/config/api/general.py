@@ -47,7 +47,7 @@ class General:
         """Computed image_type tiles"""
 
         return (
-            "https://tiles.mapillary.com/maps/vtp/mly1_computed_publc/2"
+            "https://tiles.mapillary.com/maps/vtp/mly1_computed_public/2"
             f"/{z}/{x}/{y}/"
         )
 
