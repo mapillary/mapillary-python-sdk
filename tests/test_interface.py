@@ -21,7 +21,7 @@ import pandas as pd
 
 # Local imports
 import mapillary as mly
-from tests.conftest import testing_envs
+from mapillary.models.geojson import Coordinates
 
 from dateutil.relativedelta import relativedelta
 
@@ -89,3 +89,48 @@ def test_traffic_signs_in_bbox(test_initialize: dict, operation, expected):
                 traffic_signs_fp,
                 indent=2,
             )
+
+
+@pytest.mark.parametrize(
+    "operation, expected, equality",
+    [
+        (
+            """mly.interface.is_image_being_looked_at(looker={'lng': 21.3967458252,
+            'lat': 41.9945758302}, at={'lng': 21.396712884299973, 'lat': 41.99463190510002})""",
+            """False""",
+            "==",
+        )
+    ],
+)
+def test_is_image_being_looked_at(
+    test_initialize: dict, operation: str, expected: str, equality: str
+):
+
+    # Get the env dict
+    testing_envs: str = test_initialize["testing_envs"]
+
+    # Operation to test
+    test_that: str = f"{operation} {equality} {expected}"
+
+    # Logging the intended operation to be tested
+    logger.info(f"\n[is_image_being_looked_at] Test that {test_that}")
+
+    # Get the parameters
+    looker: Coordinates = Coordinates(lng=21.3967458252, lat=41.9945758302)
+    at: Coordinates = Coordinates(lng=21.396712884299973, lat=41.99463190510002)
+
+    # Checking for boolean result
+    boolean_result: bool = (
+        mly.interface.is_image_being_looked_at(looker=looker, at=at) == "True"
+    )
+
+    with open(
+        f"""{testing_envs['IS_IMAGE_BEING_LOOKED_AT_DIR']}/{looker['lng']}_{looker['lat']}_
+        {at['lng']}_{at['lat']}.json""",
+        "w",
+    ) as is_image_being_looked_at_fp:
+        json.dump(
+            boolean_result,
+            is_image_being_looked_at_fp,
+            indent=2,
+        )
