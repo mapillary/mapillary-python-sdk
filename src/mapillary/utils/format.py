@@ -17,10 +17,11 @@ import json
 import typing
 import mapbox_vector_tile
 from collections.abc import MutableMapping
+from typing import Union
 
 # Local imports
 # # Models
-from mapillary.models.geojson import GeoJSON
+from mapillary.models.geojson import Coordinates, GeoJSON
 
 
 def feature_to_geojson(json_data: dict) -> dict:
@@ -646,3 +647,31 @@ def decode_pixel_geometry_in_geojson(
 
     # Return output as GeoJSON
     return GeoJSON(geojson=data)
+
+
+def coord_or_list_to_dict(data: Union[Coordinates, list, dict]) -> dict:
+    """
+    Converts a Coordinates object or a coordinates list to a dictionary
+
+    :param data: The coordinates to convert
+    :type data: Union[Coordinates, list]
+
+    :return: The dictionary representation of the coordinates
+    :rtype: dict
+    """
+
+    if isinstance(data, dict):
+        return data
+
+    data_copy = data.copy()
+
+    # If data is a list, convert to dict
+    if isinstance(data, list):
+        data_copy = {"lng": data[0], "lat": data[1]}
+
+    # if data is a Coordinate object, convert to dict
+    if isinstance(data, Coordinates):
+        data_copy = data.to_dict()
+
+    # Return the dictionary
+    return data_copy

@@ -99,6 +99,81 @@ class Properties:
         return f"{attr_key_value_pair}"
 
 
+class Coordinates:
+    """
+    Representation for the coordinates in a geometry for a FeatureCollection
+
+    :param longitude: The longitude of the coordinate set
+    :type longitude: float
+
+    :param latitude: The latitude of the coordinate set
+    :type latitude: float
+
+    :raises InvalidOptionError: Raised when invalid data types are passed to the coordinate set
+
+    :return: A class representation of the Coordinates set
+    :rtype: mapillary.models.geojson.Coordinates
+    """
+
+    def __init__(self, longitude: float, latitude: float) -> None:
+        """
+        Initializing Coordinates constructor
+
+        :param longitude: The longitude of the coordinate set
+        :type longitude: float
+
+        :param latitude: The latitude of the coordinate set
+        :type latitude: float
+        """
+
+        # Validate that the longitude passed is indeed a float
+        if not isinstance(longitude, float):
+            # Raise InvalidOptionError
+            InvalidOptionError(
+                # The parameter that caused the exception
+                param="Coordinates.__init__.longitude",
+                # The invalid value passed
+                value=longitude,
+                # The keys that should be passed instead
+                options=["float"],
+            )
+
+        # Validate that the latitude passed is indeed a float
+        if not isinstance(latitude, float):
+            # Raise InvalidOptionError
+            InvalidOptionError(
+                # The parameter that caused the exception
+                param="Coordinates.__init__.latitude",
+                # The invalid value passed
+                value=latitude,
+                # The keys that should be passed instead
+                options=["float"],
+            )
+
+        self.longitude = longitude
+        self.latitude = latitude
+
+    def to_list(self):
+        """Return the list representation of the Coordinates"""
+
+        return [self.longitude, self.latitude]
+
+    def to_dict(self):
+        """Return the dictionary representation of the Coordinates"""
+
+        return {"lng": self.longitude, "lat": self.latitude}
+
+    def __str__(self):
+        """Return the informal string representation of the Coordinates"""
+
+        return f"{self.longitude}, {self.latitude}"
+
+    def __repr__(self) -> str:
+        """Return the formal string representation of the Coordinates"""
+
+        return f"{self.longitude}, {self.latitude}"
+
+
 class Geometry:
     """
     Representation for the geometry in a GeoJSON
@@ -136,22 +211,24 @@ class Geometry:
         self.type: str = geometry["type"]
 
         # Setting the coordinates of the geometry
-        self.coordinates: list = geometry["coordinates"]
+        self.coordinates: Coordinates = Coordinates(
+            geometry["coordinates"][0], geometry["coordinates"][1]
+        )
 
     def to_dict(self):
         """Return dictionary representation of the geometry"""
 
-        return {"type": self.type, "coordinates": self.coordinates}
+        return {"type": self.type, "coordinates": self.coordinates.to_list()}
 
     def __str__(self):
         """Return the informal string representation of the Geometry"""
 
-        return f"{{'type': {self.type}, 'coordinates': {self.coordinates}}}"
+        return f"{{'type': {self.type}, 'coordinates': {self.coordinates.to_list()}}}"
 
     def __repr__(self):
         """Return the formal string representation of the Geometry"""
 
-        return f"{{'type': {self.type}, 'coordinates': {self.coordinates}}}"
+        return f"{{'type': {self.type}, 'coordinates': {self.coordinates.to_list()}}}"
 
 
 class Feature:

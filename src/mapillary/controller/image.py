@@ -20,11 +20,13 @@ import json
 import mercantile
 import shapely
 from geojson import Polygon
+from typing import Union
 
 # # Configs
 from mapillary.config.api.entities import Entities
 from mapillary.config.api.vector_tiles import VectorTiles
 from mapillary.models.api.entities import EntityAdapter
+from mapillary.models.api.general import GeneralAdapter
 
 # # Adapters
 from mapillary.models.api.vector_tiles import VectorTilesAdapter
@@ -36,7 +38,7 @@ from mapillary.models.client import Client
 from mapillary.models.exceptions import InvalidImageKeyError
 
 # # Class Representation
-from mapillary.models.geojson import GeoJSON
+from mapillary.models.geojson import GeoJSON, Coordinates
 
 # # Utilities
 from mapillary.utils.filter import pipeline
@@ -44,6 +46,7 @@ from mapillary.utils.format import (
     feature_to_geojson,
     merged_features_list_to_geojson,
     geojson_to_polygon,
+    coord_or_list_to_dict,
 )
 from mapillary.utils.verify import (
     image_check,
@@ -262,6 +265,97 @@ def get_image_looking_at_controller(
             )
         )
     )
+
+
+def is_image_being_looked_at_controller(
+    looker: Union[dict, Coordinates, list],
+    at: Union[dict, Coordinates, list],
+    filters: dict,
+) -> any:
+    """
+    Checks if the image with coordinates 'at' is looked at by the given 'looker' coordinates
+
+    :param looker: The coordinate set of the position of the looking from coordinates.
+
+        Format::
+
+            >>> looker_dict = {
+            ...     'lng': 'longitude',
+            ...     'lat': 'latitude'
+            ... }
+            >>> looker_list = [12.954940544167, 48.0537894275]
+            >>> from mapillary.models.geojson import Coordinates
+            >>> looker_coord: Coordinates = Coordinates(lng=12.954940544167, lat=48.0537894275)
+
+    :type looker: Union[dict, mapillary.models.geojson.Coordinates, list]
+
+    :param at: The dict of coordinates of the position of the looking at coordinates.
+
+        Format::
+
+            >>> at_dict = {
+            ...     'lng': 'longitude',
+            ...     'lat': 'latitude'
+            ... }
+            >>> at_list = [12.954940544167, 48.0537894275]
+            >>> from mapillary.models.geojson import Coordinates
+            >>> at_coord: Coordinates = Coordinates(lng=12.954940544167, lat=48.0537894275)
+
+    :type at: Union[dict, mapillary.models.geojson.Coordinates, list]
+
+    :param filters.min_captured_at: The minimum date to filter till
+    :type filters.min_captured_at: str
+
+    :param filters.max_captured_at: The maximum date to filter upto
+    :type filters.max_captured_at: str
+
+    :param filters.radius: The radius that the geometry points will lie in
+    :type filters.radius: float
+
+    :param filters.image_type: Either 'pano', 'flat' or 'all'
+    :type filters.image_type: str
+
+    :param filters.organization_id: The organization to retrieve the data for
+    :type filters.organization_id: str
+
+    :return: True if the image is looked at by the given looker and at coordinates, False otherwise
+    :rtype: bool
+    """
+
+    # Converting 'looker' of type Coordinates|List to dict
+    looker: dict = coord_or_list_to_dict(data=looker)
+
+    # Converting 'at' of type Coordinates|List to dict
+    at: dict = coord_or_list_to_dict(data=at)
+
+    # Checking if a non valid key
+    # has been passed to  the function
+    # If that is the case, throw an exception
+    image_check(kwargs=filters)
+
+    looker_image_data = GeneralAdapter().fetch_map_features_tiles(
+        zoom=14, longitude=looker["lng"], latitude=looker["lat"], layer="image"
+    )
+
+    
+
+    # Filter the unfilterd results by the given filters
+    result: GeoJSON = GeoJSON(
+        geojson=json.loads(
+            merged_features_list_to_geojson(
+                pipeline(
+                    data=looker_image_data,
+                    components=[
+                        # Filter by `hits_by_look_at`
+                        {"filter": "hits_by_look_at", "at": at},
+                    ],
+                )
+            )
+        )
+    ).to_dict()
+
+    # If the result is empty, the image is not looked at, hence return False
+    return len(result["features"]) != 0
 
 
 def get_image_thumbnail_controller(image_id: str, resolution: int) -> str:
