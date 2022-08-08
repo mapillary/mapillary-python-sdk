@@ -22,11 +22,11 @@ jobs:
         python-version: 3.9
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip && make setup-dev && pip install flake8 black pytest requests mercantile vt2geojson pandas pipenv
+        python -m pip install --upgrade pip && make setup-dev && pip install flake8 black pytest requests mercantile vt2geojson pandas
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Locally install branch's mapillary
       run: |
-        make build && make local-install
+        make build && pip3 install -e .
     - name: Formatting with black
       run: |
         make format
