@@ -95,19 +95,18 @@ def test_traffic_signs_in_bbox(test_initialize: dict, operation, expected):
     "operation, expected, equality",
     [
         (
-            """mly.interface.is_image_being_looked_at(looker={'lng': 21.3967458252,
-            'lat': 41.9945758302}, at={'lng': 21.396712884299973, 'lat': 41.99463190510002})""",
-            """False""",
+            """mly.interface.is_image_being_looked_at(at={'lng': 21.396712884299973, 'lat': 41.99463190510002})""",
+            """True""",
             "==",
         )
     ],
 )
-def test_is_image_being_looked_at(
+def test_is_image_being_looked_at_with_no_params(
     test_initialize: dict, operation: str, expected: str, equality: str
 ):
 
     # Get the env dict
-    testing_envs: str = test_initialize["testing_envs"]
+    testing_envs: dict = test_initialize["testing_envs"]
 
     # Operation to test
     test_that: str = f"{operation} {equality} {expected}"
@@ -116,17 +115,15 @@ def test_is_image_being_looked_at(
     logger.info(f"\n[is_image_being_looked_at] Test that {test_that}")
 
     # Get the parameters
-    looker: Coordinates = Coordinates(lng=21.3967458252, lat=41.9945758302)
-    at: Coordinates = Coordinates(lng=21.396712884299973, lat=41.99463190510002)
-
-    # Checking for boolean result
-    boolean_result: bool = (
-        mly.interface.is_image_being_looked_at(looker=looker, at=at) == "True"
+    at: Coordinates = Coordinates(
+        longitude=21.396712884299973, latitude=41.99463190510002
     )
 
+    # Checking for boolean result
+    boolean_result: bool = mly.interface.is_image_being_looked_at(at=at) == "True"
+
     with open(
-        f"""{testing_envs['IS_IMAGE_BEING_LOOKED_AT_DIR']}/{looker['lng']}_{looker['lat']}_
-        {at['lng']}_{at['lat']}.json""",
+        f"{testing_envs['DUMP_DIRECTORY']}/{at.longitude}_{at.latitude}.json",
         "w",
     ) as is_image_being_looked_at_fp:
         json.dump(

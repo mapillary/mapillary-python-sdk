@@ -663,7 +663,7 @@ def coord_or_list_to_dict(data: Union[Coordinates, list, dict]) -> dict:
     if isinstance(data, dict):
         return data
 
-    data_copy = data.copy()
+    data_copy = None
 
     # If data is a list, convert to dict
     if isinstance(data, list):
