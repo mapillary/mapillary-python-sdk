@@ -35,4 +35,4 @@ jobs:
         make lint
     - name: Test with pytest
       run: |
-          pipenv shell && make test
+          make test
