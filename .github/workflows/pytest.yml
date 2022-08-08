@@ -35,4 +35,4 @@ jobs:
         make lint
     - name: Test with pytest
       run: |
-        make local-install && make test
+        pip freeze && make local-install && make test
