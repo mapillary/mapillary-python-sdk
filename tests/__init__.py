@@ -18,3 +18,6 @@ from . import utils as tests_utils  # noqa: F401
 
 # Helper testing
 from . import helper as tests_helper  # noqa: F401
+
+# Interface testing
+from . import test_interface as tests_interface  # noqa: F401

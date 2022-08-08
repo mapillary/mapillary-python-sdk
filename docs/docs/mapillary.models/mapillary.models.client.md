@@ -55,7 +55,7 @@ Usage:
 ```
 
 
-#### get(url: Optional[str] = None, params: Optional[dict] = None)
+#### get(url: Optional[str] = None, params: dict = {})
 Make GET requests to both mapillary main endpoints
 
 

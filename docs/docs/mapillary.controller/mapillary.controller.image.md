@@ -160,26 +160,14 @@ the list of fields/properties to be returned
 
 
 
-### mapillary.controller.image.get_image_looking_at_controller(looker: dict, at: dict, filters: dict)
-Extracting the GeoJSON for the image data from a ‘looker’ and ‘at’ coordinate view
+### mapillary.controller.image.get_image_looking_at_controller(at: Union[dict, Coordinates, list], filters: dict)
+Checks if the image with coordinates ‘at’ is looked with the given filters.
 
 
 * **Parameters**
 
     
     * **filters** (*dict*) – Filters to pass the data through
-
-
-    * **looker** (*dict*) – The dictionary of coordinates of the position of the looking from
-    coordinates. Format:
-
-    ```
-    >>> {
-    >>>     'lng': 'longitude',
-    >>>     'lat': 'latitude'
-    >>> }
-    ```
-
 
 
     * **at** (*dict*) – The dict of coordinates of the position of the looking at
@@ -192,6 +180,9 @@ Extracting the GeoJSON for the image data from a ‘looker’ and ‘at’ coord
     >>> }
     ```
 
+
+
+    * **filters.zoom** (*int*) – The zoom level of the tiles to obtain, defaults to 14
 
 
     * **filters.min_captured_at** (*str*) – The minimum date to filter till
@@ -326,6 +317,57 @@ Reference,
 
 
 * [https://www.mapillary.com/developer/api-documentation/#coverage-tiles](https://www.mapillary.com/developer/api-documentation/#coverage-tiles)
+
+
+### mapillary.controller.image.is_image_being_looked_at_controller(at: Union[dict, Coordinates, list], filters: dict)
+Checks if the image with coordinates ‘at’ is looked with the given filters.
+
+
+* **Parameters**
+
+    
+    * **at** (*Union**[**dict**, **mapillary.models.geojson.Coordinates**, **list**]*) – The dict of coordinates of the position of the looking at coordinates. Format:
+
+    ```
+    >>> at_dict = {
+    ...     'lng': 'longitude',
+    ...     'lat': 'latitude'
+    ... }
+    >>> at_list = [12.954940544167, 48.0537894275]
+    >>> from mapillary.models.geojson import Coordinates
+    >>> at_coord: Coordinates = Coordinates(lng=12.954940544167, lat=48.0537894275)
+    ```
+
+
+    * **filters.zoom** – The zoom level of the tiles to obtain, defaults to 14
+
+
+    * **filters.min_captured_at** (*str*) – The minimum date to filter till
+
+
+    * **filters.max_captured_at** (*str*) – The maximum date to filter upto
+
+
+    * **filters.radius** (*float*) – The radius that the geometry points will lie in
+
+
+    * **filters.image_type** (*str*) – Either ‘pano’, ‘flat’ or ‘all’
+
+
+    * **filters.organization_id** (*str*) – The organization to retrieve the data for
+
+
+
+* **Returns**
+
+    True if the image is looked at by the given looker and at coordinates, False otherwise
+
+
+
+* **Return type**
+
+    bool
+
 
 
 ### mapillary.controller.image.shape_features_controller(shape, is_image: bool = True, filters: Optional[dict] = None)

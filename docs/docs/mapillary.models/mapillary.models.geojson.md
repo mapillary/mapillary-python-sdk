@@ -17,6 +17,48 @@ For more information about the API, please check out
 * License: MIT LICENSE
 
 
+### class mapillary.models.geojson.Coordinates(longitude: float, latitude: float)
+Bases: `object`
+
+Representation for the coordinates in a geometry for a FeatureCollection
+
+
+* **Parameters**
+
+    
+    * **longitude** (*float*) – The longitude of the coordinate set
+
+
+    * **latitude** (*float*) – The latitude of the coordinate set
+
+
+
+* **Raises**
+
+    **InvalidOptionError** – Raised when invalid data types are passed to the coordinate set
+
+
+
+* **Returns**
+
+    A class representation of the Coordinates set
+
+
+
+* **Return type**
+
+    mapillary.models.geojson.Coordinates
+
+
+
+#### to_dict()
+Return the dictionary representation of the Coordinates
+
+
+#### to_list()
+Return the list representation of the Coordinates
+
+
 ### class mapillary.models.geojson.Feature(feature: dict)
 Bases: `object`
 

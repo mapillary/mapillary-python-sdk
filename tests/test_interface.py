@@ -21,7 +21,7 @@ import pandas as pd
 
 # Local imports
 import mapillary as mly
-from tests.conftest import testing_envs
+from mapillary.models.geojson import Coordinates
 
 from dateutil.relativedelta import relativedelta
 
@@ -89,3 +89,45 @@ def test_traffic_signs_in_bbox(test_initialize: dict, operation, expected):
                 traffic_signs_fp,
                 indent=2,
             )
+
+
+@pytest.mark.parametrize(
+    "operation, expected, equality",
+    [
+        (
+            """mly.interface.is_image_being_looked_at(at={'lng': 21.396712884299973, 'lat': 41.99463190510002})""",
+            """True""",
+            "==",
+        )
+    ],
+)
+def test_is_image_being_looked_at_with_no_params(
+    test_initialize: dict, operation: str, expected: str, equality: str
+):
+
+    # Get the env dict
+    testing_envs: dict = test_initialize["testing_envs"]
+
+    # Operation to test
+    test_that: str = f"{operation} {equality} {expected}"
+
+    # Logging the intended operation to be tested
+    logger.info(f"\n[is_image_being_looked_at] Test that {test_that}")
+
+    # Get the parameters
+    at: Coordinates = Coordinates(
+        longitude=21.396712884299973, latitude=41.99463190510002
+    )
+
+    # Checking for boolean result
+    boolean_result: bool = mly.interface.is_image_being_looked_at(at=at) == "True"
+
+    with open(
+        f"{testing_envs['DUMP_DIRECTORY']}/{at.longitude}_{at.latitude}.json",
+        "w",
+    ) as is_image_being_looked_at_fp:
+        json.dump(
+            boolean_result,
+            is_image_being_looked_at_fp,
+            indent=2,
+        )

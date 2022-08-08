@@ -13,6 +13,11 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 - License: MIT LICENSE
 """
 
+# Local imports
+import inspect
+
+from typing import Literal, get_args, get_origin
+
 # Package imports
 import typing
 
@@ -333,3 +338,30 @@ class InvalidFieldError(MapillaryException):
             f'InvalidFieldError: The invalid field, "{self.field}" was '
             f'passed to the endpoint, "{self.endpoint}"'
         )
+
+
+class LiteralEnforcementException(MapillaryException):
+    """
+    Raised when literals passed do not correspond to options
+    """
+
+    def __init__(self, *args: object) -> None:
+        super().__init__(*args)
+
+    @staticmethod
+    def enforce_literal(function: any):
+        frame = inspect.stack()[1].frame
+
+        *_, parameters = inspect.getargvalues(frame)
+
+        for name, literal in function.__annotations__.items():
+
+            if get_origin(literal) is Literal and name in parameters:
+
+                value = parameters[name]
+
+                if value not in get_args(literal):
+
+                    raise InvalidOptionError(
+                        param=name, value=value, options=get_args(literal)
+                    )

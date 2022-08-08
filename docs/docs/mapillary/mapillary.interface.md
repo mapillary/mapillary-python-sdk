@@ -71,7 +71,7 @@ Usage:
 ```
 
 
-### mapillary.interface.get_detections_with_image_id(image_id: int, fields: list = None)
+### mapillary.interface.get_detections_with_image_id(image_id: int, fields: list = [])
 Extracting all the detections within an image using an image key
 
 
@@ -156,7 +156,7 @@ Usage:
 ```
 
 
-### mapillary.interface.get_image_close_to(latitude=- 122.1504711, longitude=37.485073, \*\*kwargs)
+### mapillary.interface.get_image_close_to(latitude=-122.1504711, longitude=37.485073, \*\*kwargs)
 Function that takes a longitude, latitude as argument and outputs the near images. This
 makes an API call with the token set in set_access_token and returns a JSON object.
 
@@ -221,7 +221,7 @@ False, 'sequence_id': '94afmyyhq85xd9bi8p44ve'}} ...
 ```
 
 
-### mapillary.interface.get_image_looking_at(looker: dict, at: dict, \*\*filters: dict)
+### mapillary.interface.get_image_looking_at(at: dict, \*\*filters: dict)
 Function that takes two sets of latitude and longitude, where the 2nd set is the
 “looking at” location from 1st set’s perspective argument and outputs the near images. This
 makes an API call with the token set in set_access_token and returns a JSON object.
@@ -230,19 +230,6 @@ makes an API call with the token set in set_access_token and returns a JSON obje
 * **Parameters**
 
     
-    * **looker** (*dict*) – The coordinate sets from where a certain point is being looked at
-
-    Format:
-
-    ```
-    >>> {
-    ...     'lng': 'longitude',
-    ...     'lat': 'latitude'
-    ... }
-    ```
-
-
-
     * **at** (*dict*) – The coordinate sets to where a certain point is being looked at
 
     Format:
@@ -289,10 +276,6 @@ Usage:
 >>> import mapillary as mly
 >>> mly.interface.set_access_token('MLY|XXX')
 >>> data = mly.interface.get_image_looking_at(
-...        looker={
-...             'lng': 12.954940544167,
-...             'lat': 48.0537894275,
-...         },
 ...         at={
 ...             'lng': 12.955075073889,
 ...             'lat': 48.053805939722,
@@ -668,6 +651,64 @@ Usage:
 ```
 
 
+### mapillary.interface.is_image_being_looked_at(at: Union[dict, Coordinates, list], \*\*filters: dict)
+Function that two sets of coordinates and returns whether the image  with coordinates of “at”
+is looked at or not by the image with coordinates of “looker”.
+
+
+* **Parameters**
+
+    **at** (*Union**[**dict**, **mapillary.models.geojson.Coordinates**, **list**]*) – The coordinate sets to where a certain point is being looked at
+
+    Format:
+
+    ```
+    >>> at_dict = {
+    ...     'lng': 'longitude',
+    ...     'lat': 'latitude'
+    ... }
+    >>> at_list = [12.954940544167, 48.0537894275]
+    >>> from mapillary.models.geojson import Coordinates
+    >>> at_coord: Coordinates = Coordinates(lng=12.954940544167, lat=48.0537894275)
+    ```
+
+
+
+
+* **Returns**
+
+    True if the image is looked at, False otherwise
+
+
+
+* **Return type**
+
+    bool
+
+
+Usage:
+
+```
+>>> import mapillary as mly
+>>> mly.interface.set_access_token('MLY|XXX')
+>>> mly.interface.is_image_being_looked_at(
+...         at={
+...             'lng': 12.955075073889,
+...             'lat': 48.053805939722,
+...         },
+...         radius=50,
+...     )
+... True
+>>> # OR
+>>> from mapillary.models.geojson import Coordinates
+>>> mly.interface.is_image_looked_at(
+...         at=Coordinates(lng=11.954940544167, lat=46.0537894275),
+...         radius=50,
+...     )
+... True
+```
+
+
 ### mapillary.interface.map_feature_points_in_bbox(bbox: dict, filter_values: list = None, \*\*filters: dict)
 Extracts map feature points within a bounding box (bbox)
 
@@ -893,7 +934,7 @@ Usage:
 ```
 
 
-### mapillary.interface.save_locally(geojson_data: str, file_path: str = '/home/saif/MLH/mapillary-python-sdk/src/mapillary', file_name: str = None, extension: str = 'geojson')
+### mapillary.interface.save_locally(geojson_data: str, file_path: str = '/home/saif/Projects/mapillary-python-sdk/src/mapillary', file_name: str = None, extension: str = 'geojson')
 This function saves the geojson data locally as a file
 with the given file name, path, and format.
 

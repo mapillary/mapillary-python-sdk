@@ -13,13 +13,16 @@ https://www.mapillary.com/developer/api-documentation/
 - License: MIT LICENSE
 """
 # Package level imports
+from typing import Union
 import requests
 import json
 import os
 
 # Local
-from mapillary.models.geojson import GeoJSON
 from mapillary.utils.auth import auth, set_token
+
+# Models
+from mapillary.models.geojson import Coordinates, GeoJSON
 
 # Exception classes
 from mapillary.models.exceptions import InvalidOptionError
@@ -116,7 +119,6 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
 
 @auth()
 def get_image_looking_at(
-    looker: dict,
     at: dict,
     **filters: dict,
 ) -> GeoJSON:
@@ -124,17 +126,6 @@ def get_image_looking_at(
     Function that takes two sets of latitude and longitude, where the 2nd set is the
     "looking at" location from 1st set's perspective argument and outputs the near images. This
     makes an API call with the token set in set_access_token and returns a JSON object.
-
-    :param looker: The coordinate sets from where a certain point is being looked at
-
-        Format::
-
-            >>> {
-            ...     'lng': 'longitude',
-            ...     'lat': 'latitude'
-            ... }
-
-    :type looker: dict
 
     :param at: The coordinate sets to where a certain point is being looked at
 
@@ -170,10 +161,6 @@ def get_image_looking_at(
         >>> import mapillary as mly
         >>> mly.interface.set_access_token('MLY|XXX')
         >>> data = mly.interface.get_image_looking_at(
-        ...        looker={
-        ...             'lng': 12.954940544167,
-        ...             'lat': 48.0537894275,
-        ...         },
         ...         at={
         ...             'lng': 12.955075073889,
         ...             'lat': 48.053805939722,
@@ -188,10 +175,59 @@ def get_image_looking_at(
     """
 
     return image.get_image_looking_at_controller(
-        looker=looker,
         at=at,
         filters=filters,
     )
+
+
+@auth()
+def is_image_being_looked_at(
+    at: Union[dict, Coordinates, list],
+    **filters: dict,
+) -> bool:
+    """
+    Function that two sets of coordinates and returns whether the image  with coordinates of "at"
+    is looked at or not by the image with coordinates of "looker".
+
+    :param at: The coordinate sets to where a certain point is being looked at
+
+        Format::
+
+            >>> at_dict = {
+            ...     'lng': 'longitude',
+            ...     'lat': 'latitude'
+            ... }
+            >>> at_list = [12.954940544167, 48.0537894275]
+            >>> from mapillary.models.geojson import Coordinates
+            >>> at_coord: Coordinates = Coordinates(lng=12.954940544167, lat=48.0537894275)
+
+    :type at: Union[dict, mapillary.models.geojson.Coordinates, list]
+
+    :return: True if the image is looked at, False otherwise
+    :rtype: bool
+
+    Usage::
+
+        >>> import mapillary as mly
+        >>> mly.interface.set_access_token('MLY|XXX')
+        >>> mly.interface.is_image_being_looked_at(
+        ...         at={
+        ...             'lng': 12.955075073889,
+        ...             'lat': 48.053805939722,
+        ...         },
+        ...         radius=50,
+        ...     )
+        ... True
+        >>> # OR
+        >>> from mapillary.models.geojson import Coordinates
+        >>> mly.interface.is_image_looked_at(
+        ...         at=Coordinates(lng=11.954940544167, lat=46.0537894275),
+        ...         radius=50,
+        ...     )
+        ... True
+    """
+
+    return image.is_image_being_looked_at_controller(at=at, filters=filters)
 
 
 @auth()

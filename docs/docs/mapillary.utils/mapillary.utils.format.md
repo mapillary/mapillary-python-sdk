@@ -14,6 +14,28 @@ This module deals with converting data to and from different file formats.
 * License: MIT LICENSE
 
 
+### mapillary.utils.format.coord_or_list_to_dict(data: Union[Coordinates, list, dict])
+Converts a Coordinates object or a coordinates list to a dictionary
+
+
+* **Parameters**
+
+    **data** (*Union**[**Coordinates**, **list**]*) – The coordinates to convert
+
+
+
+* **Returns**
+
+    The dictionary representation of the coordinates
+
+
+
+* **Return type**
+
+    dict
+
+
+
 ### mapillary.utils.format.decode_pixel_geometry(base64_string: str, normalized: bool = True, width: int = 4096, height: int = 4096)
 Decodes the pixel geometry, and return the coordinates, which can be specified to be
 normalized
@@ -47,7 +69,7 @@ normalized
 
 
 
-### mapillary.utils.format.decode_pixel_geometry_in_geojson(geojson: Union[dict, mapillary.models.geojson.GeoJSON], normalized: bool = True, width: int = 4096, height: int = 4096)
+### mapillary.utils.format.decode_pixel_geometry_in_geojson(geojson: Union[dict, GeoJSON], normalized: bool = True, width: int = 4096, height: int = 4096)
 Decodes all the pixel_geometry
 
 
@@ -145,7 +167,7 @@ To:
 
 
 
-### mapillary.utils.format.flatten_dictionary(data: Union[dict, collections.abc.MutableMapping], parent_key: str = '', sep: str = '_')
+### mapillary.utils.format.flatten_dictionary(data: Union[dict, MutableMapping], parent_key: str = '', sep: str = '_')
 Flattens dictionaries
 
 From:
