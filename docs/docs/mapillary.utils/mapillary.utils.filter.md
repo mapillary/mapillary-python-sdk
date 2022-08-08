@@ -14,7 +14,7 @@ This module contains the filter utilies for high level filtering logic
 * License: MIT LICENSE
 
 
-### mapillary.utils.filter.by_look_at_feature(image: dict, look_at_feature: geojson.feature.Feature)
+### mapillary.utils.filter.by_look_at_feature(image: dict, look_at_feature: Feature)
 Filter through the given image features and return only features with the look_at_feature
 
 
@@ -312,7 +312,7 @@ Whether the given feature list lies within the shape
 
 
 
-### mapillary.utils.filter.is_looking_at(image_feature: geojson.feature.Feature, look_at_feature: geojson.feature.Feature)
+### mapillary.utils.filter.is_looking_at(image_feature: Feature, look_at_feature: Feature)
 Return whether the image_feature is looking at the look_at_feature
 
 

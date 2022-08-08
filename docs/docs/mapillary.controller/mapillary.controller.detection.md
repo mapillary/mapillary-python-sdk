@@ -17,7 +17,7 @@ For more information, please check out [https://www.mapillary.com/developer/api-
 * License: MIT LICENSE
 
 
-### mapillary.controller.detection.get_image_detections_controller(image_id: Union[str, int], fields: Optional[list] = None)
+### mapillary.controller.detection.get_image_detections_controller(image_id: Union[str, int], fields: list = [])
 Get image detections with given (image) key
 
 
@@ -44,7 +44,7 @@ Get image detections with given (image) key
 
 
 
-### mapillary.controller.detection.get_map_feature_detections_controller(map_feature_id: Union[str, int], fields: Optional[list] = None)
+### mapillary.controller.detection.get_map_feature_detections_controller(map_feature_id: Union[str, int], fields: list = [])
 Get image detections with given (map feature) key
 
 

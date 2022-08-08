@@ -43,7 +43,7 @@ Usage:
 ```
 
 
-#### fetch_detections(identity: int, id_type: bool = True, fields: Optional[list] = None)
+#### fetch_detections(identity: int, id_type: bool = True, fields: list = [])
 Fetches detections depending on the id, detections for either map_features or
 images and the fields provided
 

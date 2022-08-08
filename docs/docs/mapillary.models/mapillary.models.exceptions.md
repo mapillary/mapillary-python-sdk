@@ -17,7 +17,7 @@ For more information, please check out [https://www.mapillary.com/developer/api-
 
 
 ### exception mapillary.models.exceptions.AuthError(message: str)
-Bases: `mapillary.models.exceptions.MapillaryException`
+Bases: `MapillaryException`
 
 Raised when a function is called without having the access token set in
 set_access_token to access Mapillary’s API, primarily used in mapillary.set_access_token
@@ -29,8 +29,21 @@ set_access_token to access Mapillary’s API, primarily used in mapillary.set_ac
 
 
 
+### exception mapillary.models.exceptions.InvalidBBoxError(message: str)
+Bases: `MapillaryException`
+
+Raised when an invalid coordinates for bounding box are entered
+to access Mapillary’s API.
+
+
+* **Variables**
+
+    **message** – The error message returned
+
+
+
 ### exception mapillary.models.exceptions.InvalidFieldError(endpoint: str, field: list)
-Bases: `mapillary.models.exceptions.MapillaryException`
+Bases: `MapillaryException`
 
 Raised when an API endpoint is passed invalid field elements
 
@@ -46,7 +59,7 @@ Raised when an API endpoint is passed invalid field elements
 
 
 ### exception mapillary.models.exceptions.InvalidImageKeyError(image_id: Union[int, str])
-Bases: `mapillary.models.exceptions.MapillaryException`
+Bases: `MapillaryException`
 
 Raised when trying to retrieve an image thumbnail with an invalid image ID/key.
 Primarily used with mapillary.image_thumbnail
@@ -65,7 +78,7 @@ Primarily used with mapillary.image_thumbnail
 
 
 ### exception mapillary.models.exceptions.InvalidImageResolutionError(resolution: int)
-Bases: `mapillary.models.exceptions.MapillaryException`
+Bases: `MapillaryException`
 
 Raised when trying to retrieve an image thumbnail with an invalid resolution/size.
 
@@ -79,7 +92,7 @@ Primarily used with mapillary.image_thumbnail
 
 
 ### exception mapillary.models.exceptions.InvalidKwargError(func: str, key: str, value: str, options: list)
-Bases: `mapillary.models.exceptions.MapillaryException`
+Bases: `MapillaryException`
 
 Raised when a function is called with the invalid keyword argument(s) that do not belong to the
 requested API end call
@@ -102,7 +115,7 @@ requested API end call
 
 
 ### exception mapillary.models.exceptions.InvalidOptionError(param: str, value: any, options: list)
-Bases: `mapillary.models.exceptions.MapillaryException`
+Bases: `MapillaryException`
 
 Out of bound zoom error
 
@@ -121,7 +134,7 @@ Out of bound zoom error
 
 
 ### exception mapillary.models.exceptions.InvalidTokenError(message: str, error_type: str, code: str, fbtrace_id: str)
-Bases: `mapillary.models.exceptions.MapillaryException`
+Bases: `MapillaryException`
 
 Raised when an invalid token is given
 to access Mapillary’s API, primarily used in mapillary.set_access_token
@@ -144,6 +157,14 @@ to access Mapillary’s API, primarily used in mapillary.set_access_token
     * **fbtrace_id** – A unique ID to track the issue/exception
 
 
+
+### exception mapillary.models.exceptions.LiteralEnforcementException(\*args: object)
+Bases: `MapillaryException`
+
+Raised when literals passed do not correspond to options
+
+
+#### static enforce_literal(function: any)
 
 ### exception mapillary.models.exceptions.MapillaryException()
 Bases: `Exception`

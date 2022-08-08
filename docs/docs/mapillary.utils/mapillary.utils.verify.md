@@ -18,6 +18,8 @@ For more information, please check out [https://www.mapillary.com/developer/api-
 * License: MIT LICENSE
 
 
+### mapillary.utils.verify.bbox_validity_check(bbox)
+
 ### mapillary.utils.verify.check_file_name_validity(file_name: str)
 Checks if the file name is valid
 
@@ -82,6 +84,8 @@ For image entities, check if the arguments provided fall in the right category
     **kwargs** (*dict*) – A dictionary that contains the keyword key-value pair arguments
 
 
+
+### mapillary.utils.verify.international_dateline_check(bbox)
 
 ### mapillary.utils.verify.is_image_id(identity: int, fields: Optional[list] = None)
 Checks if the id is an image_id
