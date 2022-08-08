@@ -22,7 +22,7 @@ jobs:
         python-version: 3.9
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip && make setup-dev && pip install flake8 black pytest requests mercantile vt2geojson mapillary pandas
+        python -m pip install --upgrade pip && make setup-dev && pip install flake8 black pytest requests mercantile vt2geojson pandas
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Locally install branch's mapillary
       run: |
