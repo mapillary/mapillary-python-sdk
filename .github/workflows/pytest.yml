@@ -26,7 +26,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Locally install branch's mapillary
       run: |
-        make build && make local-install
+        make build
     - name: Formatting with black
       run: |
         make format
@@ -35,4 +35,4 @@ jobs:
         make lint
     - name: Test with pytest
       run: |
-        make test
+        make local-install && make test
