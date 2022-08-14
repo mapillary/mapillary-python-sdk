@@ -13,11 +13,6 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 - License: MIT LICENSE
 """
 
-# Local imports
-import inspect
-
-from typing import Literal, get_args, get_origin
-
 # Package imports
 import typing
 
@@ -349,19 +344,14 @@ class LiteralEnforcementException(MapillaryException):
         super().__init__(*args)
 
     @staticmethod
-    def enforce_literal(function: any):
-        frame = inspect.stack()[1].frame
+    def enforce_literal(
+        option_selected: str,
+        options: typing.Union[typing.List[str], typing.List[int]],
+        param: str,
+    ):
 
-        *_, parameters = inspect.getargvalues(frame)
+        if option_selected not in options:
 
-        for name, literal in function.__annotations__.items():
-
-            if get_origin(literal) is Literal and name in parameters:
-
-                value = parameters[name]
-
-                if value not in get_args(literal):
-
-                    raise InvalidOptionError(
-                        param=name, value=value, options=get_args(literal)
-                    )
+            raise InvalidOptionError(
+                param=param, value=option_selected, options=options
+            )

@@ -15,7 +15,7 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 
 # Package imports
 import mercantile
-from typing import Literal
+import typing
 from vt2geojson.tools import vt_bytes_to_geojson
 
 # Local imports
@@ -51,8 +51,12 @@ class GeneralAdapter(object):
     """
 
     # layer types
-    __LAYER_TYPES = Literal[
-        "overview", "sequence", "image", "map_feature", "traffic_sign"
+    __LAYER_TYPES: typing.List[str] = [
+        "overview",
+        "sequence",
+        "image",
+        "map_feature",
+        "traffic_sign",
     ]
 
     def __init__(self, *args: object) -> None:
@@ -73,7 +77,7 @@ class GeneralAdapter(object):
         zoom: int,
         longitude: float,
         latitude: float,
-        layer: __LAYER_TYPES = "image",
+        layer: str = "image",
     ) -> dict:
         """
         Get the tiles for a given image.
@@ -93,7 +97,6 @@ class GeneralAdapter(object):
 
         # Perform validation checks
         self.__validation_checks(
-            function=self.fetch_image_tiles,
             zoom=zoom,
             longitude=longitude,
             latitude=latitude,
@@ -114,7 +117,7 @@ class GeneralAdapter(object):
         zoom: int,
         longitude: float,
         latitude: float,
-        layer: __LAYER_TYPES = "image",
+        layer: str = "image",
     ) -> dict:
         """
         Get the image type for a given image.
@@ -133,7 +136,6 @@ class GeneralAdapter(object):
         """
         # Perform validation checks
         self.__validation_checks(
-            function=self.fetch_computed_image_tiles,
             zoom=zoom,
             longitude=longitude,
             latitude=latitude,
@@ -155,7 +157,7 @@ class GeneralAdapter(object):
         zoom: int,
         longitude: float,
         latitude: float,
-        layer: __LAYER_TYPES = "image",
+        layer: str = "image",
     ):
         """
         Get the map features for a given coordinate set
@@ -174,7 +176,6 @@ class GeneralAdapter(object):
         """
         # Perform validation checks
         self.__validation_checks(
-            function=self.fetch_map_features_tiles,
             zoom=zoom,
             longitude=longitude,
             latitude=latitude,
@@ -210,7 +211,6 @@ class GeneralAdapter(object):
         """
         # Perform validation checks
         self.__validation_checks(
-            function=self.fetch_map_features_traffic_tiles,
             zoom=zoom,
             longitude=longitude,
             latitude=latitude,
@@ -241,7 +241,7 @@ class GeneralAdapter(object):
             )
 
             return vt_bytes_to_geojson(
-                # Paramaters appropriately
+                # Parameters appropriately
                 b_content=self.client.get(
                     self.__preprocess_api_string(
                         # Turn coordinates into a tile
@@ -445,7 +445,12 @@ class GeneralAdapter(object):
             )
 
     def __validation_checks(
-        self, function, longitude: float, latitude: float, zoom: int, layer: str
+        self,
+        longitude: float,
+        latitude: float,
+        zoom: int,
+        layer: str,
+        layer_options: typing.List[str] = [],
     ) -> None:
         """
         Validation checks for the parameters of longitude, latitude, layer, zoom
@@ -465,7 +470,11 @@ class GeneralAdapter(object):
         :raises InvalidOptionError: Invalid option passed
         """
         # Check if the correct literals were passed to the function
-        LiteralEnforcementException.enforce_literal(function=function)
+        LiteralEnforcementException.enforce_literal(
+            option_selected=layer,
+            options=self.__LAYER_TYPES if layer_options == [] else layer_options,
+            param="layer",
+        )
 
         # Check the parameters for the correct range
         self.__check_parameters(longitude, latitude)
