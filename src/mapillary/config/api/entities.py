@@ -17,8 +17,10 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 # Local imports
 
 # # Exception Handling
-from mapillary.models.exceptions import InvalidFieldError
+from mapillary.models.exceptions import InvalidFieldError, InvalidNumberOfArguments
 
+# # Imports
+import typing
 
 class Entities:
     """
@@ -86,6 +88,67 @@ class Entities:
         )
 
         return f"https://graph.mapillary.com/{image_id}/?fields={','.join(fields)}"
+
+    @staticmethod
+    def get_images(image_ids: typing.List[str], fields: list) -> str:
+        """
+        Represents the metadata of the image on the Mapillary platform with
+        the following properties.
+
+        Usage::
+
+            >>> 'https://graph.mapillary.com/ids=ID1,ID2,ID3' # endpoint
+
+        Parameters::
+
+            A list of entity IDs separated by comma. The provided IDs must be in the same type (e.g. all image IDs, or all detection IDs)
+
+        Fields::
+
+            1. altitude - float, original altitude from Exif
+            2. atomic_scale - float, scale of the SfM reconstruction around the image
+            3. camera_parameters - array of float, intrinsic camera parameters
+            4. camera_type - enum, type of camera projection (perspective, fisheye, or spherical)
+            5. captured_at - timestamp, capture time
+            6. compass_angle - float, original compass angle of the image
+            7. computed_altitude - float, altitude after running image processing
+            8. computed_compass_angle - float, compass angle after running image processing
+            9. computed_geometry - GeoJSON Point, location after running image processing
+            10. computed_rotation - enum, corrected orientation of the image
+            11. exif_orientation - enum, orientation of the camera as given by the exif tag
+                (see: https://sylvana.net/jpegcrop/exif_orientation.html)
+            12. geometry - GeoJSON Point geometry
+            13. height - int, height of the original image uploaded
+            14. thumb_256_url - string, URL to the 256px wide thumbnail
+            15. thumb_1024_url - string, URL to the 1024px wide thumbnail
+            16. thumb_2048_url - string, URL to the 2048px wide thumbnail
+            17. merge_cc - int, id of the connected component of images that were aligned together
+            18. mesh - { id: string, url: string } - URL to the mesh
+            19. quality_score - float, how good the image is (experimental)
+            20. sequence - string, ID of the sequence
+            21. sfm_cluster - { id: string, url: string } - URL to the point cloud
+            22. width - int, width of the original image uploaded
+
+        Raises::
+            
+            InvalidNumberOfArguments - if the number of ids passed is 0 or greater than 50
+        """
+
+        # TODO: while this function should not be responsible to check if
+        # all of the IDs passed are image_ids or detections_ids, this comment
+        # should be to remind that this logic should belong elsewhere or to integrated
+        # in the future
+
+        if len(image_ids) == 0 or len(image_ids) > 50:
+            raise InvalidNumberOfArguments(number_of_params_passed=len(image_ids), actual_allowed_params=50, param="image_ids")
+
+        fields = Entities.__field_validity(
+            given_fields=fields,
+            actual_fields=Entities.get_image_fields(),
+            endpoint="https://graph.mapillary.com/ids=",
+        )
+
+        return f"https://graph.mapillary.com/ids={','.join(image_ids)}?fields={','.join(fields)}"
 
     @staticmethod
     def get_image_fields() -> list:
