@@ -23,6 +23,7 @@ from mapillary.utils.auth import auth, set_token
 
 # Models
 from mapillary.models.geojson import Coordinates, GeoJSON
+from mapillary.models.config import Config
 
 # Exception classes
 from mapillary.models.exceptions import InvalidOptionError
@@ -32,6 +33,35 @@ import mapillary.controller.image as image
 import mapillary.controller.feature as feature
 import mapillary.controller.detection as detection
 import mapillary.controller.save as save
+
+
+def configure_mapillary_settings(**kwargs):
+    """
+    A function allowing the user to configure the Mapillary settings for the session. Takes no
+    arguments and sets a global variable used by other functions making API requests. For more
+    information what the details of authentication, please check out the blog post at Mapillary.
+    https://blog.mapillary.com/update/2021/06/23/getting-started-with-the-new-mapillary-api-v4.html
+
+    :return: None
+    :rtype: None
+
+    Usage::
+
+        >>> import mapillary as mly
+        >>> mly.interface.configure_mapillary_settings()
+        >>> mly.interface.configure_mapillary_settings(use_strict=True)
+
+    :param kwargs: Keyword arguments for the configuration
+    :type kwargs: dict
+
+    :param kwargs.use_strict: Whether to use strict mode or not
+    :type kwargs.use_strict: bool
+
+    :return: None
+    :rtype: None
+    """
+
+    return Config(kwargs)
 
 
 def set_access_token(token: str):
