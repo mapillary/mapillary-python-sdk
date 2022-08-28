@@ -15,3 +15,5 @@ from . import client  # noqa: F401
 from . import exceptions  # noqa: F401
 from . import geojson  # noqa: F401
 from . import api  # noqa: F401
+from . import logger  # noqa: F401
+from . import config # noqa: F401
