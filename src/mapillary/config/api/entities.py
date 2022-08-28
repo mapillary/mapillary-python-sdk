@@ -297,7 +297,7 @@ class Entities:
                     if isinstance(value, str):
 
                         # ... check if the string is a valid datetime in the ISO8601 format ...
-                        if not is_iso8601_datetime_format(value) and Config.use_strict:
+                        if not is_iso8601_datetime_format(value):
 
                             # ... if not, raise an error ...
                             if Config.use_strict:
