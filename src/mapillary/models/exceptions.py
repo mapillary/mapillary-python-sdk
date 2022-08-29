@@ -355,3 +355,35 @@ class LiteralEnforcementException(MapillaryException):
             raise InvalidOptionError(
                 param=param, value=option_selected, options=options
             )
+
+
+class InvalidNumberOfArguments(MapillaryException):
+    """
+    Raised when an inappropriate number of parameters are passed to a function
+    """
+
+    def __init__(
+        self,
+        number_of_params_passed: int,
+        actual_allowed_params: int,
+        param: str,
+        *args: object,
+    ) -> None:
+        super().__init__(*args)
+
+        self.number_of_params_passed = number_of_params_passed
+        self.actual_allowed_params = actual_allowed_params
+        self.param = param
+
+    def __str__(self):
+        return (
+            f'InvalidNumberOfArguments: The parameter, "{self.param}" was '
+            f'passed "{self.number_of_params_passed}" items, when the max number of'
+            f'allowed items are "{self.actual_allowed_params}"'
+        )
+
+    def __repr__(self):
+        return (
+            f"InvalidNumberOfArguments(number_of_params_passed={self.number_of_params_passed},"
+            f"actual_allowed_params={self.actual_allowed_params}, param={self.param})"
+        )

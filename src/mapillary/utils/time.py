@@ -14,6 +14,7 @@ the date filtering logic.
 
 # Package imports
 import datetime
+import re
 
 
 def date_to_unix_timestamp(date: str) -> int:
@@ -43,3 +44,20 @@ def date_to_unix_timestamp(date: str) -> int:
 
     # Return the epoch timestamp in miliseconds
     return int(datetime.datetime.fromisoformat(date).timestamp()) * 1000
+
+
+def is_iso8601_datetime_format(date_time: str) -> bool:
+    """
+    Checks if the date time is in ISO 8601 format
+
+    :param date_time: The date time to be checked
+    :type date_time: str
+
+    :return: True if the date time is in ISO 8601 format, else False
+    :rtype: bool
+    """
+
+    return (
+        re.match(r"(\d{4})\-(\d{2})\-(\d{2})T(\d{2})\:(\d{2})\:(\d{2})Z", date_time)
+        is not None
+    )

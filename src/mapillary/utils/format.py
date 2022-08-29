@@ -675,3 +675,153 @@ def coord_or_list_to_dict(data: Union[Coordinates, list, dict]) -> dict:
 
     # Return the dictionary
     return data_copy
+
+
+def polygon_feature_to_bbox_list(
+    polygon: dict, is_bbox_list_required: bool = True
+) -> typing.Union[list, dict]:
+    """
+    Converts a polygon to a bounding box
+
+    The polygon below has been obtained from https://geojson.io/. If you have a polygon,
+    with only 4 array elements, then simply take the first element and append it to the
+    coordinates to obtain the below example.
+
+    Usage::
+
+        >>> from mapillary.utils.format import polygon_feature_to_bbox_list
+        >>> bbox = polygon_feature_to_bbox_list(polygon={
+        ...     "type": "Feature",
+        ...     "properties": {},
+        ...     "geometry": {
+        ...         "type": "Polygon",
+        ...         "coordinates": [
+        ...             [
+        ...                 [
+        ...                   48.1640625,
+        ...                   38.41055825094609
+        ...                 ],
+        ...                 [
+        ...                   62.22656249999999,
+        ...                   38.41055825094609
+        ...                 ],
+        ...                 [
+        ...                   62.22656249999999,
+        ...                   45.336701909968134
+        ...                 ],
+        ...                 [
+        ...                   48.1640625,
+        ...                   45.336701909968134
+        ...                 ],
+        ...                 [
+        ...                   48.1640625,
+        ...                   38.41055825094609
+        ...                 ]
+        ...             ]
+        ...        ]
+        ... })
+        >>> bbox
+        ... [62.22656249999999, 48.1640625, 38.41055825094609, 45.336701909968134]
+
+    :param polygon: The polygon to convert
+    :type polygon: dict
+
+    :param is_bbox_list_required: Flag if bbox is required as a list. If true, returns a list,
+    else returns a dict
+    :type is_bbox_list_required: bool
+    :default is_bbox_list_required: True
+
+    :return: The bounding box
+    :rtype: typing.Union[list, dict]
+    """
+
+    west = polygon["geometry"]["coordinates"][0][1][0]
+    south = polygon["geometry"]["coordinates"][0][0][0]
+    east = polygon["geometry"]["coordinates"][0][0][1]
+    north = polygon["geometry"]["coordinates"][0][2][1]
+
+    if is_bbox_list_required:
+        return [west, south, east, north]
+
+    return {"west", west, "south", south, "east", east, "north", north}
+
+
+def bbox_to_polygon(bbox: typing.Union[list, dict]) -> dict:
+    """
+    Converts a bounding box dictionary to a polygon
+
+    Usage::
+
+        >>> from mapillary.utils.format import bbox_to_polygon
+        >>> bbox = [62.22656249999999, 48.1640625, 38.41055825094609, 45.336701909968134]
+        >>> polygon = bbox_to_polygon(bbox=bbox)
+        >>> polygon
+        ... {
+        ...     "type": "Feature",
+        ...     "properties": {},
+        ...     "geometry": {
+        ...         "type": "Polygon",
+        ...         "coordinates": [
+        ...             [
+        ...                 [
+        ...                   48.1640625,
+        ...                   38.41055825094609
+        ...                 ],
+        ...                 [
+        ...                   62.22656249999999,
+        ...                   38.41055825094609
+        ...                 ],
+        ...                 [
+        ...                   62.22656249999999,
+        ...                   45.336701909968134
+        ...                 ],
+        ...                 [
+        ...                   48.1640625,
+        ...                   45.336701909968134
+        ...                 ],
+        ...                 [
+        ...                   48.1640625,
+        ...                   38.41055825094609
+        ...                 ]
+        ...             ]
+        ...        ]
+        ... })
+
+    :param bbox: The bounding box to convert
+    :type bbox: dict
+
+    :return: The polygon
+    :rtype: dict
+    """
+
+    # Initializing the polygon
+    polygon = {
+        "type": "Feature",
+        "properties": {},
+        "geometry": {
+            "type": "Polygon",
+            "coordinates": [[[0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]],
+        },
+    }
+
+    # If bbox is a list, convert to dict
+    if isinstance(bbox, list):
+        bbox = {"west": bbox[0], "south": bbox[1], "east": bbox[2], "north": bbox[3]}
+
+    # For the top left to the bottom left
+    polygon["geometry"]["coordinates"][0][0] = [bbox["south"], bbox["east"]]
+
+    # from the bottom left to the bottom right
+    polygon["geometry"]["coordinates"][0][1] = [bbox["west"], bbox["east"]]
+
+    # from the bottom right to the top right
+    polygon["geometry"]["coordinates"][0][2] = [bbox["west"], bbox["north"]]
+
+    # from the top right to the top left
+    polygon["geometry"]["coordinates"][0][3] = [bbox["south"], bbox["north"]]
+
+    # from the top left to the top left
+    polygon["geometry"]["coordinates"][0][4] = [bbox["south"], bbox["east"]]
+
+    # Returning the results
+    return polygon
