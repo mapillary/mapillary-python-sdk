@@ -904,7 +904,7 @@ def feature_from_key(key: str, fields: list = []) -> str:
 
 
 @auth()
-def image_from_key(key: str, fields: list = None) -> str:
+def image_from_key(key: str, fields: list = []) -> str:
     """
     Gets an image for the given key argument
 
