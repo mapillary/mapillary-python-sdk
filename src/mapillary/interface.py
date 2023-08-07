@@ -934,13 +934,13 @@ def image_from_key(key: str, fields: list = []) -> str:
         14. thumb_256_url - string, URL to the 256px wide thumbnail
         15. thumb_1024_url - string, URL to the 1024px wide thumbnail
         16. thumb_2048_url - string, URL to the 2048px wide thumbnail
-        17. merge_cc - int, id of the connected component of images that were aligned
-            together
-        18. mesh - { id: string, url: string } - URL to the mesh
-        19. quality_score - float, how good the image is (experimental)
+        17. thumb_original_url - string, URL to the original wide thumbnail.
+        18. merge_cc - int, id of the connected component of images that were aligned together
+        19. mesh - { id: string, url: string } - URL to the mesh
         20. sequence - string, ID of the sequence
         21. sfm_cluster - { id: string, url: string } - URL to the point cloud
         22. width - int, width of the original image uploaded
+        23. detections - detection entity, detections from the image
 
         Refer to https://www.mapillary.com/developer/api-documentation/#image for more details
 

@@ -437,8 +437,8 @@ def test_search_for_images__fields_param__selected(operation, expected):
                 "38.41055825094609,45.336701909968134&fields=altitude,atomic_scale,"
                 "camera_parameters,camera_type,captured_at,compass_angle,computed_altitude,"
                 "computed_compass_angle,computed_geometry,computed_rotation,exif_orientation,"
-                "geometry,height,thumb_256_url,thumb_1024_url,thumb_2048_url,merge_cc,mesh,"
-                "quality_score,sequence,sfm,width"
+                "geometry,height,thumb_256_url,thumb_1024_url,thumb_2048_url,thumb_original_url,"
+                "merge_cc,mesh,sequence,sfm,width,detections"
             ),
         )
     ],
