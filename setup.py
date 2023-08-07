@@ -172,7 +172,19 @@ setuptools.setup(
     package_dir=PACKAGE_DIR,
     # # A string or list of strings specifying what other distributions need to be installed
     # # when this one is
-    install_requires=locked_requirements("default"),
+    install_requires=[
+        "geojson",
+        "haversine",
+        "mapbox-vector-tile",
+        "mercantile",
+        "numpy",
+        "requests",
+        "shapely",
+        "scipy",
+        "shapely",
+        "turfpy",
+        "vt2geojson"
+    ],
     # # What Python version is required
     python_requires=REQUIRES_PYTHON,
     # # What package data to include
