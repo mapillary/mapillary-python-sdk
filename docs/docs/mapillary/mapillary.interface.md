@@ -338,42 +338,54 @@ Gets an image for the given key argument
         10. computed_rotation - enum, corrected orientation of the image
 
 
-        11. exif_orientation - enum, orientation of the camera as given by the exif tag
+        11. creator - the username and user ID who owns and uploaded the image
+
+
+        12. exif_orientation - enum, orientation of the camera as given by the exif tag
     (see: [https://sylvana.net/jpegcrop/exif_orientation.html](https://sylvana.net/jpegcrop/exif_orientation.html))
 
 
-        12. geometry - GeoJSON Point geometry
+        13. geometry - GeoJSON Point geometry
 
 
-        13. height - int, height of the original image uploaded
+        14. height - int, height of the original image uploaded
 
 
-        14. thumb_256_url - string, URL to the 256px wide thumbnail
+        15. make - string, the manufacturer name of the camera device
 
 
-        15. thumb_1024_url - string, URL to the 1024px wide thumbnail
+        16. model - string, the model or product series name of the camera device
 
 
-        16. thumb_2048_url - string, URL to the 2048px wide thumbnail
+        17. thumb_256_url - string, URL to the 256px wide thumbnail
 
 
-        17. merge_cc - int, id of the connected component of images that were aligned
+        18. thumb_1024_url - string, URL to the 1024px wide thumbnail
+
+
+        19. thumb_2048_url - string, URL to the 2048px wide thumbnail
+
+
+        20. thumb_original_url - string, URL to the original wide thumbnail
+
+
+        21. merge_cc - int, id of the connected component of images that were aligned
     together
 
 
-        18. mesh - { id: string, url: string } - URL to the mesh
+        22. mesh - { id: string, url: string } - URL to the mesh
 
 
-        19. quality_score - float, how good the image is (experimental)
+        23. quality_score - float, how good the image is (experimental)
 
 
-        20. sequence - string, ID of the sequence
+        24. sequence - string, ID of the sequence
 
 
-        21. sfm_cluster - { id: string, url: string } - URL to the point cloud
+        25. sfm_cluster - { id: string, url: string } - URL to the point cloud
 
 
-        22. width - int, width of the original image uploaded
+        26. width - int, width of the original image uploaded
 
     Refer to [https://www.mapillary.com/developer/api-documentation/#image](https://www.mapillary.com/developer/api-documentation/#image) for more details
 
