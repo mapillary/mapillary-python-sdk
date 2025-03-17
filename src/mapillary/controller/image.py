@@ -582,19 +582,8 @@ def geojson_features_controller(
     # Extracting polygon from geojson, converting to dict
     polygon = geojson_to_polygon(geojson).to_dict()
 
-    # Generating a coordinates list to extract from polygon
-    coordinates_list = []
-
-    # Going through each feature
-    for feature in polygon["features"]:
-
-        # Going through the coordinate's nested list
-        for coordinates in feature["geometry"]["coordinates"][0]:
-            # Appending a tuple of coordinates
-            coordinates_list.append((coordinates[0], coordinates[1]))
-
-    # Sending coordinates_list a input to form a Polygon
-    polygon = Polygon(coordinates_list)
+    # Wrapping in Polygon object
+    polygon = Polygon(polygon["features"][0]["geometry"]["coordinates"])
 
     # Getting the boundary parameters from polygon
     boundary = shapely.geometry.shape(polygon)
@@ -765,19 +754,8 @@ def shape_features_controller(
 
     image_bbox_check(filters)
 
-    # Generating a coordinates list to extract from polygon
-    coordinates_list = []
-
-    # Going through each feature
-    for feature in shape["features"]:
-
-        # Going through the coordinate's nested list
-        for coordinates in feature["geometry"]["coordinates"][0]:
-            # Appending a tuple of coordinates
-            coordinates_list.append((coordinates[0], coordinates[1]))
-
-    # Sending coordinates_list a input to form a Polygon
-    polygon = Polygon(coordinates_list)
+    # Wrapping the shape in a Polygon object
+    polygon = Polygon(shape["features"][0]["geometry"]["coordinates"])
 
     # Getting the boundary parameters from polygon
     boundary = shapely.geometry.shape(polygon)
