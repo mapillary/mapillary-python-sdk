@@ -14,6 +14,9 @@ turfpy = ">=0.0.7"
 geojson = ">=2.5.0"
 
 [dev-packages]
+haversine = ">=2.3.1"
+mercantile = ">=1.2.1"
+vt2geojson = ">=0.2.1"
 wheel = ">=0.37.0"
 build = ">=0.6.0.post1"
 pytest = ">=6.2.4"
