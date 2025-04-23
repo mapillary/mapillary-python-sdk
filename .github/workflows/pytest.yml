@@ -20,7 +20,6 @@ jobs:
     - name: Install dependencies
       run: |
         make setup-dev
-        pipenv shell
     - name: Locally install branch's mapillary
       run: |
         make build && make local-install
