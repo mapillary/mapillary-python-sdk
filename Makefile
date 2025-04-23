@@ -31,13 +31,13 @@ setup: setup-prod setup-dev
 
 # # Install needed dependencies
 setup-prod:
-	python -m pip install --upgrade pip
+	python3 -m pip install --upgrade pip
 	pip install pipenv
 	pipenv install
 
 # # Install developer dependencies
 setup-dev:
-	python -m pip install --upgrade pip
+	python3 -m pip install --upgrade pip
 	pip install pipenv
 	pipenv install --dev
 
@@ -46,11 +46,11 @@ setup-dev:
 # # Build the package
 build:
 	# Builds the package distributions
-	pipenv run python3 setup.py sdist bdist_wheel --universal
+	pipenv run python3 -m build
 
 local-install:
 	# Locally install mapillary - DO THIS ONLY AFTER RUNNING `make build`
-	pipenv run pip3 install -e .
+	pipenv run pip install -e .
 
 # CODE QUALITY
 
@@ -64,9 +64,9 @@ format:
 
 # # # Linting
 lint:
-	@ # stop the build if there are Python syntax errors or undefined names
+	@ # stop the build if there are python3 syntax errors or undefined names
 	@ flake8 src/mapillary --count --select=E9,F63,F7,F82 --show-source --statistics
-	@ flake8 tests/ --count --select=E9,F63,F7,F82 --show-source --statistics	
+	@ flake8 tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
 
 	@ # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 	@ flake8 src/mapillary --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
@@ -82,7 +82,7 @@ docs-gen: docs-sphinx docs-py docs-start
 docs-sphinx:
 	sphinx-apidoc -o sphinx-docs ./src/ sphinx-apidoc --full -A 'Mapillary'; cd sphinx-docs; echo "$$PYTHON_SCRIPT" >> conf.py; make markdown;
 
-# # # Python Script for moving markdown from sphinx -> docusaurus
+# # # python3 Script for moving markdown from sphinx -> docusaurus
 docs-py:
 	python3 scripts/documentation.py
 
