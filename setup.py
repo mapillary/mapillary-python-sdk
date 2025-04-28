@@ -14,16 +14,13 @@ Reference::
 :license: MIT LICENSE
 """
 
-# Packages
-import setuptools  # setup, find_packages, Command
 import os
-import sys
-import json
-import shutil
+
+import setuptools
 
 # Setup variables. Change as needed
-NAME = "mapillary"  
-VERSION = "1.0.12"
+NAME = "mapillary"
+VERSION = "1.0.13"
 AUTHOR = "Christopher Beddow"
 AUTHOR_EMAIL = "support@mapillary.zendesk.com"
 LICENSE = "MIT"
@@ -37,12 +34,14 @@ URL = "https://github.com/mapillary/mapillary-python-sdk"
 REQUIRES_PYTHON = ">=3.0"
 HERE = os.path.abspath(os.path.dirname(__file__))
 REQUIREMENTS = [
-    "mercantile",
-    "mapbox-vector-tile",
-    "pytest",
-    "vt2geojson",
-    "shapely",
-    "turfpy",
+    "mapbox-vector-tile>=2.1.0",
+    "mercantile>=1.2.1",
+    "requests>=2.25.1",
+    "vt2geojson>=0.2.1",
+    "haversine>=2.3.1",
+    "shapely>=2.1.0",
+    "turfpy>=0.0.7",
+    "geojson>=2.5.0",
 ]
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
@@ -64,6 +63,9 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 PROJECT_URLS = {
     "Download": "https://pypi.org/project/mapillary/#files",
@@ -86,59 +88,6 @@ try:
         LONG_DESCRIPTION = "\n" + f.read()
 except FileNotFoundError:
     LONG_DESCRIPTION = DESCRIPTION
-
-
-def locked_requirements(section):
-    """Look through the 'Pipfile.lock' to fetch requirements by section."""
-    with open("Pipfile.lock") as pip_file:
-        pipfile_json = json.load(pip_file)
-
-    if section not in pipfile_json:
-        print("{0} section missing from Pipfile.lock".format(section))
-        return []
-
-    return [
-        package + detail.get("version", "")
-        for package, detail in pipfile_json[section].items()
-    ]
-
-
-class UploadCommand(setuptools.Command):
-    """Support setup.py upload."""
-
-    description = "Build and publish the package."
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print("\033[1m{0}\033[0m".format(s))
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        try:
-            self.status("Removing previous builds…")
-            shutil.rmtree(os.path.join(HERE, "dist"))
-        except OSError:
-            pass
-
-        self.status("Building Source and Wheel (universal) distribution…")
-        os.system(f"{sys.executable} setup.py sdist bdist_wheel --universal")
-
-        self.status("Uploading the package to PyPI via Twine…")
-        os.system("twine upload dist/*")
-
-        self.status("Pushing git tags…")
-        os.system(f"git tag v{VERSION}")
-        os.system("git push --tags")
-
-        sys.exit()
-
 
 # Where the magic happens
 setuptools.setup(
@@ -172,20 +121,11 @@ setuptools.setup(
     package_dir=PACKAGE_DIR,
     # # A string or list of strings specifying what other distributions need to be installed
     # # when this one is
-    install_requires=locked_requirements("default"),
+    install_requires=REQUIREMENTS,
     # # What Python version is required
     python_requires=REQUIRES_PYTHON,
     # # What package data to include
     include_package_data=True,
     # # List of classifiers for metadata on PyPI
     classifiers=CLASSIFIERS,
-    # # What commands to run
-    cmdclass={
-        "upload": UploadCommand,
-    },
-    # # A dictionary mapping names of “extras” (optional features of your project) to strings or
-    # # lists of strings specifying what other distributions must be installed to support those
-    # # features
-    # # Right now, this fetches development dependencies which are un-needed
-    # extras_require={"dev": locked_requirements("develop")},
 )

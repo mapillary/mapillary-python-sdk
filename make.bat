@@ -59,11 +59,11 @@ GOTO error
 	GOTO :EOF
 
 :build
-	pipenv run python3 setup.py sdist bdist_wheel --universal
+	pipenv run python3 -m build
 	GOTO :EOF
 
 :local-install
-	pipenv run pip3 install -e .
+	pipenv run pip install -e .
 	GOTO :EOF
 
 :style
