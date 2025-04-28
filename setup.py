@@ -34,14 +34,14 @@ URL = "https://github.com/mapillary/mapillary-python-sdk"
 REQUIRES_PYTHON = ">=3.0"
 HERE = os.path.abspath(os.path.dirname(__file__))
 REQUIREMENTS = [
-    "mapbox-vector-tile",
-    "mercantile",
-    "requests",
-    "vt2geojson",
-    "haversine",
-    "shapely",
-    "turfpy",
-    "geojson",
+    "mapbox-vector-tile>=2.1.0",
+    "mercantile>=1.2.1",
+    "requests>=2.25.1",
+    "vt2geojson>=0.2.1",
+    "haversine>=2.3.1",
+    "shapely>=2.1.0",
+    "turfpy>=0.0.7",
+    "geojson>=2.5.0",
 ]
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
