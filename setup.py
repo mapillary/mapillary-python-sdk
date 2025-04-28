@@ -34,12 +34,14 @@ URL = "https://github.com/mapillary/mapillary-python-sdk"
 REQUIRES_PYTHON = ">=3.0"
 HERE = os.path.abspath(os.path.dirname(__file__))
 REQUIREMENTS = [
-    "mercantile",
     "mapbox-vector-tile",
-    "pytest",
+    "mercantile",
+    "requests",
     "vt2geojson",
+    "haversine",
     "shapely",
     "turfpy",
+    "geojson",
 ]
 CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
@@ -117,6 +119,9 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     # # Specifiy the package directory
     package_dir=PACKAGE_DIR,
+    # # A string or list of strings specifying what other distributions need to be installed
+    # # when this one is
+    install_requires=REQUIREMENTS,
     # # What Python version is required
     python_requires=REQUIRES_PYTHON,
     # # What package data to include
