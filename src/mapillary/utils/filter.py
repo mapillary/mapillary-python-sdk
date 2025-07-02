@@ -342,7 +342,7 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
 
         # If the calculated haversince distance is less than the radius ...
         if (
-            haversine.haversine(coords, feature["geometry"]["coordinates"], unit=unit)
+            haversine.haversine(coords[::-1], feature["geometry"]["coordinates"][::-1], unit=unit)
             < radius
         ):
             # ... append to the output
