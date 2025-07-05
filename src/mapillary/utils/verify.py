@@ -125,6 +125,7 @@ def image_check(kwargs) -> bool:
     return kwarg_check(
         kwargs=kwargs,
         options=[
+            "zoom",
             "min_captured_at",
             "max_captured_at",
             "radius",
