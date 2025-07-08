@@ -145,9 +145,9 @@ def get_image_close_to_controller(
                             # Filter using kwargs.organization_id
                             {
                                 "filter": "organization_id",
-                                "organization_ids": kwargs["org_id"],
+                                "organization_ids": kwargs["organization_id"],
                             }
-                            if "org_id" in kwargs
+                            if "organization_id" in kwargs
                             else {},
                             # Filter using kwargs.radius
                             {
@@ -654,7 +654,7 @@ def geojson_features_controller(
                         # Filter using filters.organization_id
                         {
                             "filter": "organization_id",
-                            "organization_ids": filters["org_id"],
+                            "organization_ids": filters["organization_id"],
                         }
                         if "organization_id" in filters
                         else {},
@@ -826,7 +826,7 @@ def shape_features_controller(
                         # Filter using filters.organization_id
                         {
                             "filter": "organization_id",
-                            "organization_ids": filters["org_id"],
+                            "organization_ids": filters["organization_ids"],
                         }
                         if "organization_id" in filters
                         else {},

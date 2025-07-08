@@ -121,9 +121,9 @@ def get_image_close_to(latitude=-122.1504711, longitude=37.485073, **kwargs):
     :param kwargs.max_captured_at: The max date. Format from 'YYYY', to 'YYYY-MM-DDTHH:MM:SS'
     :type kwargs.max_captured_at: str
 
-    :param kwargs.org_id: The organization id, ID of the organization this image (or sets of
+    :param kwargs.organization_id: The organization id, ID of the organization this image (or sets of
         images) belong to. It can be absent. Thus, default is -1 (None)
-    :type kwargs.org_id: int
+    :type kwargs.organization_id: int
 
     :return: GeoJSON
     :rtype: dict
@@ -444,7 +444,7 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
             - max_captured_at
             - min_captured_at
             - image_type: pano, flat, or all
-            - org_id
+            - organization_id
 
     :type filters: dict
 
@@ -467,7 +467,7 @@ def sequences_in_bbox(bbox: dict, **filters) -> str:
         ...     max_captured_at='YYYY-MM-DD HH:MM:SS',
         ...     min_captured_at='YYYY-MM-DD HH:MM:SS',
         ...     image_type='pano',
-        ...     org_id='ORG_ID'
+        ...     organization_id='ORG_ID'
         ... )
     """
 
