@@ -20,7 +20,7 @@ import setuptools
 
 # Setup variables. Change as needed
 NAME = "mapillary"
-VERSION = "1.0.14"
+VERSION = "1.0.15"
 AUTHOR = "Christopher Beddow"
 AUTHOR_EMAIL = "support@mapillary.zendesk.com"
 LICENSE = "MIT"

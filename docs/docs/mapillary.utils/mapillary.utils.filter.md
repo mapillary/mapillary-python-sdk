@@ -20,7 +20,7 @@ Filter through the given image features and return only features with the look_a
 
 * **Parameters**
 
-    
+
     * **image** (*dict*) – The feature dictionary
 
 
@@ -46,7 +46,7 @@ Filter out images that do not lie within compass angle range
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – The data to be filtered
 
 
@@ -72,7 +72,7 @@ Whether the first_seen_at properly existed after a specified time period
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – The feature list
 
 
@@ -98,7 +98,7 @@ Whether the first_seen_at properly existed before a specified time period
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – The feature list
 
 
@@ -124,7 +124,7 @@ Filter for extracting features only in a bounding box
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – the features list to be checked
 
 
@@ -167,7 +167,7 @@ in one of the property.
 
 * **Parameters**
 
-    
+
     * **data** (*dict*) – The data to be filtered
 
 
@@ -197,7 +197,7 @@ the haversine package
 
 * **Parameters**
 
-    
+
     * **data** (*dict*) – The data to be filtered
 
 
@@ -229,7 +229,7 @@ Whether the given data have any feature that look at the at coordinates
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – List of features with an Image entity
 
 
@@ -266,7 +266,7 @@ or ‘flat’ (is_pano == false only)
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – The data to be filtered
 
 
@@ -292,7 +292,7 @@ Whether the given feature list lies within the shape
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – A feature list to be filtered
 
 
@@ -318,7 +318,7 @@ Return whether the image_feature is looking at the look_at_feature
 
 * **Parameters**
 
-    
+
     * **image_feature** (*dict*) – The feature set of the image
 
 
@@ -345,7 +345,7 @@ than the max_timestamp
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – The feature list
 
 
@@ -380,7 +380,7 @@ than the min_timestamp
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – The feature list
 
 
@@ -408,17 +408,17 @@ Usage:
 ```
 
 
-### mapillary.utils.filter.organization_id(data: list, organization_ids: list)
+### mapillary.utils.filter.organization_id(data: list, organization_id: int)
 Select only features that contain the specific organization_id
 
 
 * **Parameters**
 
-    
+
     * **data** (*dict*) – The data to be filtered
 
 
-    * **organization_ids** (*list*) – The oragnization id(s) to filter through
+    * **organization_id** (*int*) – The organiztion id to filter with
 
 
 
@@ -442,7 +442,7 @@ pass in what filter they want to apply, and the arguments for that filter
 
 * **Parameters**
 
-    
+
     * **data** (*dict*) – The GeoJSON to be filtered
 
 
@@ -471,8 +471,8 @@ Usage:
 ...         {"filter": "image_type", "tile": kwargs["image_type"]}
 ...         if "image_type" in kwargs
 ...         else {},
-...         {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-...         if "org_id" in kwargs
+...         {"filter": "organization_id", "organization_id": kwargs["organization_id"]}
+...         if "organization_id" in kwargs
 ...         else {},
 ...         {
 ...             "filter": "haversine_dist",
@@ -493,7 +493,7 @@ to the selected target function - throwing a warning in case of an exception
 
 * **Parameters**
 
-    
+
     * **func** (*function*) – The filter to apply
 
 
@@ -531,7 +531,7 @@ Filter out images that do not have the sequence_id in the list of ids
 
 * **Parameters**
 
-    
+
     * **data** (*list*) – The data to be filtered
 
 
@@ -548,4 +548,3 @@ Filter out images that do not have the sequence_id in the list of ids
 * **Return type**
 
     list
-

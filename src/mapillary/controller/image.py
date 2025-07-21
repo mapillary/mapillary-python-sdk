@@ -16,11 +16,11 @@ For more information, please check out https://www.mapillary.com/developer/api-d
 
 # Library imports
 import json
+from typing import Union
 
 import mercantile
 import shapely
 from geojson import Polygon
-from typing import Union
 
 # # Configs
 from mapillary.config.api.entities import Entities
@@ -38,21 +38,21 @@ from mapillary.models.client import Client
 from mapillary.models.exceptions import InvalidImageKeyError
 
 # # Class Representation
-from mapillary.models.geojson import GeoJSON, Coordinates
+from mapillary.models.geojson import Coordinates, GeoJSON
 
 # # Utilities
 from mapillary.utils.filter import pipeline
 from mapillary.utils.format import (
-    feature_to_geojson,
-    merged_features_list_to_geojson,
-    geojson_to_polygon,
     coord_or_list_to_dict,
+    feature_to_geojson,
+    geojson_to_polygon,
+    merged_features_list_to_geojson,
 )
 from mapillary.utils.verify import (
-    image_check,
     image_bbox_check,
-    sequence_bbox_check,
+    image_check,
     resolution_check,
+    sequence_bbox_check,
     valid_id,
 )
 from requests import HTTPError
@@ -125,38 +125,48 @@ def get_image_close_to_controller(
                         data=unfiltered_data,
                         components=[
                             # Filter using kwargs.min_captured_at
-                            {
-                                "filter": "min_captured_at",
-                                "min_timestamp": kwargs["min_captured_at"],
-                            }
-                            if "min_captured_at" in kwargs
-                            else {},
+                            (
+                                {
+                                    "filter": "min_captured_at",
+                                    "min_timestamp": kwargs["min_captured_at"],
+                                }
+                                if "min_captured_at" in kwargs
+                                else {}
+                            ),
                             # Filter using kwargs.max_captured_at
-                            {
-                                "filter": "max_captured_at",
-                                "min_timestamp": kwargs["max_captured_at"],
-                            }
-                            if "max_captured_at" in kwargs
-                            else {},
+                            (
+                                {
+                                    "filter": "max_captured_at",
+                                    "min_timestamp": kwargs["max_captured_at"],
+                                }
+                                if "max_captured_at" in kwargs
+                                else {}
+                            ),
                             # Filter using kwargs.image_type
-                            {"filter": "image_type", "tile": kwargs["image_type"]}
-                            if "image_type" in kwargs
-                            else {},
+                            (
+                                {"filter": "image_type", "tile": kwargs["image_type"]}
+                                if "image_type" in kwargs
+                                else {}
+                            ),
                             # Filter using kwargs.organization_id
-                            {
-                                "filter": "organization_id",
-                                "organization_ids": kwargs["organization_id"],
-                            }
-                            if "organization_id" in kwargs
-                            else {},
+                            (
+                                {
+                                    "filter": "organization_id",
+                                    "organization_id": kwargs["organization_id"],
+                                }
+                                if "organization_id" in kwargs
+                                else {}
+                            ),
                             # Filter using kwargs.radius
-                            {
-                                "filter": "haversine_dist",
-                                "radius": kwargs["radius"],
-                                "coords": [longitude, latitude],
-                            }
-                            if "radius" in kwargs
-                            else {},
+                            (
+                                {
+                                    "filter": "haversine_dist",
+                                    "radius": kwargs["radius"],
+                                    "coords": [longitude, latitude],
+                                }
+                                if "radius" in kwargs
+                                else {}
+                            ),
                         ],
                     )
                 )
@@ -239,38 +249,49 @@ def get_image_looking_at_controller(
                     data=at_image_data,
                     components=[
                         # Filter by `max_captured_at`
-                        {
-                            "filter": "max_captured_at",
-                            "max_timestamp": filters.get("max_captured_at"),
-                        }
-                        if "max_captured_at" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "max_captured_at",
+                                "max_timestamp": filters.get("max_captured_at"),
+                            }
+                            if "max_captured_at" in filters
+                            else {}
+                        ),
                         # Filter by `min_captured_at`
-                        {
-                            "filter": "min_captured_at",
-                            "min_timestamp": filters.get("min_captured_at"),
-                        }
-                        if "min_captured_at" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "min_captured_at",
+                                "min_timestamp": filters.get("min_captured_at"),
+                            }
+                            if "min_captured_at" in filters
+                            else {}
+                        ),
                         # Filter by `image_type`
-                        {"filter": "image_type", "type": filters.get("image_type")}
-                        if "image_type" in filters and filters["image_type"] != "all"
-                        else {},
+                        (
+                            {"filter": "image_type", "type": filters.get("image_type")}
+                            if "image_type" in filters
+                            and filters["image_type"] != "all"
+                            else {}
+                        ),
                         # Filter by `organization_id`
-                        {
-                            "filter": "organization_id",
-                            "organization_ids": filters.get("organization_id"),
-                        }
-                        if "organization_id" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "organization_id",
+                                "organization_id": filters.get("organization_id"),
+                            }
+                            if "organization_id" in filters
+                            else {}
+                        ),
                         # Filter using kwargs.radius
-                        {
-                            "filter": "haversine_dist",
-                            "radius": filters.get("radius"),
-                            "coords": [at["lng"], at["lat"]],
-                        }
-                        if "radius" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "haversine_dist",
+                                "radius": filters.get("radius"),
+                                "coords": [at["lng"], at["lat"]],
+                            }
+                            if "radius" in filters
+                            else {}
+                        ),
                         # Filter by `hits_by_look_at`
                         {"filter": "hits_by_look_at", "at": at},
                     ],
@@ -458,37 +479,54 @@ def get_images_in_bbox_controller(
             pipeline(
                 data=geojson,
                 components=[
-                    {"filter": "features_in_bounding_box", "bbox": bounding_box}
-                    if layer == "image"
-                    else {},
-                    {
-                        "filter": "max_captured_at",
-                        "max_timestamp": filters.get("max_captured_at"),
-                    }
-                    if filters["max_captured_at"] is not None
-                    else {},
-                    {
-                        "filter": "min_captured_at",
-                        "min_timestamp": filters.get("min_captured_at"),
-                    }
-                    if filters["min_captured_at"] is not None
-                    else {},
-                    {"filter": "image_type", "type": filters.get("image_type")}
-                    if filters["image_type"] is not None
-                    or filters["image_type"] != "all"
-                    else {},
-                    {
-                        "filter": "organization_id",
-                        "organization_ids": filters.get("organization_id"),
-                    }
-                    if filters["organization_id"] is not None
-                    else {},
-                    {"filter": "sequence_id", "ids": filters.get("sequence_id")}
-                    if layer == "image" and filters["sequence_id"] is not None
-                    else {},
-                    {"filter": "compass_angle", "angles": filters.get("compass_angle")}
-                    if layer == "image" and filters["compass_angle"] is not None
-                    else {},
+                    (
+                        {"filter": "features_in_bounding_box", "bbox": bounding_box}
+                        if layer == "image"
+                        else {}
+                    ),
+                    (
+                        {
+                            "filter": "max_captured_at",
+                            "max_timestamp": filters.get("max_captured_at"),
+                        }
+                        if filters["max_captured_at"] is not None
+                        else {}
+                    ),
+                    (
+                        {
+                            "filter": "min_captured_at",
+                            "min_timestamp": filters.get("min_captured_at"),
+                        }
+                        if filters["min_captured_at"] is not None
+                        else {}
+                    ),
+                    (
+                        {"filter": "image_type", "type": filters.get("image_type")}
+                        if filters["image_type"] is not None
+                        or filters["image_type"] != "all"
+                        else {}
+                    ),
+                    (
+                        {
+                            "filter": "organization_id",
+                            "organization_id": filters.get("organization_id"),
+                        }
+                        if filters["organization_id"] is not None
+                        else {}
+                    ),
+                    (
+                        {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                        if layer == "image" and filters["sequence_id"] is not None
+                        else {}
+                    ),
+                    (
+                        {
+                            "filter": "compass_angle",
+                            "angles": filters.get("compass_angle"),
+                        }
+                        if layer == "image" and filters["compass_angle"] is not None
+                        else {}
+                    ),
                 ],
             )
         )
@@ -611,9 +649,9 @@ def geojson_features_controller(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
-                feature_type=filters["feature_type"]
-                if "feature_type" in filters
-                else "point",
+                feature_type=(
+                    filters["feature_type"] if "feature_type" in filters else "point"
+                ),
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
@@ -634,41 +672,53 @@ def geojson_features_controller(
                     components=[
                         {"filter": "in_shape", "boundary": boundary},
                         # Filter using kwargs.min_captured_at
-                        {
-                            "filter": "min_captured_at",
-                            "min_timestamp": filters["min_captured_at"],
-                        }
-                        if "min_captured_at" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "min_captured_at",
+                                "min_timestamp": filters["min_captured_at"],
+                            }
+                            if "min_captured_at" in filters
+                            else {}
+                        ),
                         # Filter using filters.max_captured_at
-                        {
-                            "filter": "max_captured_at",
-                            "min_timestamp": filters["max_captured_at"],
-                        }
-                        if "max_captured_at" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "max_captured_at",
+                                "min_timestamp": filters["max_captured_at"],
+                            }
+                            if "max_captured_at" in filters
+                            else {}
+                        ),
                         # Filter using filters.image_type
-                        {"filter": "image_type", "tile": filters["image_type"]}
-                        if "image_type" in filters
-                        else {},
+                        (
+                            {"filter": "image_type", "tile": filters["image_type"]}
+                            if "image_type" in filters
+                            else {}
+                        ),
                         # Filter using filters.organization_id
-                        {
-                            "filter": "organization_id",
-                            "organization_ids": filters["organization_id"],
-                        }
-                        if "organization_id" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "organization_id",
+                                "organization_id": filters["organization_id"],
+                            }
+                            if "organization_id" in filters
+                            else {}
+                        ),
                         # Filter using filters.sequence_id
-                        {"filter": "sequence_id", "ids": filters.get("sequence_id")}
-                        if "sequence_id" in filters
-                        else {},
+                        (
+                            {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                            if "sequence_id" in filters
+                            else {}
+                        ),
                         # Filter using filters.compass_angle
-                        {
-                            "filter": "compass_angle",
-                            "angles": filters.get("compass_angle"),
-                        }
-                        if "compass_angle" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "compass_angle",
+                                "angles": filters.get("compass_angle"),
+                            }
+                            if "compass_angle" in filters
+                            else {}
+                        ),
                     ],
                 )
             )
@@ -782,9 +832,9 @@ def shape_features_controller(
                 # Sending coordinates for all the points within input geojson
                 coordinates=bbox(polygon),
                 # Fetching image layers for the geojson
-                feature_type=filters["feature_type"]
-                if "feature_type" in filters
-                else "point",
+                feature_type=(
+                    filters["feature_type"] if "feature_type" in filters else "point"
+                ),
                 # Specifying zoom level, defaults to zoom if zoom not specified
                 zoom=filters["zoom"] if "zoom" in filters else 14,
             )
@@ -806,41 +856,53 @@ def shape_features_controller(
                         # Get only features within the given boundary
                         {"filter": "in_shape", "boundary": boundary},
                         # Filter using kwargs.min_captured_at
-                        {
-                            "filter": "min_captured_at",
-                            "min_timestamp": filters["min_captured_at"],
-                        }
-                        if "min_captured_at" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "min_captured_at",
+                                "min_timestamp": filters["min_captured_at"],
+                            }
+                            if "min_captured_at" in filters
+                            else {}
+                        ),
                         # Filter using filters.max_captured_at
-                        {
-                            "filter": "max_captured_at",
-                            "min_timestamp": filters["max_captured_at"],
-                        }
-                        if "max_captured_at" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "max_captured_at",
+                                "min_timestamp": filters["max_captured_at"],
+                            }
+                            if "max_captured_at" in filters
+                            else {}
+                        ),
                         # Filter using filters.image_type
-                        {"filter": "image_type", "tile": filters["image_type"]}
-                        if "image_type" in filters
-                        else {},
+                        (
+                            {"filter": "image_type", "tile": filters["image_type"]}
+                            if "image_type" in filters
+                            else {}
+                        ),
                         # Filter using filters.organization_id
-                        {
-                            "filter": "organization_id",
-                            "organization_ids": filters["organization_ids"],
-                        }
-                        if "organization_id" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "organization_id",
+                                "organization_id": filters["organization_id"],
+                            }
+                            if "organization_id" in filters
+                            else {}
+                        ),
                         # Filter using filters.sequence_id
-                        {"filter": "sequence_id", "ids": filters.get("sequence_id")}
-                        if "sequence_id" in filters
-                        else {},
+                        (
+                            {"filter": "sequence_id", "ids": filters.get("sequence_id")}
+                            if "sequence_id" in filters
+                            else {}
+                        ),
                         # Filter using filters.compass_angle
-                        {
-                            "filter": "compass_angle",
-                            "angles": filters.get("compass_angle"),
-                        }
-                        if "compass_angle" in filters
-                        else {},
+                        (
+                            {
+                                "filter": "compass_angle",
+                                "angles": filters.get("compass_angle"),
+                            }
+                            if "compass_angle" in filters
+                            else {}
+                        ),
                     ],
                 )
             )

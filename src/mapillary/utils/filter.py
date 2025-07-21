@@ -14,7 +14,7 @@ This module contains the filter utilies for high level filtering logic
 import logging
 
 import haversine
-from geojson import Point, Feature
+from geojson import Feature, Point
 
 # Local imports
 from mapillary.utils.time import date_to_unix_timestamp
@@ -82,8 +82,8 @@ def pipeline(data: dict, components: list) -> list:
         ...         {"filter": "image_type", "tile": kwargs["image_type"]}
         ...         if "image_type" in kwargs
         ...         else {},
-        ...         {"filter": "organization_id", "organization_ids": kwargs["org_id"]}
-        ...         if "org_id" in kwargs
+        ...         {"filter": "organization_id", "organization_id": kwargs["organization_id"]}
+        ...         if "organization_id" in kwargs
         ...         else {},
         ...         {
         ...             "filter": "haversine_dist",
@@ -342,7 +342,9 @@ def haversine_dist(data: dict, radius: float, coords: list, unit: str = "m") -> 
 
         # If the calculated haversince distance is less than the radius ...
         if (
-            haversine.haversine(coords[::-1], feature["geometry"]["coordinates"][::-1], unit=unit)
+            haversine.haversine(
+                coords[::-1], feature["geometry"]["coordinates"][::-1], unit=unit
+            )
             < radius
         ):
             # ... append to the output
@@ -384,15 +386,15 @@ def image_type(data: list, image_type: str) -> list:
     ]
 
 
-def organization_id(data: list, organization_ids: list) -> list:
+def organization_id(data: list, organization_id: int) -> list:
     """
     Select only features that contain the specific organization_id
 
     :param data: The data to be filtered
     :type data: dict
 
-    :param organization_ids: The oragnization id(s) to filter through
-    :type organization_ids: list
+    :param organization_id: The oragnization id(s) to filter through
+    :type organization_id: int
 
     :return: A feature list
     :rtype: dict
@@ -403,9 +405,9 @@ def organization_id(data: list, organization_ids: list) -> list:
         feature
         # through the feature in the data
         for feature in data
-        # if the found org_id is in the list of organization_ids
+        # if the found organization_id is equal to organization_id
         if "organization_id" in feature["properties"]
-        and feature["properties"]["organization_id"] in organization_ids
+        and feature["properties"]["organization_id"] == organization_id
     ]
 
 

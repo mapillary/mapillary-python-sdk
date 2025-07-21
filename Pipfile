@@ -4,17 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-mapbox-vector-tile = ">=2.1.0"
+mapbox-vector-tile = ">=2.2.0"
 mercantile = ">=1.2.1"
 requests = ">=2.25.1"
 vt2geojson = ">=0.2.1"
-haversine = ">=2.3.1"
+haversine = ">=2.9.0"
 shapely = ">=2.1.0"
 turfpy = ">=0.0.7"
 geojson = ">=2.5.0"
 
 [dev-packages]
-haversine = ">=2.3.1"
+haversine = ">=2.9.0"
 mercantile = ">=1.2.1"
 vt2geojson = ">=0.2.1"
 wheel = ">=0.37.0"

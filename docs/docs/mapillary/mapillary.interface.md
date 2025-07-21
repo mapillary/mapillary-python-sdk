@@ -22,7 +22,7 @@ Gets a map feature for the given key argument
 
 * **Parameters**
 
-    
+
     * **key** (*int*) – The map feature ID to which will be used to get the feature
 
 
@@ -77,7 +77,7 @@ Extracting all the detections within an image using an image key
 
 * **Parameters**
 
-    
+
     * **image_id** (*int*) – The image key as the argument
 
 
@@ -121,7 +121,7 @@ Extracting all detections made for a map feature key
 
 * **Parameters**
 
-    
+
     * **map_feature_id** (*int*) – A map feature key as the argument
 
 
@@ -163,7 +163,7 @@ makes an API call with the token set in set_access_token and returns a JSON obje
 
 * **Parameters**
 
-    
+
     * **longitude** (*float** or **double*) – The longitude
 
 
@@ -191,7 +191,7 @@ makes an API call with the token set in set_access_token and returns a JSON obje
     * **kwargs.max_captured_at** (*str*) – The max date. Format from ‘YYYY’, to ‘YYYY-MM-DDTHH:MM:SS’
 
 
-    * **kwargs.org_id** (*int*) – The organization id, ID of the organization this image (or sets of
+    * **kwargs.organization_id** (*int*) – The organization id, ID of the organization this image (or sets of
     images) belong to. It can be absent. Thus, default is -1 (None)
 
 
@@ -229,7 +229,7 @@ makes an API call with the token set in set_access_token and returns a JSON obje
 
 * **Parameters**
 
-    
+
     * **at** (*dict*) – The coordinate sets to where a certain point is being looked at
 
     Format:
@@ -296,7 +296,7 @@ Gets an image for the given key argument
 
 * **Parameters**
 
-    
+
     * **key** (*int*) – The image unique key which will be used for image retrieval
 
 
@@ -421,7 +421,7 @@ Gets the thumbnails of images from the API
 
 * **Parameters**
 
-    
+
     * **image_id** – Image key as the argument
 
 
@@ -458,7 +458,7 @@ Gets a complete list of images with custom filter within a BBox
 
 * **Parameters**
 
-    
+
     * **bbox** (*dict*) – Bounding box coordinates
 
     Format:
@@ -530,7 +530,7 @@ Extracts all images within a shape
 
 * **Parameters**
 
-    
+
     * **geojson** (*dict*) – A geojson as the shape acting as the query extent
 
 
@@ -613,7 +613,7 @@ Format:
 
 * **Parameters**
 
-    
+
     * **shape** (*dict*) – A shape that describes features, formatted as a geojson
 
 
@@ -727,7 +727,7 @@ Extracts map feature points within a bounding box (bbox)
 
 * **Parameters**
 
-    
+
     * **bbox** (*dict*) – bbox coordinates as the argument
 
     Example:
@@ -804,7 +804,7 @@ Extracts all map features within a geojson’s boundaries
 
 * **Parameters**
 
-    
+
     * **geojson** (*dict*) – A geojson as the shape acting as the query extent
 
 
@@ -893,7 +893,7 @@ Format:
 
 * **Parameters**
 
-    
+
     * **shape** (*dict*) – A shape that describes features, formatted as a geojson
 
 
@@ -953,7 +953,7 @@ with the given file name, path, and format.
 
 * **Parameters**
 
-    
+
     * **geojson_data** (*str*) – The GeoJSON data to be stored
 
 
@@ -1016,7 +1016,7 @@ within a BBox.
 
 * **Parameters**
 
-    
+
     * **bbox** (*dict*) – Bounding box coordinates
 
     Example:
@@ -1040,7 +1040,7 @@ within a BBox.
     - max_captured_at
     - min_captured_at
     - image_type: pano, flat, or all
-    - org_id
+    - organization_id
     ```
 
 
@@ -1074,7 +1074,7 @@ Usage:
 ...     max_captured_at='YYYY-MM-DD HH:MM:SS',
 ...     min_captured_at='YYYY-MM-DD HH:MM:SS',
 ...     image_type='pano',
-...     org_id='ORG_ID'
+...     organization_id='ORG_ID'
 ... )
 ```
 
@@ -1119,7 +1119,7 @@ Extracts traffic signs within a bounding box (bbox)
 
 * **Parameters**
 
-    
+
     * **bbox** (*dict*) – bbox coordinates as the argument
 
     Example:
