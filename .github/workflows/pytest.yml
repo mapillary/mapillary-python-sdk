@@ -16,7 +16,10 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: "3.x"
+        # Pinned rather than "3.x": Pipfile.lock pins scipy==1.15.3, which
+        # publishes wheels only up to cp313. On a newer interpreter pip falls
+        # back to the sdist, which needs OpenBLAS and fails on ubuntu-latest.
+        python-version: "3.13"
     - name: Install dependencies
       run: |
         make setup-dev

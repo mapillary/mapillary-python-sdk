@@ -19,7 +19,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.x"
+          # Pinned rather than "3.x" for the same reason as pytest.yml: this
+          # job also runs `pipenv install --dev` against Pipfile.lock.
+          python-version: "3.13"
 
       - name: Install dependencies
         run: |
