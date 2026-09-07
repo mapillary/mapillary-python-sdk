@@ -14,10 +14,21 @@ module.exports = {
   url: 'https://mapillary.github.io',
   baseUrl: '/mapillary-python-sdk/',
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'mapillary', // Usually your GitHub org/user name.
   projectName: 'mapillary-python-sdk', // Usually your repo name.
+  markdown: {
+    // Parse .md as CommonMark and reserve MDX for .mdx. The API docs under
+    // docs/ are generated from Python docstrings by scripts/documentation.py
+    // and contain literal braces (e.g. "{ id: string, url: string }") that
+    // MDX would try to evaluate as JSX expressions. Escaping them in the
+    // generated output would only break again on the next docs-gen run.
+    format: 'detect',
+    // Was siteConfig.onBrokenMarkdownLinks, deprecated in v3 and removed in v4
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
   themeConfig: {
     navbar: {
       title: 'Mapillary Python SDK',
