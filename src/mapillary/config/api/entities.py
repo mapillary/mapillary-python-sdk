@@ -371,6 +371,7 @@ class Entities:
         """
 
         return [
+            "id",
             "altitude",
             "atomic_scale",
             "camera_parameters",
@@ -441,6 +442,7 @@ class Entities:
         """
 
         return [
+            "id",
             "first_seen_at",
             "last_seen_at",
             "object_value",
@@ -490,7 +492,7 @@ class Entities:
         :rtype: list
         """
 
-        return ["created_at", "geometry", "image", "value"]
+        return ["id", "created_at", "geometry", "image", "value"]
 
     @staticmethod
     def get_detection_with_map_feature_id(
@@ -533,7 +535,7 @@ class Entities:
         :rtype: list
         """
 
-        return ["created_at", "geometry", "image", "value"]
+        return ["id", "created_at", "geometry", "image", "value"]
 
     @staticmethod
     def get_organization_id(
@@ -574,7 +576,7 @@ class Entities:
         :rtype: list
         """
 
-        return ["slug", "name", "description"]
+        return ["id", "slug", "name", "description"]
 
     @staticmethod
     def get_sequence(

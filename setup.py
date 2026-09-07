@@ -31,7 +31,7 @@ DESCRIPTION = (
 )
 LONG_DESCRIPTION_CONTENT_TYPE = "text/markdown"
 URL = "https://github.com/mapillary/mapillary-python-sdk"
-REQUIRES_PYTHON = ">=3.0"
+REQUIRES_PYTHON = ">=3.10"
 HERE = os.path.abspath(os.path.dirname(__file__))
 REQUIREMENTS = [
     "mapbox-vector-tile>=2.1.0",
@@ -58,14 +58,11 @@ CLASSIFIERS = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.5",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 PROJECT_URLS = {
     "Download": "https://pypi.org/project/mapillary/#files",
