@@ -968,7 +968,7 @@ def image_from_key(key: str, fields: list = []) -> str:
 @auth()
 def save_locally(
     geojson_data: str,
-    file_path: str = os.path.dirname(os.path.realpath(__file__)),
+    file_path: str = None,
     file_name: str = None,
     extension: str = "geojson",
 ) -> None:
@@ -979,7 +979,8 @@ def save_locally(
     :param geojson_data: The GeoJSON data to be stored
     :type geojson_data: str
 
-    :param file_path: The path to save the data to. Defaults to the current directory path
+    :param file_path: The directory to save the data to. Defaults to the current
+        working directory
     :type file_path: str
 
     :param file_name: The name of the file to be saved. Defaults to 'geojson'
@@ -1006,17 +1007,23 @@ def save_locally(
         >>> mly.interface.set_access_token('MLY|XXX')
         >>> mly.interface.save_locally(
         ...     geojson_data=geojson_data,
-        ...     file_path=os.path.dirname(os.path.realpath(__file__)),
+        ...     file_path='./output',
         ...     file_name='test_geojson',
         ...     extension='geojson'
         ... )
         >>> mly.interface.save_locally(
         ...     geojson_data=geojson_data,
-        ...     file_path=os.path.dirname(os.path.realpath(__file__)),
+        ...     file_path='./output',
         ...     file_name='local_geometries',
         ...     extension='csv'
         ... )
     """
+
+    # Resolve the default at call time, not at import time. Binding it to the
+    # module's own directory made the default write target the installed
+    # package inside site-packages.
+    if file_path is None:
+        file_path = os.getcwd()
 
     # Check if a valid file format was provided
     if extension.lower() not in ["geojson", "csv"]:
