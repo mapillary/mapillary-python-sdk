@@ -1,0 +1,1 @@
+"use strict";(globalThis.webpackChunkdocs||=[]).push([[1903],{1912(s){s.exports=JSON.parse('{"blogBasePath":"/mapillary-python-sdk/blog","blogTitle":"Blog","authorsListPath":"/mapillary-python-sdk/blog/authors"}')}}]);
