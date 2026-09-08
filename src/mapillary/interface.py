@@ -929,7 +929,8 @@ def image_from_key(key: str, fields: list = []) -> str:
         10. computed_rotation - enum, corrected orientation of the image
         11. creator - the username and user ID who owns and uploaded the image
         12. exif_orientation - enum, orientation of the camera as given by the exif tag
-            (see: https://sylvana.net/jpegcrop/exif_orientation.html)
+            (see
+            https://web.archive.org/web/2026/https://sylvana.net/jpegcrop/exif_orientation.html)
         13. geometry - GeoJSON Point geometry
         14. height - int, height of the original image uploaded
         15. make - string, the manufacturer name of the camera device

@@ -225,7 +225,7 @@ our [code of conduct](CODE_OF_CONDUCT.md).
 
 [issues-url]: https://github.com/mapillary/mapillary-python-sdk/issues
 
-[license-url]: https://github.com/mapillary/mapillary-python-sdk/blob/master/LICENSE.txt
+[license-url]: https://github.com/mapillary/mapillary-python-sdk/blob/main/LICENSE
 
 [linkedin-url]: https://www.linkedin.com/company/mapillary/
 
