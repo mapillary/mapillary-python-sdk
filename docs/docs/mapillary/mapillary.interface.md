@@ -342,7 +342,7 @@ Gets an image for the given key argument
 
 
         12. exif_orientation - enum, orientation of the camera as given by the exif tag
-    (see: [https://sylvana.net/jpegcrop/exif_orientation.html](https://sylvana.net/jpegcrop/exif_orientation.html))
+    (see: [https://web.archive.org/web/2026/https://sylvana.net/jpegcrop/exif_orientation.html](https://web.archive.org/web/2026/https://sylvana.net/jpegcrop/exif_orientation.html))
 
 
         13. geometry - GeoJSON Point geometry
