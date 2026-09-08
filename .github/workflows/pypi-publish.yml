@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/p/notehub-py
+      url: https://pypi.org/p/mapillary
     permissions:
       id-token: write
     steps:
