@@ -150,6 +150,29 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc. Built with Docusaurus.`,
     },
   },
+  plugins: [
+    [
+      '@docusaurus/plugin-client-redirects',
+      {
+        // Docusaurus treats a doc whose filename matches its folder as that
+        // category's index page, a convention introduced after 2.0.0-beta.5.
+        // Upgrading therefore shortened these seven URLs. Redirect the old
+        // paths so external links and bookmarks keep working.
+        redirects: [
+          'mapillary',
+          'mapillary.config',
+          'mapillary.config.api',
+          'mapillary.controller',
+          'mapillary.models',
+          'mapillary.models.api',
+          'mapillary.utils',
+        ].map((name) => ({
+          from: `/docs/${name}/${name}`,
+          to: `/docs/${name}`,
+        })),
+      },
+    ],
+  ],
   presets: [
     [
       '@docusaurus/preset-classic',
