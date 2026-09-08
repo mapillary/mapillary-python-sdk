@@ -1,23 +1,29 @@
-on: [push]
+name: deploy documentation
+
+# Builds the docs site and publishes it to the gh-pages branch, which is what
+# GitHub Pages serves. Authenticates with the automatic GITHUB_TOKEN, so there
+# is no deploy key or secret to maintain.
+on:
+  push:
+    branches: [main]
 
 jobs:
   build_docs_job:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.6]
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Dependencies
-      run: |
-        sudo apt-get install -y yarn
-      id: build
+      uses: actions/checkout@v4
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        # Docusaurus 3 requires Node >= 20. This was previously left to the
+        # runner default, which happened to be new enough but was not pinned.
+        node-version: '20.x'
     - name: Build the Website
       run: |
         cd docs
-        yarn
-        npm run build  
+        yarn install --frozen-lockfile
+        npm run build
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@releases/v3
       with:
