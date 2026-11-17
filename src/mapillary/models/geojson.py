@@ -232,7 +232,9 @@ class Geometry:
 
 
 class Feature:
-    """Representation for a feature in a feature list
+    """Representation for a feature in a feature list.
+
+    Unlocated features have `geometry=None` and serialize with a null geometry.
 
     :param feature: The GeoJSON as the input
     :type feature: dict
@@ -267,7 +269,10 @@ class Feature:
         self.type = "Feature"
 
         # Setting the `geometry` property
-        self.geometry = Geometry(feature["geometry"])
+        geometry = feature["geometry"]
+        self.geometry = (
+            None if geometry is None or geometry == {} else Geometry(geometry)
+        )
 
         # Setting the `properties` property
         self.properties = Properties(feature["properties"])
@@ -277,7 +282,7 @@ class Feature:
 
         return {
             "type": self.type,
-            "geometry": self.geometry.to_dict(),
+            "geometry": self.geometry.to_dict() if self.geometry is not None else None,
             "properties": self.properties.to_dict(),
         }
 

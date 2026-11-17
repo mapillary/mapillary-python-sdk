@@ -224,13 +224,13 @@ def detection_features_to_geojson(feature_list: list) -> dict:
             {
                 # Type is 'Feature'
                 "type": "Feature",
-                # Let 'geometry' be the `image` key, defaults to {} is `image` not in feature
+                # Unlocated detections have a null GeoJSON geometry.
                 "geometry": {
                     "type": "Point",
                     "coordinates": feature["image"]["geometry"]["coordinates"],
                 }
-                if "image" in feature
-                else {},
+                if feature.get("image") and feature["image"].get("geometry")
+                else None,
                 # Property list
                 "possible_none_properties": {
                     # Only if "image" was specified in the `fields` of the endpoint, else None

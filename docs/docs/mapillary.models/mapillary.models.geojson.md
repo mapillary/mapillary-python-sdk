@@ -62,7 +62,9 @@ Return the list representation of the Coordinates
 ### class mapillary.models.geojson.Feature(feature: dict)
 Bases: `object`
 
-Representation for a feature in a feature list
+Representation for a feature in a feature list.
+
+Unlocated features have `geometry=None` and serialize with a null geometry.
 
 
 * **Parameters**
